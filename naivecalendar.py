@@ -18,6 +18,8 @@ import subprocess
 import glob, os
 import re
 
+import sys
+
 
 # Don't touch those one!
 COL_NB = 7
@@ -115,14 +117,15 @@ def rofi2cal_ind(ind):
 def cal2rofi_ind(ind, date):
     """Convert calendar date into coordinates for rofi"""
     # correct day offset
+    ind = int(ind) - 1 # make month start at 0
     start, _ = calendar.monthrange(date.year, date.month)
-    ind = int(ind) + COL_NB + start
+    ind = ind + COL_NB + start
 
     # calendar coordinate
     row, col = ind // COL_NB, ind % COL_NB
 
     # rofi coordinate
-    new_ind = (col - 1) * ROW_NB + row
+    new_ind = col * ROW_NB + row
 
     return new_ind
 
