@@ -30,6 +30,7 @@ HOME = os.getenv("HOME")
 # Do what you want!
 EDITOR = "kate"
 NOTES_PATH = f"{HOME}/.naivecalendar_notes"
+CAL_WIDTH = 350
 
 
 def main():
@@ -394,7 +395,7 @@ def gen_rofi_conf(text, urgent, day_ind):
         -lines {ROW_NB} \
         -line-padding 5 \
         -padding 10 \
-        -width 25 \
+        -width {CAL_WIDTH} \
         -xoffset 320 -yoffset 25 \
         -location 2 \
         -columns {COL_NB}\
