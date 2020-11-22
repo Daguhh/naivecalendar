@@ -53,7 +53,11 @@ def main():
         today_ind = cal2rofi_ind(d.day, d)
         rofi = gen_rofi_conf(actual_month, notes_inds, today_ind)
 
-        out = show_rofi_calendar(rofi, cal)
+        try :
+            out = show_rofi_calendar(rofi, cal)
+        except subprocess.CalledProcessError as e:
+            print('Bye')
+            sys.exit()
 
         if out == "<" or out == "p":
             d = add_months(d, -1)
