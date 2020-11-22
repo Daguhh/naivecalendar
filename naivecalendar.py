@@ -53,11 +53,7 @@ def main():
         today_ind = cal2rofi_ind(d.day, d)
         rofi = gen_rofi_conf(actual_month, notes_inds, today_ind)
 
-        try :
-            out = show_rofi_calendar(rofi, cal)
-        except subprocess.CalledProcessError as e:
-            print('Bye')
-            sys.exit()
+        out = show_rofi_calendar(rofi, cal)
 
         if out == "<" or out == "p":
             d = add_months(d, -1)
@@ -80,6 +76,18 @@ def main():
         else:
             print(out)
 
+
+def intercept_rofi_kill(func):
+
+    def wrapper(*args):
+        try :
+            out = func(*args)
+        except subprocess.CalledProcessError as e:
+            print('Bye')
+            sys.exit()
+        return out
+
+    return wrapper
 
 def display_help():
 
@@ -161,6 +169,7 @@ def get_month_notes_ind(date):
 
     return ind
 
+@intercept_rofi_kill
 def show_rofi_calendar(rofi, cal):
 
     cmd = subprocess.Popen(f"echo '{cal}'", shell=True, stdout=subprocess.PIPE)
@@ -171,6 +180,7 @@ def show_rofi_calendar(rofi, cal):
     )
     return out
 
+@intercept_rofi_kill
 def show_rofi(txt_body, txt_head):
     """Launch a rofi window
 
