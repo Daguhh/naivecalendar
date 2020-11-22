@@ -7,7 +7,7 @@ rofi theme by adi1090x : https://github.com/adi1090x/polybar-themes
 """
 
 __author__ = "Daguhh"
-__license__ = "MIT"
+__license__ = "MIT-0"
 __status__ = "Dev"
 
 
@@ -35,8 +35,9 @@ NOTES_PATH = f"{HOME}/.naivecalendar_notes"
 CAL_WIDTH = 300
 CAL_X_OFFSET = 320
 CAL_Y_OFFSET = 25
-CAL_LINE_PADDING =  5
+CAL_LINE_PADDING = 5
 CAL_PADDING = 10
+
 
 def main():
     """
@@ -71,7 +72,7 @@ def main():
         elif out in "LMJVSD":
             print("Ceci n'est pas un jour! R.Magritte.")
         elif {*out}.issubset({*"0123456789"}):
-            #print(f"Vous avez selectionné le {out}/{d.month}/{d.year}")
+            # print(f"Vous avez selectionné le {out}/{d.month}/{d.year}")
             cmd = f"{EDITOR} {NOTES_PATH}/{d.year}-{d.month}-{out}.txt"
             subprocess.check_output(cmd, shell=True)
         elif out == "notes":
@@ -89,14 +90,15 @@ def intercept_rofi_kill(func):
 
     @wraps(func)
     def wrapper(*args):
-        try :
+        try:
             out = func(*args)
         except subprocess.CalledProcessError as e:
-            print('Bye')
+            print("Bye")
             sys.exit()
         return out
 
     return wrapper
+
 
 def display_help():
     """Show a rofi popup with help message"""
@@ -165,7 +167,7 @@ def cal2rofi_ind(ind, date):
     :rtype: int
     """
     # correct day offset
-    ind = int(ind) - 1 # make month start at 0
+    ind = int(ind) - 1  # make month start at 0
     start, _ = calendar.monthrange(date.year, date.month)
     ind = ind + COL_NB + start
 
@@ -218,6 +220,7 @@ def get_month_notes_ind(date):
 
     return ind
 
+
 @intercept_rofi_kill
 def show_rofi_calendar(rofi, cal):
     """Launch a rofi window
@@ -238,6 +241,7 @@ def show_rofi_calendar(rofi, cal):
         .replace("\n", "")
     )
     return out
+
 
 @intercept_rofi_kill
 def show_rofi(txt_body, txt_head):
