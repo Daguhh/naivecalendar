@@ -30,8 +30,13 @@ HOME = os.getenv("HOME")
 # Do what you want!
 EDITOR = "kate"
 NOTES_PATH = f"{HOME}/.naivecalendar_notes"
-CAL_WIDTH = 350
 
+# For those too : Calendar geometry
+CAL_WIDTH = 300
+CAL_X_OFFSET = 320
+CAL_Y_OFFSET = 25
+CAL_LINE_PADDING =  5
+CAL_PADDING = 10
 
 def main():
     """
@@ -393,10 +398,10 @@ def gen_rofi_conf(text, urgent, day_ind):
         -u {urgent} \
         -selected-row {day_ind} \
         -lines {ROW_NB} \
-        -line-padding 5 \
-        -padding 10 \
+        -line-padding {CAL_LINE_PADDING} \
+        -padding {CAL_PADDING} \
         -width {CAL_WIDTH} \
-        -xoffset 320 -yoffset 25 \
+        -xoffset {CAL_X_OFFSET} -yoffset {CAL_Y_OFFSET} \
         -location 2 \
         -columns {COL_NB}\
         -color-enabled true \
