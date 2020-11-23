@@ -58,7 +58,7 @@ def main():
 
         actual_month = d.strftime("%b %Y")
         notes_inds = get_month_notes_ind(d)
-        today_ind = cal2rofi_ind(d.day, d)
+        today_ind = cal2rofi_ind(d.day, d.month, d.year)
         rofi = gen_rofi_conf(actual_month, notes_inds, today_ind)
 
         out = show_rofi_calendar(rofi, cal)
@@ -119,11 +119,15 @@ def get_month_notes_heads(date):
     """
     Return a list of file's first line of a specific month
 
-    :param date: a day of the month
-    :type date: datetime.date
+    Parameters
+    ----------
+    param1 : datetime.date
+        Any day of the month to display
 
-    :return: rofi formatted list
-    :rtype: string
+    Returns
+    -------
+    str
+        A rofi formatted list of month's notes first line
     """
 
     note_lst = get_month_notes(date)
@@ -137,11 +141,15 @@ def get_note_head(note_path):
     """
     Return first line of a text file
 
-    :param note_path: a text file path
-    :type note_path: string
+    Parameters
+    ----------
+    param1 : str
+        A text file path
 
-    :return: first line of note_path file
-    :rtype: string
+    Returns
+    -------
+    str
+        First line of the text file
     """
 
     with open(note_path, "r") as f:
@@ -154,22 +162,28 @@ def rofi2cal_ind(ind):
     pass
 
 
-def cal2rofi_ind(ind, date):
+def cal2rofi_ind(day, month, year):
     """
     Convert calendar date into coordinates for rofi
 
-    :param ind: day number
-    :parma date: date (to get month)
-    :type ind: string
-    :type date: datetime.date
+    Parameters
+    ----------
+    param1 : int
+        A day number (1-31)
+    param2 : int
+        A month number (1-12)
+    param3: int
+        A year number
 
-    :return: rofi column index
-    :rtype: int
+    Returns
+    -------
+    int
+        A rofi index
     """
     # correct day offset
-    ind = int(ind) - 1  # make month start at 0
-    start, _ = calendar.monthrange(date.year, date.month)
-    ind = ind + COL_NB + start
+    day = int(day) - 1  # make month start at 0
+    start, _ = calendar.monthrange(year, month)
+    ind = day + COL_NB + start
 
     # calendar coordinate
     row, col = ind // COL_NB, ind % COL_NB
@@ -184,11 +198,15 @@ def get_month_notes(date):
     """
     Return notes files paths that are attached to date's month
 
-    :param date: a day of the month
-    :type date: datetime.date
+    Parameters
+    ----------
+    param1 : datetime.date
+        Any day of the month displayed
 
-    :return: list of file that belong to date.month
-    :rtype: list
+    Returns
+    -------
+    list
+        list of files that belong to date.month
     """
 
     # get note of the month list
@@ -202,19 +220,23 @@ def get_month_notes_ind(date):
     """
     Return rofi-formatted index of days with attached note
 
-    :param date: a day of the month
-    :type date: datetime.date
+    Parameters
+    ----------
+    param1 : datetime.date
+        Any day of the month displayed
 
-    :return: rofi column indexes
-    :rtype: str
+    Returns
+    -------
+    str
+        Column index list formatted for rofi
     """
 
     # get file list
     note_lst = get_month_notes(date)
-    # get note day
-    ind = [re.search(r"([^-]*)\.txt", f).group(1) for f in note_lst]
+    # get note day number
+    days = [re.search(r"([^-]*)\.txt", f).group(1) for f in note_lst]
     # transform into rofi index
-    ind = [cal2rofi_ind(int(i), date) for i in ind]
+    ind = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
     # format into rofi command
     ind = ",".join([str(i) for i in ind])
 
@@ -225,13 +247,17 @@ def get_month_notes_ind(date):
 def show_rofi_calendar(rofi, cal):
     """Launch a rofi window
 
-    :param rofi: rofi command to run in a shell
-    :param cal: a rofi formated list
-    :type rofi: str
-    :type cal: str
+    Parameters
+    ----------
+    param1 : str
+        Rofi command to be run in a shell
+    param2 : str
+        A column by column calendar list formatted for rofi
 
-    :return: rofi selected cell content
-    :rtype: str
+    Returns
+    -------
+    str
+        Rofi selected cell content
     """
 
     cmd = subprocess.Popen(f"echo '{cal}'", shell=True, stdout=subprocess.PIPE)
@@ -247,13 +273,17 @@ def show_rofi_calendar(rofi, cal):
 def show_rofi(txt_body, txt_head):
     """Launch a rofi window
 
-    :param txt_body: text to Display
-    :param txt_head: text to display in rofi prompt
-    :type txt_body: str
-    :type txt_head: str
+    Parameters
+    ----------
+    param1 : str
+        Text to display in rofi window
+    param2 : str
+        Text to display in rofi prompt
 
-    :return: rofi selected cell content
-    :rtype: string
+    Returns
+    -------
+    str
+        Rofi selected cell content
     """
 
     cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
@@ -273,20 +303,24 @@ def weekly_transpose(cal, w=COL_NB):
     Transpose (math) a line by line list into column by column list,
     given column number
 
-    :param cal: a list that represent line by line calendar
-    :param w: number of column
-    :type cal: list
-    :type w: int
+    Parameters
+    ----------
+    param1 : list
+        line by line elements of a calendar
+    param2 : w
+        number of column in the calendar (usually 7)
 
-    :return: a list that represent column by column calendar
-    :rtype: list
+    Returns:
+    list
+        A list that represent column by column elements of a calendar
 
-    :Example:
+    Examples
+    --------
+    With an hypothetic 3 day week
 
     >>> my_list = [1,2,3,4,5,6]
     >>> weekly_transpose(my_list, w=3)
     [1,4,2,5,3,6]
-
     """
 
     # split calendar into week
@@ -307,13 +341,17 @@ def add_months(sourcedate, months):
     """
     Increment or decrement date by a number of month
 
-    :param sourcedate: date to increment
-    :param months: number of month to add
-    :type sourcedate: datetime.date
-    :type months: int
+    Parameters
+    ----------
+    param1 : datetime.date
+        Date to Increment
+    param2 : int
+        number of month to add
 
-    :return: incremented date
-    :rtype: datetime.date
+    Returns
+    -------
+    datetime.date
+        Incremented date
     """
 
     month = sourcedate.month - 1 + months
@@ -324,8 +362,8 @@ def add_months(sourcedate, months):
 
 
 def get_calendar_from_date(date):
-    r"""
-    Return a montly calendar given {date}
+    r"""Return a montly calendar given {date}
+
     Calendar is a string formated to be shown by rofi (i.e. column bu column)
 
                  L  M  M  J  V  S  D
@@ -336,13 +374,15 @@ def get_calendar_from_date(date):
                 23 24 25 26 27 28 29
                 30
 
+    Parameters
+    ----------
+    param1 : datetime.date
+        Any day of the month to display
 
-    :param date: a day of the month to display
-    :type date: datetime.date
-
-    :return: a str that contain chained columns of a calendar
-    :rtype: str
-
+    Returns
+    -------
+    str
+        A str that contain chained columns of a calendar in a rofi format
     """
 
     start_day, month_length = calendar.monthrange(date.year, date.month)
@@ -367,8 +407,7 @@ def get_calendar_from_date(date):
 
 
 def gen_rofi_conf(text, urgent, day_ind):
-    """
-    Create a rofi command
+    """Create a rofi command
     theme by adi1090x : https://github.com/adi1090x/polybar-themes
     """
 
