@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 A simple calendar made with rofi and python3.
+
 Cycle through month and create linked note to days.
 
 rofi theme by adi1090x : https://github.com/adi1090x/polybar-themes
@@ -43,8 +44,9 @@ def main():
     """
     Display a calendar with rofi
     Calendar is interactive :
-        - switch between month
-        - open {EDITOR} and create a note for selected day
+
+    - switch between month
+    - open {EDITOR} and create a note for selected day
     """
 
     if not os.path.exists(NOTES_PATH):
@@ -310,7 +312,8 @@ def weekly_transpose(cal, w=COL_NB):
     w : int
         number of column in the calendar (usually 7)
 
-    Returns:
+    Returns
+    -------
     list
         A list that represent column by column elements of a calendar
 
@@ -362,9 +365,9 @@ def add_months(sourcedate, months):
 
 
 def get_calendar_from_date(date):
-    r"""Return a montly calendar given {date}
+    r"""Return a montly calendar given date
 
-    Calendar is a string formated to be shown by rofi (i.e. column bu column)
+    Calendar is a string formated to be shown by rofi (i.e. column bu column)::
 
                  L  M  M  J  V  S  D
                                    1
