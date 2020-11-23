@@ -9,7 +9,7 @@ import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath('../'))
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', "sphinx_rtd_theme",]
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', "sphinx_rtd_theme", 'sphinx.ext.githubpages']
 source_suffix = '.rst'
 master_doc = 'index'
 project = u'NaïveCalendar'
