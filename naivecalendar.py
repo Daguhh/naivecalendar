@@ -121,7 +121,7 @@ def get_month_notes_heads(date):
 
     Parameters
     ----------
-    param1 : datetime.date
+    date : datetime.date
         Any day of the month to display
 
     Returns
@@ -143,7 +143,7 @@ def get_note_head(note_path):
 
     Parameters
     ----------
-    param1 : str
+    note_path : str
         A text file path
 
     Returns
@@ -168,11 +168,11 @@ def cal2rofi_ind(day, month, year):
 
     Parameters
     ----------
-    param1 : int
+    day : int
         A day number (1-31)
-    param2 : int
+    month : int
         A month number (1-12)
-    param3: int
+    year : int
         A year number
 
     Returns
@@ -200,7 +200,7 @@ def get_month_notes(date):
 
     Parameters
     ----------
-    param1 : datetime.date
+    date : datetime.date
         Any day of the month displayed
 
     Returns
@@ -222,7 +222,7 @@ def get_month_notes_ind(date):
 
     Parameters
     ----------
-    param1 : datetime.date
+    date : datetime.date
         Any day of the month displayed
 
     Returns
@@ -249,9 +249,9 @@ def show_rofi_calendar(rofi, cal):
 
     Parameters
     ----------
-    param1 : str
+    rofi : str
         Rofi command to be run in a shell
-    param2 : str
+    cal : str
         A column by column calendar list formatted for rofi
 
     Returns
@@ -275,9 +275,9 @@ def show_rofi(txt_body, txt_head):
 
     Parameters
     ----------
-    param1 : str
+    txt_body : str
         Text to display in rofi window
-    param2 : str
+    txt_head : str
         Text to display in rofi prompt
 
     Returns
@@ -305,9 +305,9 @@ def weekly_transpose(cal, w=COL_NB):
 
     Parameters
     ----------
-    param1 : list
+    cal : list
         line by line elements of a calendar
-    param2 : w
+    w : int
         number of column in the calendar (usually 7)
 
     Returns:
@@ -343,9 +343,9 @@ def add_months(sourcedate, months):
 
     Parameters
     ----------
-    param1 : datetime.date
+    sourcedate : datetime.date
         Date to Increment
-    param2 : int
+    months : int
         number of month to add
 
     Returns
@@ -376,7 +376,7 @@ def get_calendar_from_date(date):
 
     Parameters
     ----------
-    param1 : datetime.date
+    date : datetime.date
         Any day of the month to display
 
     Returns
