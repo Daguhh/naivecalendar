@@ -105,13 +105,20 @@ def intercept_rofi_kill(func):
 def display_help():
     """Show a rofi popup with help message"""
 
-    txt = """This is an interactive calendar
-here some tips:
-- click or press enter on arrow to cycle through month
-- type "p" or "n" to cycle through month
-- interact with day number to add a note
-- type "notes" to show all month's notes titles
-- type "help" to display this help again
+    txt = """This calendar is interactive. Here some tips:
+
+ - Use mouse or keyboard to interact with the calendar.
+ - Hit bottom arrows to cycle through months.
+ - Hit a day to create a linked note.
+(A day with attached note will appear yellow.)
+
+There's somme shortcut too, type it in rofi prompt :
+
+        n : go to next month
+        p : go to previous month
+    notes : display notes of the month (first line)
+     help : display this help
+
 """
 
     show_rofi(txt, "help:")
