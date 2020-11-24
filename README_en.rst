@@ -16,16 +16,16 @@ NaïveCalendar
 .. image:: https://img.shields.io/badge/Download-script-yellow
    :target: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar.py?inline=false
 
-Un popup calendrier avec rofi_ et python3_ :
+A popu calendat with rofi_ and python3_:
 
-* Parcourez le calendrier de mois en mois
-* Créez et éditez des notes liés à chaque date du calendrier. *Une date possédant une note apparait colorée*
+* Cycle through calendat month by month
+* Create notes linked to days. *Days with notes will appear colored*
 
 .. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar_screenshot.png 
     :width: 200 px
     :align: center
 
-Dépendances
+Dependancies
 -----------
 
 * python3_
@@ -34,14 +34,14 @@ Dépendances
 Usage
 -----
 
-Lancer le programme:
+Run: 
 
 .. code::
 
     chmod +x naivecalendar.py
     ./naivecalendar.py 
 
-Pour le détail des commandes, dans le prompt rofi, tapez:
+For more detail about commands, run the script, then, in the command prompt, type: 
 
 .. code::
 

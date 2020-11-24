@@ -12,32 +12,40 @@ __license__ = "MIT-0"
 __status__ = "Dev"
 
 
+import glob, os
+import sys
+import subprocess
+import re
 import datetime
 import calendar
+import locale
 from itertools import chain
-import subprocess
-import glob, os
-import re
-
-import sys
 from functools import wraps
 
 
-# Don't touch those one!
-COL_NB = 7
-ROW_NB = 8
-HOME = os.getenv("HOME")
+# User parameters
+DAY_ABBR_LENGHT = 3
+EDITOR = "kate" #xdg-open
+NOTES_RELATIVE_PATH = ".naivecalendar_notes"
 
-# Do what you want!
-EDITOR = "kate"
-NOTES_PATH = f"{HOME}/.naivecalendar_notes"
-
-# For those too : Calendar geometry
-CAL_WIDTH = 300
+CAL_WIDTH = 320
 CAL_X_OFFSET = 320
 CAL_Y_OFFSET = 25
 CAL_LINE_PADDING = 5
 CAL_PADDING = 10
+
+
+# Don't touch those one!
+# Get local day abbr.
+locale.setlocale(locale.LC_ALL, '')
+get_loc_day = lambda d, l : locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
+WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in chain(range(1,7),[0])]
+
+COL_NB = 7
+ROW_NB = 8
+HOME = os.getenv("HOME")
+NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
+
 
 
 def main():
@@ -58,7 +66,7 @@ def main():
 
         cal = get_calendar_from_date(d)
 
-        actual_month = d.strftime("%b %Y")
+        actual_month = d.strftime("%b %Y").title()
         notes_inds = get_month_notes_ind(d)
         today_ind = cal2rofi_ind(d.day, d.month, d.year)
         rofi = gen_rofi_conf(actual_month, notes_inds, today_ind)
@@ -75,7 +83,9 @@ def main():
             print("Ceci n'est pas un jour! R.Magritte.")
         elif {*out}.issubset({*"0123456789"}):
             # print(f"Vous avez selectionné le {out}/{d.month}/{d.year}")
-            cmd = f"{EDITOR} {NOTES_PATH}/{d.year}-{d.month}-{out}.txt"
+            note_path = f"{NOTES_PATH}/{d.year}-{d.month}-{out}.txt"
+
+            cmd = f"touch {note_path} & {EDITOR} {note_path}"
             subprocess.check_output(cmd, shell=True)
         elif out == "notes":
             notes_heads = get_month_notes_heads(d)
@@ -405,7 +415,7 @@ def get_calendar_from_date(date):
 
     # add head : day name, tail : switch month
     cal = list(
-        chain(["L", "M", "M", "J", "V", "S", "D"], cal, ["<", "", "", "", "", "", ">"])
+        chain(WEEK_DAYS, cal, ["<", "", "", "", "", "", ">"])
     )
 
     # Format calendar for rofi (column by column)
