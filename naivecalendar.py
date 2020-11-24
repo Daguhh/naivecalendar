@@ -25,7 +25,7 @@ from functools import wraps
 
 # User parameters
 DAY_ABBR_LENGHT = 3
-EDITOR = "kate" #xdg-open
+EDITOR = "xdg-open" #kate
 NOTES_RELATIVE_PATH = ".naivecalendar_notes"
 
 CAL_WIDTH = 320
