@@ -15,10 +15,5 @@ setup(
     license='MIT No Attribution (MIT-0)',
     packages=['naivecalendar'],
     scripts=['naivecalendar/naivecalendar.py'],
-    entry_points={
-        'console_scripts': [
-          'naivecalendar = naivecalendar:main',
-        ],
-    }
 )
 
