@@ -38,7 +38,7 @@ CAL_PADDING = 10
 
 # Don't touch those one!
 # Get local day abbr.
-# locale.setlocale(locale.LC_ALL, '')
+locale.setlocale(locale.LC_ALL, '')
 get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
 WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in chain(range(1, 7), [0])]
 
@@ -59,6 +59,7 @@ def main(args):
 
     if not os.path.exists(NOTES_PATH):
         os.mkdir(NOTES_PATH)
+        display_help(head_txt = 'Welcome to naivecalendar')
 
     d = calendar.datetime.date.today()
 
@@ -148,26 +149,33 @@ def intercept_rofi_kill(func):
     return wrapper
 
 
-def display_help():
+def display_help(head_txt='help:'):
     """Show a rofi popup with help message"""
 
-    txt = """This calendar is interactive. Here some tips:
+    txt = f"""This calendar is interactive. Here some tips:
 
  - Use mouse or keyboard to interact with the calendar.
  - Hit bottom arrows to cycle through months.
  - Hit a day to create a linked note.
 (A day with attached note will appear yellow.)
+ - Notes are stored in {HOME}/.naivecalendar_notes/
+(For now you've to manually delete it)
 
 There's somme shortcut too, type it in rofi prompt :
 
-        n : go to next month
-        p : go to previous month
+        + : go to next month
+        - : go to previous month
     notes : display notes of the month (first line)
      help : display this help
 
+There's some command line option too, dislay it with :
+    ./naivecalendar -h
+
+That's all :
+type enter to continue...
 """
 
-    show_rofi(txt, "help:")
+    show_rofi(txt, head_txt)
 
 
 def get_month_notes_heads(date):
