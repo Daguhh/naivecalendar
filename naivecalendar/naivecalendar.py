@@ -48,7 +48,7 @@ HOME = os.getenv("HOME")
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 
 
-def main(args):
+def main():
     """
     Display a calendar with rofi
     Calendar is interactive :
@@ -56,6 +56,7 @@ def main(args):
     - switch between month
     - open {EDITOR} and create a note for selected day
     """
+    args = get_arguments()
 
     if not os.path.exists(NOTES_PATH):
         os.mkdir(NOTES_PATH)
@@ -131,10 +132,11 @@ def get_arguments():
     )
 
     args = parser.parse_args()
+    import ipdb
     return args
 
 
-def intercept_rofi_kill(func):
+def intercept_rofi_error(func):
     """A decorator to capture sdtout after rofi being killed"""
 
     @wraps(func)
@@ -143,6 +145,10 @@ def intercept_rofi_kill(func):
             out = func(*args)
         except subprocess.CalledProcessError as e:
             print("Bye")
+            sys.exit()
+        except NameError as e:
+            print(e)
+            print('Please install rofi')
             sys.exit()
         return out
 
@@ -306,7 +312,8 @@ def get_month_notes_ind(date):
     return ind
 
 
-@intercept_rofi_kill
+
+@intercept_rofi_error
 def show_rofi_calendar(rofi, cal):
     """Launch a rofi window
 
@@ -332,7 +339,7 @@ def show_rofi_calendar(rofi, cal):
     return out
 
 
-@intercept_rofi_kill
+@intercept_rofi_error
 def show_rofi(txt_body, txt_head):
     """Launch a rofi window
 
@@ -519,5 +526,4 @@ def gen_rofi_conf(text, urgent, day_ind):
 
 
 if __name__ == "__main__":
-    args = get_arguments()
-    main(args)
+    main()
