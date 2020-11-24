@@ -21,11 +21,12 @@ import calendar
 import locale
 from itertools import chain
 from functools import wraps
+import argparse
 
 
 # User parameters
 DAY_ABBR_LENGHT = 3
-EDITOR = "xdg-open" #kate
+# EDITOR = "xdg-open" #kate
 NOTES_RELATIVE_PATH = ".naivecalendar_notes"
 
 CAL_WIDTH = 320
@@ -37,9 +38,9 @@ CAL_PADDING = 10
 
 # Don't touch those one!
 # Get local day abbr.
-locale.setlocale(locale.LC_ALL, '')
-get_loc_day = lambda d, l : locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
-WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in chain(range(1,7),[0])]
+# locale.setlocale(locale.LC_ALL, '')
+get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
+WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in chain(range(1, 7), [0])]
 
 COL_NB = 7
 ROW_NB = 8
@@ -47,8 +48,7 @@ HOME = os.getenv("HOME")
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 
 
-
-def main():
+def main(args):
     """
     Display a calendar with rofi
     Calendar is interactive :
@@ -73,20 +73,24 @@ def main():
 
         out = show_rofi_calendar(rofi, cal)
 
-        if out == "<" or out == "p":
+        if out == "<" or out == "-":
             d = add_months(d, -1)
-        elif out == ">" or out == "n":
+        elif out == ">" or out == "+":
             d = add_months(d, 1)
         elif out == " ":
             print("Vous glissez entre les mois, vous perdez la notion du temps.")
-        elif out in "LMJVSD":
+        elif out in WEEK_DAYS:
             print("Ceci n'est pas un jour! R.Magritte.")
         elif {*out}.issubset({*"0123456789"}):
-            # print(f"Vous avez selectionné le {out}/{d.month}/{d.year}")
-            note_path = f"{NOTES_PATH}/{d.year}-{d.month}-{out}.txt"
+            if args.print:
+                print(datetime.date(d.year, d.month, int(out)).strftime(args.format))
+                sys.exit()
+            else:
+                # print(f"Vous avez selectionné le {out}/{d.month}/{d.year}")
+                note_path = f"{NOTES_PATH}/{d.year}-{d.month}-{out}.txt"
 
-            cmd = f"touch {note_path} & {EDITOR} {note_path}"
-            subprocess.check_output(cmd, shell=True)
+                cmd = f"touch {note_path} & {args.editor} {note_path}"
+                subprocess.check_output(cmd, shell=True)
         elif out == "notes":
             notes_heads = get_month_notes_heads(d)
             rep = show_rofi(notes_heads, "liste des notes")
@@ -95,6 +99,38 @@ def main():
             display_help()
         else:
             print(out)
+
+
+def get_arguments():
+    """Parse command line arguments"""
+
+    parser = argparse.ArgumentParser(description="""A simple popup calendar""")
+
+    parser.add_argument(
+        "-p",
+        "--print",
+        help="print date to stdout instead of opening a note",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "-f",
+        "--format",
+        help="""option '-p' output format (datetime.strftime format, defaut='%%Y-%%m-%%d')""",
+        dest="format",
+        default="%Y-%m-%d",
+    )
+
+    parser.add_argument(
+        "-e",
+        "--editor",
+        help="""editor command to open notes""",
+        dest="editor",
+        default="xdg-open",
+    )
+
+    args = parser.parse_args()
+    return args
 
 
 def intercept_rofi_kill(func):
@@ -414,9 +450,7 @@ def get_calendar_from_date(date):
     cal[start_day : month_length + start_day] = range(1, month_length + 1)
 
     # add head : day name, tail : switch month
-    cal = list(
-        chain(WEEK_DAYS, cal, ["<", "", "", "", "", "", ">"])
-    )
+    cal = list(chain(WEEK_DAYS, cal, ["<", " ", " ", " ", " ", " ", ">"]))
 
     # Format calendar for rofi (column by column)
     cal = weekly_transpose(cal)
@@ -477,4 +511,5 @@ def gen_rofi_conf(text, urgent, day_ind):
 
 
 if __name__ == "__main__":
-    main()
+    args = get_arguments()
+    main(args)
