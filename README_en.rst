@@ -16,9 +16,9 @@ NaïveCalendar
 .. image:: https://img.shields.io/badge/Download-script-yellow
    :target: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar.py?inline=false
 
-A popu calendat with rofi_ and python3_:
+A popup calendar with rofi_ and python3_:
 
-* Cycle through calendat month by month
+* Cycle through calendar month by month
 * Create notes linked to days. *Days with notes will appear colored*
 
 .. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar_screenshot.png 
