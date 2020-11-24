@@ -26,7 +26,7 @@ A popup calendar with rofi_ and python3_:
     :align: center
 
 Dependancies
------------
+------------
 
 * python3_
 * rofi_
