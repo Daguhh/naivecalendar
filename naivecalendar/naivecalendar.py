@@ -15,6 +15,7 @@ __status__ = "Dev"
 import glob, os
 import sys
 import subprocess
+import shutil
 import re
 import datetime
 import calendar
@@ -61,6 +62,10 @@ def main():
     if not os.path.exists(NOTES_PATH):
         os.mkdir(NOTES_PATH)
         display_help(head_txt = 'Welcome to naivecalendar')
+
+    if shutil.which('rofi') == None:
+        print('please install rofi')
+        sys.exit()
 
     d = calendar.datetime.date.today()
 
@@ -144,10 +149,6 @@ def intercept_rofi_error(func):
             out = func(*args)
         except subprocess.CalledProcessError as e:
             print("Bye")
-            sys.exit()
-        except NameError as e:
-            print(e)
-            print('Please install rofi')
             sys.exit()
         return out
 
