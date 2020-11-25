@@ -132,7 +132,6 @@ def get_arguments():
     )
 
     args = parser.parse_args()
-    import ipdb
     return args
 
 
