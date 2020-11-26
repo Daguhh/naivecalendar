@@ -10,18 +10,14 @@ NaïveCalendar
 
     LeRobert_
 
-.. image:: https://img.shields.io/badge/Source-git-success
-    :target: https://framagit.org/Daguhh/naivecalendar
-
-.. image:: https://img.shields.io/badge/Download-script-yellow
-   :target: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar/naivecalendar.py?inline=false
+.. include:: ../Misc/badges.rst
 
 A popup calendar with rofi_ and python3_:
 
 * Cycle through calendar month by month
 * Create notes linked to days. *Days with notes will appear colored*
 
-.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar_screenshot.png 
+.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/dev/Misc/naivecalendar_screenshot.png 
     :width: 200 px
     :align: center
 
@@ -63,3 +59,5 @@ Build the doc
 .. _LeRobert: https://dictionnaire.lerobert.com/definition/naif
 .. _rofi: https://github.com/davatorium/rofi
 .. _python3: https://www.python.org/
+
+
