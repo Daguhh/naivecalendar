@@ -12,10 +12,10 @@ NaïveCalendar
 
 |python_stable_badge| |python_dev_badge| |git_badge|
 
-A popup calendar with rofi_ and python3_:
+A popup calendar with `rofi`_ and `python3`_:
 
-* Cycle through calendar month by month
-* Create notes linked to days. *Days with notes will appear colored*
+* Cycle through calendar month by month.
+* Create notes linked to days. *Days with notes will appear colored*.
 
 .. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/dev/Misc/naivecalendar_screenshot.png 
     :width: 200 px
@@ -43,11 +43,8 @@ For more detail about commands, run the script, then, in the command prompt, typ
 
    help
 
-Documentation
--------------
-
 Build the doc
-^^^^^^^^^^^^^
+-------------
 
 .. code::
 
