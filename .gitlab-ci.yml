@@ -1,4 +1,4 @@
-image: python:3.7-alpine
+image: python:3.7
 
 test:
   stage: test
@@ -13,7 +13,7 @@ test:
 pages:
   stage: deploy
   script:
-  - pip install -U sphinx
+  - pip install -U -r docs/requirements.txt
   - sphinx-build -b html docs public
   artifacts:
     paths:
