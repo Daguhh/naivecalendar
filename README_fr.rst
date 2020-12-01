@@ -21,7 +21,7 @@ Un popup calendrier avec rofi_ et python3_ :
 * Parcourez le calendrier de mois en mois
 * Créez et éditez des notes liés à chaque date du calendrier. *Une date possédant une note apparait colorée*
 
-.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar_screenshot.png 
+.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/Misc/naivecalendar_screenshot.png
     :width: 200 px
     :align: center
 
