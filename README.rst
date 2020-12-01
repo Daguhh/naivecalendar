@@ -17,7 +17,7 @@ A popup calendar with `rofi`_ and `python3`_:
 * Cycle through calendar month by month.
 * Create notes linked to days. *Days with notes will appear colored*.
 
-.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/dev/Misc/naivecalendar_screenshot.png 
+.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/Misc/naivecalendar_screenshot.png
     :width: 200 px
     :align: center
 
