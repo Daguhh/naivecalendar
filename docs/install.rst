@@ -1,4 +1,4 @@
-Usage
+Howto
 =====
 
 .. include:: ../README.rst

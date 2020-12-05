@@ -25,29 +25,52 @@ from functools import wraps
 import argparse
 
 
-# User parameters
+############# Parameters #########################
+
+# day name lenght (enlarge calendar for larger values)
 DAY_ABBR_LENGHT = 3
-# EDITOR = "xdg-open" #kate
+FIRST_DAY_WEEK = 1 # 0 : sunday, 1 : monday...
+
+# path to save notes (retative to $HOME)
 NOTES_RELATIVE_PATH = ".naivecalendar_notes"
 
+# rofi shape parameters
 CAL_WIDTH = 320
 CAL_X_OFFSET = 320
 CAL_Y_OFFSET = 25
 CAL_LINE_PADDING = 5
 CAL_PADDING = 10
+CAL_LOCATION = 2
 
+# rofi grid shape to contain calendar
+COL_NB = 7 # 7 days
+WEEK_NB = 6 # number of "complete" weeks, a month can extend up to 6 weeks
+ROW_NB = 1 + WEEK_NB + 1 # 1 day header + 6 weeks + 1 control menu
 
-# Don't touch those one!
-# Get local day abbr.
+# Symbols displayed in the calendar
+SYM_NEXT_MONTH = ['>', '+'] # first symbol is displayed, others are just shortcuts
+SYM_NEXT_YEAR = ['>>', '++']
+SYM_PREV_MONTH = ['<', '-']
+SYM_PREV_YEAR = ['<<', '--']
+SYM_DAYS_NUM = [str(n) for n in range(1,32)]
+SYM_NOTES = ['notes']
+SYM_HELP = ['help']
+
+# Rofi prompt date format:
+PROMT_DATE_FORMAT = "%b %Y"
+
+# Get locale week days, override WEEKS_DAYS variable to personalize day names
 locale.setlocale(locale.LC_ALL, '')
 get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
-WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in chain(range(1, 7), [0])]
+week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
+SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
 
-COL_NB = 7
-ROW_NB = 8
+# create path to notes
 HOME = os.getenv("HOME")
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 
+
+############ Script ##############################
 
 def main():
     """
@@ -69,120 +92,213 @@ def main():
 
     d = calendar.datetime.date.today()
 
+    select_ind = cal2rofi_ind(d.day, d.month, d.year)
+
     while True:
 
         cal = get_calendar_from_date(d)
 
-        actual_month = d.strftime("%b %Y").title()
+        actual_month = d.strftime(PROMT_DATE_FORMAT).title()
         notes_inds = get_month_notes_ind(d)
-        today_ind = cal2rofi_ind(d.day, d.month, d.year)
-        rofi = gen_rofi_conf(actual_month, notes_inds, today_ind)
+        rofi_cmd = gen_rofi_conf(actual_month, notes_inds, select_ind)
 
-        out = show_rofi_calendar(rofi, cal)
+        out = show_rofi_calendar(rofi_cmd, cal)
 
-        if out == "<" or out == "-":
+        if out in SYM_PREV_YEAR:
+            d = add_year(d, -1)
+            select_ind = 7
+        elif out in SYM_PREV_MONTH:
             d = add_months(d, -1)
-        elif out == ">" or out == "+":
+            select_ind = 15
+        elif out in SYM_NEXT_MONTH:
             d = add_months(d, 1)
-        elif out == " ":
-            print("Vous glissez entre les mois, vous perdez la notion du temps.")
-        elif out in WEEK_DAYS:
-            print("Ceci n'est pas un jour! R.Magritte.")
-        elif {*out}.issubset({*"0123456789"}):
+            select_ind = 47
+        elif out in SYM_NEXT_YEAR:
+            d = add_year(d, 1)
+            select_ind = 55
+        elif out in SYM_DAYS_NUM:
             if args.print:
-                print(datetime.date(d.year, d.month, int(out)).strftime(args.format))
-                sys.exit()
+                print_selection(out, d, args.format)
             else:
-                # print(f"Vous avez selectionné le {out}/{d.month}/{d.year}")
-                note_path = f"{NOTES_PATH}/{d.year}-{d.month}-{out}.txt"
-
-                cmd = f"touch {note_path} & {args.editor} {note_path}"
-                subprocess.check_output(cmd, shell=True)
-        elif out == "notes":
-            notes_heads = get_month_notes_heads(d)
-            rep = show_rofi(notes_heads, "liste des notes")
-            print(rep)
-        elif out == "help":
+                open_note(out, d, args.editor)
+        elif out in SYM_NOTES:
+            show_notes(d)
+        elif out in SYM_HELP:
             display_help()
+        elif out == " " or out in SYM_WEEK_DAYS:
+            joke(out)
         else:
             print(out)
 
+def get_calendar_from_date(date):
+    r"""Return a montly calendar given date
 
-def get_arguments():
-    """Parse command line arguments"""
+    Calendar is a string formated to be shown by rofi (i.e. column bu column)::
 
-    parser = argparse.ArgumentParser(description="""A simple popup calendar""")
+                 L  M  M  J  V  S  D
+                                   1
+                 2  3  4  5  6  7  8
+      date  ->   9 10 11 12 13 14 15   ->   'L\n \n2\n9\n16\n23\n30\n<\nM\n \n3\n10\n17\n24\n...'
+                16 17 18 19 20 21 22
+                23 24 25 26 27 28 29
+                30
 
-    parser.add_argument(
-        "-p",
-        "--print",
-        help="print date to stdout instead of opening a note",
-        action="store_true",
-    )
+    Parameters
+    ----------
+    date : datetime.date
+        Any day of the month to display
 
-    parser.add_argument(
-        "-f",
-        "--format",
-        help="""option '-p' output format (datetime.strftime format, defaut='%%Y-%%m-%%d')""",
-        dest="format",
-        default="%Y-%m-%d",
-    )
+    Returns
+    -------
+    str
+        A str that contain chained columns of a calendar in a rofi format
+    """
 
-    parser.add_argument(
-        "-e",
-        "--editor",
-        help="""editor command to open notes""",
-        dest="editor",
-        default="xdg-open",
-    )
+    start_day, month_length = calendar.monthrange(date.year, date.month)
 
-    args = parser.parse_args()
-    return args
+    # init calendar with WEEK_NB blank week
+    cal = [" "] * WEEK_NB * COL_NB
 
+    # fill with day numbers
+    cal[start_day : month_length + start_day] = [str(n) for n in range(1, month_length + 1)]
 
-def intercept_rofi_error(func):
-    """A decorator to capture sdtout after rofi being killed"""
+    # create menu bar
+    cal_menu = [' '] * COL_NB
+    cal_menu[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
+    cal_menu[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
 
-    @wraps(func)
-    def wrapper(*args):
-        try:
-            out = func(*args)
-        except subprocess.CalledProcessError as e:
-            print("Bye")
-            sys.exit()
-        return out
+    # chain calendar elements
+    cal = list(chain(
+        SYM_WEEK_DAYS,
+        cal,
+        cal_menu
+    ))
 
-    return wrapper
+    # Format calendar for rofi (column by column)
+    cal = list_transpose(cal)
 
+    # format data to be read by rofi (linebreak separated elements)
+    cal = list2rofi(cal)
 
-def display_help(head_txt='help:'):
-    """Show a rofi popup with help message"""
+    return cal
 
-    txt = f"""This calendar is interactive. Here some tips:
+def rofi_transpose(rofi_datas, column_number=COL_NB):
+    """
+    Transpose (math) a row by row rofi-list into column by column rofi-list
+    given column number
 
- - Use mouse or keyboard to interact with the calendar.
- - Hit bottom arrows to cycle through months.
- - Hit a day to create a linked note.
-(A day with attached note will appear yellow.)
- - Notes are stored in {HOME}/.naivecalendar_notes/
-(For now you've to manually delete it)
+    Parameters
+    ----------
+    lst : str
+        row by row elements
+    col_nb : int
+        number of column to display
 
-There's somme shortcut too, type it in rofi prompt :
+    Returns
+    -------
+    str
+        A rofi-list, column by column elements
 
-        + : go to next month
-        - : go to previous month
-    notes : display notes of the month (first line)
-     help : display this help
+    Examples
+    --------
 
-There's some command line option too, dislay it with :
-    ./naivecalendar -h
+    >>> by_row = "1\n2\n3\n4\n5\n6"
+    >>> rofi_transpose(by_row, 3)
+    r"1\n4\n2\n5\n3\n6"
 
-That's all :
-type enter to continue...
-"""
+    """
 
-    show_rofi(txt, head_txt)
+    byrow_datas = rofi2list(rofi_datas)
+    bycol_datas = list_transpose(byrow_datas, column_number)
 
+    return list2rofi(bycol_datas)
+
+def list_transpose(lst, col_nb=COL_NB):
+    """
+    Transpose (math) a row by row list into column by column list
+    given column number
+
+    Parameters
+    ----------
+    lst : list
+        row by row elements
+    col_nb : int
+        number of column to display
+
+    Returns
+    -------
+    list
+        A list that represent column by column elements
+
+    Examples
+    --------
+
+    >>> my_list = [1,2,3,4,5,6]
+    >>> list_transpose(my_list, col_nb=3)
+    [1,4,2,5,3,6]
+    """
+
+    # split into row
+    iter_col = range(len(lst) // col_nb)
+    row_list = [lst[i * col_nb : (i + 1) * col_nb] for i in iter_col]
+
+    # transpose : take 1st element for each row, then 2nd...
+    iter_row = range(len(row_list[0]))
+    col_list = [[row[i] for row in row_list] for i in iter_row]
+
+    # chain columns
+    lst = list(chain(*col_list))
+    #print(lst, file=sys.stderr)
+
+    return lst
+
+def list2rofi(datas):
+    """
+    Convert python list into a list formatted for rofi
+
+    Parameters
+    ----------
+    datas : list
+        elements stored in a list
+
+    Returns
+    -------
+    str
+        elements separated by line-breaks
+
+    Examples
+    --------
+
+    >>> my_list = [1,2,3,4,5,6]
+    >>> list2rofi(my_list]
+    "1\n2\n3\n4\n5\n6"
+    """
+
+    return "\n".join(datas)
+
+def rofi2list(datas):
+    """
+    Convert list formatted for rofi into python list object
+
+    Parameters
+    ----------
+    datas : str
+        a string with element separeted by line-breaks
+
+    Returns
+    -------
+    list
+        elements of datas in a list
+
+    Examples
+    --------
+
+    >>> rofi_list = "1\n2\n3\n4\n5\n6"
+    >>> rofi2list
+    [1,2,3,4,5,6]
+    """
+
+    return datas.split('\n')
 
 def get_month_notes_heads(date):
     """
@@ -205,7 +321,6 @@ def get_month_notes_heads(date):
 
     return "".join(heads)
 
-
 def get_note_head(note_path):
     """
     Return first line of a text file
@@ -225,11 +340,9 @@ def get_note_head(note_path):
         head = f.read()
     return head
 
-
 def rofi2cal_ind(ind):
     """ Convert coordinate from rofi to day number """
     pass
-
 
 def cal2rofi_ind(day, month, year):
     """
@@ -262,7 +375,6 @@ def cal2rofi_ind(day, month, year):
 
     return new_ind
 
-
 def get_month_notes(date):
     """
     Return notes files paths that are attached to date's month
@@ -283,7 +395,6 @@ def get_month_notes(date):
     note_lst = glob.glob(f"{NOTES_PATH}/{file_prefix}*")
 
     return note_lst
-
 
 def get_month_notes_ind(date):
     """
@@ -311,7 +422,89 @@ def get_month_notes_ind(date):
 
     return ind
 
+def add_year(sourcedate, years):
+    """
+    Increment or decrement date by a number of years
 
+    Parameters
+    ----------
+    sourcedate : datetime.date
+        Date to Increment
+    months : int
+        number of years to add
+
+    Returns
+    -------
+    datetime.date
+        Incremented date
+    """
+
+    year = sourcedate.year + years
+    day = min(sourcedate.day, calendar.monthrange(year, sourcedate.month)[1])
+    return datetime.date(year, sourcedate.month, day)
+
+def add_months(sourcedate, months):
+    """
+    Increment or decrement date by a number of month
+
+    Parameters
+    ----------
+    sourcedate : datetime.date
+        Date to Increment
+    months : int
+        number of month to add
+
+    Returns
+    -------
+    datetime.date
+        Incremented date
+    """
+
+    month = sourcedate.month - 1 + months
+    year = sourcedate.year + month // 12
+    month = month % 12 + 1
+    day = min(sourcedate.day, calendar.monthrange(year, month)[1])
+
+    return datetime.date(year, month, day)
+
+def show_notes(date):
+    """open rofi popup with notes list of selected month"""
+
+    notes_heads = get_month_notes_heads(date)
+    rep = show_rofi(notes_heads, "liste des notes")
+    print(rep)
+
+def open_note(day, date, editor):
+    """open note for the selected date"""
+
+    note_path = f"{NOTES_PATH}/{date.year}-{date.month}-{day}.txt"
+    cmd = f"touch {note_path} & {editor} {note_path}"
+    subprocess.check_output(cmd, shell=True)
+
+def print_selection(day, date, f):
+    """return select date to stdout given cmd line parameter '--format'"""
+
+    d = int(day)
+    m = date.month
+    y = date.year
+
+    print(datetime.date(y, m, d).strftime(f))
+
+    sys.exit()
+
+def intercept_rofi_error(func):
+    """A decorator to capture sdtout after rofi being killed"""
+
+    @wraps(func)
+    def wrapper(*args):
+        try:
+            out = func(*args)
+        except subprocess.CalledProcessError as e:
+            print("Bye")
+            sys.exit()
+        return out
+
+    return wrapper
 
 @intercept_rofi_error
 def show_rofi_calendar(rofi, cal):
@@ -337,7 +530,6 @@ def show_rofi_calendar(rofi, cal):
         .replace("\n", "")
     )
     return out
-
 
 @intercept_rofi_error
 def show_rofi(txt_body, txt_head):
@@ -367,112 +559,75 @@ def show_rofi(txt_body, txt_head):
 
     return selection
 
+def get_arguments():
+    """Parse command line arguments"""
 
-def weekly_transpose(cal, w=COL_NB):
-    """
-    Transpose (math) a line by line list into column by column list,
-    given column number
+    parser = argparse.ArgumentParser(description="""A simple popup calendar""")
 
-    Parameters
-    ----------
-    cal : list
-        line by line elements of a calendar
-    w : int
-        number of column in the calendar (usually 7)
+    parser.add_argument(
+        "-p",
+        "--print",
+        help="print date to stdout instead of opening a note",
+        action="store_true",
+    )
 
-    Returns
-    -------
-    list
-        A list that represent column by column elements of a calendar
+    parser.add_argument(
+        "-f",
+        "--format",
+        help="""option '-p' output format (datetime.strftime format, defaut='%%Y-%%m-%%d')""",
+        dest="format",
+        default="%Y-%m-%d",
+    )
 
-    Examples
-    --------
-    With an hypothetic 3 day week
+    parser.add_argument(
+        "-e",
+        "--editor",
+        help="""editor command to open notes""",
+        dest="editor",
+        default="xdg-open",
+    )
 
-    >>> my_list = [1,2,3,4,5,6]
-    >>> weekly_transpose(my_list, w=3)
-    [1,4,2,5,3,6]
-    """
+    args = parser.parse_args()
+    return args
 
-    # split calendar into week
-    iter_week = range(len(cal) // w)
-    cal = [cal[i * w : (i + 1) * w] for i in iter_week]
+def joke(sym):
+    """Just display stupid jokes in french"""
 
-    # transpose calendar
-    iter_day = range(len(cal[0]))
-    cal = [[row[i] for row in cal] for i in iter_day]
+    if sym == " ":
+        print("Vous glissez entre les mois, vous perdez la notion du temps.")
+    elif sym in SYM_WEEK_DAYS:
+        print("Ceci n'est pas un jour! R.Magritte.")
 
-    # pack it into a lisr
-    cal = list(chain(*cal))
+def display_help(head_txt='help:'):
+    """Show a rofi popup with help message"""
 
-    return cal
+    txt = f"""This calendar is interactive. Here some tips:
 
+ - Use mouse or keyboard to interact with the calendar.
+ - Hit bottom arrows to cycle through months.
+ - Hit a day to create a linked note.
+(A day with attached note will appear yellow.)
+ - Notes are stored in {HOME}/.naivecalendar_notes/
+(For now you've to manually delete it)
 
-def add_months(sourcedate, months):
-    """
-    Increment or decrement date by a number of month
+There's somme shortcut too, type it in rofi prompt :
 
-    Parameters
-    ----------
-    sourcedate : datetime.date
-        Date to Increment
-    months : int
-        number of month to add
+       -- : go to previous year
+        - : go to previous month
+        + : go to next month
+       ++ : go to next year
+    notes : display notes of the month (first line)
+     help : display this help
 
-    Returns
-    -------
-    datetime.date
-        Incremented date
-    """
+There's some command line option too, dislay it with :
+    ./naivecalendar -h
 
-    month = sourcedate.month - 1 + months
-    year = sourcedate.year + month // 12
-    month = month % 12 + 1
-    day = min(sourcedate.day, calendar.monthrange(year, month)[1])
-    return datetime.date(year, month, day)
+That's all :
 
+type enter to continue...
+"""
 
-def get_calendar_from_date(date):
-    r"""Return a montly calendar given date
-
-    Calendar is a string formated to be shown by rofi (i.e. column bu column)::
-
-                 L  M  M  J  V  S  D
-                                   1
-                 2  3  4  5  6  7  8
-      date  ->   9 10 11 12 13 14 15   ->   'L\n \n2\n9\n16\n23\n30\n<\nM\n \n3\n10\n17\n24\n...'
-                16 17 18 19 20 21 22
-                23 24 25 26 27 28 29
-                30
-
-    Parameters
-    ----------
-    date : datetime.date
-        Any day of the month to display
-
-    Returns
-    -------
-    str
-        A str that contain chained columns of a calendar in a rofi format
-    """
-
-    start_day, month_length = calendar.monthrange(date.year, date.month)
-
-    # init calendar with 5 blank week
-    cal = [" "] * 6 * COL_NB
-
-    # fill with day numbers
-    cal[start_day : month_length + start_day] = range(1, month_length + 1)
-
-    # add head : day name, tail : switch month
-    cal = list(chain(WEEK_DAYS, cal, ["<", " ", " ", " ", " ", " ", ">"]))
-
-    # Format calendar for rofi (column by column)
-    cal = weekly_transpose(cal)
-
-    cal = "\n".join((str(c) for c in cal))
-
-    return cal
+    show_rofi(txt, head_txt)
 
 
 def gen_rofi_conf(text, urgent, day_ind):
@@ -481,8 +636,6 @@ def gen_rofi_conf(text, urgent, day_ind):
     """
 
     rofi = f"""
-
-        # Custom Rofi Script
 
         BORDER="#1F1F1F"
         SEPARATOR="#1F1F1F"
@@ -514,7 +667,7 @@ def gen_rofi_conf(text, urgent, day_ind):
         -padding {CAL_PADDING} \
         -width {CAL_WIDTH} \
         -xoffset {CAL_X_OFFSET} -yoffset {CAL_Y_OFFSET} \
-        -location 2 \
+        -location {CAL_LOCATION} \
         -columns {COL_NB}\
         -color-enabled true \
         -color-window "$BACKGROUND,$BORDER,$SEPARATOR" \

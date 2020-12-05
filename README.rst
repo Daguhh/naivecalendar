@@ -27,21 +27,48 @@ Dependancies
 * python3_
 * rofi_
 
-Usage
------
+Install
+-------
 
-Run: 
+Script
+^^^^^^
+
+Simply download the python script and make it executable.
 
 .. code::
 
     chmod +x naivecalendar.py
     ./naivecalendar.py 
 
-For more detail about commands, run the script, then, in the command prompt, type: 
+With setuptools
+^^^^^^^^^^^^^^^
+
+.. code:: bash
+
+   python3 setup.py install
+
+Command should be avaible in your $PATH
+
+Usage
+-----
+
+Basic
+^^^^^
+
+just run the script, for more detail about commands, in the command prompt, type: 
 
 .. code::
 
    help
+
+In a script
+^^^^^^^^^^^
+
+You can use the naivecalendar to pick up dates in a script, for this, see command line options:
+
+.. code:: bash
+
+   ./naivecalendar.py -h
 
 Build the doc
 -------------
@@ -52,7 +79,7 @@ Build the doc
    python3 -m pip install -r requirements.txt
    make html
 
-
+.. _fr: ./README_fr.rst
 .. _LeRobert: https://dictionnaire.lerobert.com/definition/naif
 .. _rofi: https://github.com/davatorium/rofi
 .. _python3: https://www.python.org/

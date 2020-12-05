@@ -15,4 +15,4 @@ NaïveCalendar
    :end-before: Dependancies
 
 .. include:: ../README.rst
-   :start-line: 55
+   :start-line: 82
