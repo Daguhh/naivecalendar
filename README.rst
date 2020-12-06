@@ -48,7 +48,8 @@ Launch ::
 
     ./rofi_cmd.sh 
 
-and to interact with the calendar:
+Then:
+
  - Use mouse or keyboard to interact with the calendar.
  - Hit bottom arrows to cycle through months.
  - Hit a day to create a linked note.
