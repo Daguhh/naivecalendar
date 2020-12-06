@@ -50,12 +50,12 @@ Launch ::
 
 Then:
 
- - Use mouse or keyboard to interact with the calendar.
- - Hit bottom arrows to cycle through months.
- - Hit a day to create a linked note.
-   (A day with attached note will appear yellow.)
- - Notes are stored in {HOME}/.naivecalendar_notes/
-   (For now you've to manually delete it)
+- Use mouse or keyboard to interact with the calendar.
+- Hit bottom arrows to cycle through months.
+- Hit a day to create a linked note.
+  (A day with attached note will appear yellow.)
+- Notes are stored in {HOME}/.naivecalendar_notes/
+  (For now you've to manually delete it)
 
 There's some shortcut too :
 
