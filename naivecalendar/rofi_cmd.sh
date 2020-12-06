@@ -1,3 +1,4 @@
+#!/bin/bash
 
 BORDER="#1F1F1F"
 SEPARATOR="#1F1F1F"
