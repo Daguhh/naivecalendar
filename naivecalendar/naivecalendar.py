@@ -492,30 +492,42 @@ def add_months(sourcedate, months):
     return datetime.date(year, month, day)
 
 
+def open_n_reload_rofi(func):
+    """ decorator to open and reload the rofi script """
+
+    script_path = os.path.abspath(os.path.dirname(sys.argv[0]))
+
+    @wraps(func)
+    def wrapper(*args):
+
+        subprocess.Popen(["pkill", "-9", "rofi"])
+        out = func(*args)
+        cmd = f"{script_path}/rofi_cmd.sh"
+        os.system(cmd)
+
+        return out
+
+    return wrapper
+
+@open_n_reload_rofi
 def show_notes(date):
     """open rofi popup with notes list of selected month"""
 
     notes_heads = get_month_notes_heads(date)
-    subprocess.Popen(["pkill", "-9", "rofi"])
-    # rep = show_rofi(notes_heads, "liste des notes")
-    # print(rep)
-    # print(notes_heads)
-    # messagebox.showinfo('Notes', '\n'.join(notes_heads))
     text_popup("Notes", notes_heads)
-    subprocess.Popen("./rofi_cmd.sh", shell=True)
 
 
+@open_n_reload_rofi
 def open_note(day, date, editor):
     """open note for the selected date"""
 
-    subprocess.Popen(["pkill", "-9", "rofi"])
     note_path = f"{NOTES_PATH}/{date.year}-{date.month}-{day}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
     p = subprocess.Popen(
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     sdtout, sdterr = p.communicate()
-    subprocess.Popen("./rofi_cmd.sh", shell=True)
+
 
 
 def print_selection(day, date, f):
@@ -530,7 +542,6 @@ def print_selection(day, date, f):
         f.write(pretty_date + "\n")
 
     sys.exit(0)
-
 
 # def intercept_rofi_error(func):
 #    """A decorator to capture sdtout after rofi being killed"""
@@ -599,6 +610,13 @@ def print_selection(day, date, f):
 #
 #    return selection
 
+#def reload_rofi():
+#
+#    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+#    cmd = f"{path}/rofi_cmd.sh"
+#    os.system(cmd)
+#    #subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
 
 def first_time_init():
 
@@ -660,6 +678,7 @@ def joke(sym):
         print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
 
+@open_n_reload_rofi
 def display_help(head_txt="help:"):
     """Show a rofi popup with help message"""
 
@@ -689,10 +708,9 @@ That's all :
 close window to continue...
 """
 
-    subprocess.Popen(["pkill", "-9", "rofi"])
     # messagebox.showinfo('Help', txt)
     text_popup("Help", txt)
-    subprocess.Popen("./rofi_cmd.sh", shell=True)
+    #subprocess.Popen("./rofi_cmd.sh", shell=True)
     # show_rofi(txt, head_txt)
 
 
@@ -766,7 +784,6 @@ class DateBuffer:
         self.buffer["buffer"] = {"year": date.year, "month": date.month}
         with open(DATE_CACHE, "w") as buff:
             self.buffer.write(buff)
-
 
 def text_popup(head, body):
     """ Display a popup msg with tkinter """

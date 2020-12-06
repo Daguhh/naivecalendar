@@ -25,8 +25,6 @@ if [[ $1 == '-h' ]] || [[ $1 == '--help' ]] ; then
     exit 0
 fi
 
-echo ${BASH_SOURCE%/*}
-
 rofi -show calendar \
     -modi "calendar:${BASH_SOURCE%/*}/naivecalendar.py $param" \
 -hide-scrollbar true \
