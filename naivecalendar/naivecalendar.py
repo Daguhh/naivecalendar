@@ -23,6 +23,7 @@ import locale
 from itertools import chain
 from functools import wraps
 import argparse
+import configparser
 
 
 ############# Parameters #########################
@@ -48,10 +49,10 @@ WEEK_NB = 6 # number of "complete" weeks, a month can extend up to 6 weeks
 ROW_NB = 1 + WEEK_NB + 1 # 1 day header + 6 weeks + 1 control menu
 
 # Symbols displayed in the calendar
-SYM_NEXT_MONTH = ['>', '+'] # first symbol is displayed, others are just shortcuts
-SYM_NEXT_YEAR = ['>>', '++']
-SYM_PREV_MONTH = ['<', '-']
-SYM_PREV_YEAR = ['<<', '--']
+SYM_NEXT_MONTH = ['>', '+', 'n'] # first symbol is displayed, others are just shortcuts
+SYM_NEXT_YEAR = ['>>', '++', 'nn']
+SYM_PREV_MONTH = ['<', '-', 'p']
+SYM_PREV_YEAR = ['<<', '--', 'pp']
 SYM_DAYS_NUM = [str(n) for n in range(1,32)]
 SYM_NOTES = ['notes']
 SYM_HELP = ['help']
@@ -69,6 +70,10 @@ SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
 HOME = os.getenv("HOME")
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 
+CACHE_PATH = f"{HOME}/.cache/naivecalendar"
+DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
+PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
+
 
 ############ Script ##############################
 
@@ -80,55 +85,57 @@ def main():
     - switch between month
     - open {EDITOR} and create a note for selected day
     """
-    args = get_arguments()
+    args, rofi_output = get_arguments()
 
-    if not os.path.exists(NOTES_PATH):
-        os.mkdir(NOTES_PATH)
-        display_help(head_txt = 'Welcome to naivecalendar')
+    # create note path n test rofi intall
+    first_time_init()
 
-    if shutil.which('rofi') == None:
-        print('please install rofi')
-        sys.exit()
+    # read previous date or show actual month on first loop
+    buffer = DateBuffer()
+    if rofi_output:
+        d = buffer.read()
+    else:
+        d = calendar.datetime.date.today()
 
-    d = calendar.datetime.date.today()
-
-    select_ind = cal2rofi_ind(d.day, d.month, d.year)
-
-    while True:
-
-        cal = get_calendar_from_date(d)
-
-        actual_month = d.strftime(PROMT_DATE_FORMAT).title()
-        notes_inds = get_month_notes_ind(d)
-        rofi_cmd = gen_rofi_conf(actual_month, notes_inds, select_ind)
-
-        out = show_rofi_calendar(rofi_cmd, cal)
-
-        if out in SYM_PREV_YEAR:
-            d = add_year(d, -1)
-            select_ind = 7
-        elif out in SYM_PREV_MONTH:
-            d = add_months(d, -1)
-            select_ind = 15
-        elif out in SYM_NEXT_MONTH:
-            d = add_months(d, 1)
-            select_ind = 47
-        elif out in SYM_NEXT_YEAR:
-            d = add_year(d, 1)
-            select_ind = 55
-        elif out in SYM_DAYS_NUM:
-            if args.print:
-                print_selection(out, d, args.format)
-            else:
-                open_note(out, d, args.editor)
-        elif out in SYM_NOTES:
-            show_notes(d)
-        elif out in SYM_HELP:
-            display_help()
-        elif out == " " or out in SYM_WEEK_DAYS:
-            joke(out)
+    # react to rofi output
+    out = rofi_output
+    if out in SYM_PREV_YEAR:
+        d = add_year(d, -1)
+    elif out in SYM_PREV_MONTH:
+        d = add_months(d, -1)
+    elif out in SYM_NEXT_MONTH:
+        d = add_months(d, 1)
+    elif out in SYM_NEXT_YEAR:
+        d = add_year(d, 1)
+    elif out in SYM_DAYS_NUM:
+        if args.print:
+            print_selection(out, d, args.format)
         else:
-            print(out)
+            open_note(out, d, args.editor)
+    elif out in SYM_NOTES:
+        show_notes(d)
+    elif out in SYM_HELP:
+        display_help()
+    elif out == " " or out in SYM_WEEK_DAYS:
+        joke(out)
+    else:
+        pass
+        #print('No output',file=sys.stderr)
+
+    # send new data to rofi
+    cal = get_calendar_from_date(d)
+    date_prompt = d.strftime(PROMT_DATE_FORMAT).title()
+    notes_inds = get_month_notes_ind(d)
+    today_ind = cal2rofi_ind(d.day, d.month, d.year)
+
+    print(f'\0prompt\x1f{date_prompt}\n')
+    print(f'\0urgent\x1f{notes_inds}\n')
+    print(f'\0active\x1f{today_ind}\n')
+    print(f'\0active\x1fa 0,8,16,24,32,40,48\n')
+    print(cal)
+
+    # write new date in buffer
+    buffer.write(d)
 
 def get_calendar_from_date(date):
     r"""Return a montly calendar given date
@@ -471,15 +478,20 @@ def show_notes(date):
     """open rofi popup with notes list of selected month"""
 
     notes_heads = get_month_notes_heads(date)
-    rep = show_rofi(notes_heads, "liste des notes")
-    print(rep)
+    #rep = show_rofi(notes_heads, "liste des notes")
+    #print(rep)
+    print(notes_heads)
 
 def open_note(day, date, editor):
     """open note for the selected date"""
 
     note_path = f"{NOTES_PATH}/{date.year}-{date.month}-{day}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
-    subprocess.check_output(cmd, shell=True)
+    subprocess.Popen(cmd, shell=True)
+    #subprocess.Popen(['touch', note_path])
+    #subprocess.Popen(f'editor, note_path, '&'])
+    subprocess.Popen(['pkill', '-9', 'rofi'])
+    sys.exit(0)
 
 def print_selection(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
@@ -488,76 +500,91 @@ def print_selection(day, date, f):
     m = date.month
     y = date.year
 
-    print(datetime.date(y, m, d).strftime(f))
+    pretty_date = datetime.date(y, m, d).strftime(f)
+    with open(PP_CACHE, 'w') as f:
+        f.write(pretty_date + '\n')
 
-    sys.exit()
+    sys.exit(0)
 
-def intercept_rofi_error(func):
-    """A decorator to capture sdtout after rofi being killed"""
+#def intercept_rofi_error(func):
+#    """A decorator to capture sdtout after rofi being killed"""
+#
+#    @wraps(func)
+#    def wrapper(*args):
+#        try:
+#            out = func(*args)
+#        except subprocess.CalledProcessError as e:
+#            print("Bye")
+#            sys.exit()
+#        return out
+#
+#    return wrapper
+#
+#@intercept_rofi_error
+#def show_rofi_calendar(rofi, cal):
+#    """Launch a rofi window
+#
+#    Parameters
+#    ----------
+#    rofi : str
+#        Rofi command to be run in a shell
+#    cal : str
+#        A column by column calendar list formatted for rofi
+#
+#    Returns
+#    -------
+#    str
+#        Rofi selected cell content
+#    """
+#
+#    cmd = subprocess.Popen(f"echo '{cal}'", shell=True, stdout=subprocess.PIPE)
+#    out = (
+#        subprocess.check_output(rofi, stdin=cmd.stdout, shell=True)
+#        .decode("utf-8")
+#        .replace("\n", "")
+#    )
+#    return out
+#
+#@intercept_rofi_error
+#def show_rofi(txt_body, txt_head):
+#    """Launch a rofi window
+#
+#    Parameters
+#    ----------
+#    txt_body : str
+#        Text to display in rofi window
+#    txt_head : str
+#        Text to display in rofi prompt
+#
+#    Returns
+#    -------
+#    str
+#        Rofi selected cell content
+#    """
+#
+#    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
+#    selection = (
+#        subprocess.check_output(
+#            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
+#        )
+#        .decode("utf-8")
+#        .replace("\n", "")
+#    )
+#
+#    return selection
 
-    @wraps(func)
-    def wrapper(*args):
-        try:
-            out = func(*args)
-        except subprocess.CalledProcessError as e:
-            print("Bye")
-            sys.exit()
-        return out
+def first_time_init():
 
-    return wrapper
+    if shutil.which('rofi') == None:
+        print('please install rofi')
+        sys.exit()
 
-@intercept_rofi_error
-def show_rofi_calendar(rofi, cal):
-    """Launch a rofi window
+    if not os.path.exists(NOTES_PATH):
+        os.mkdir(NOTES_PATH)
+        display_help(head_txt = 'Welcome to naivecalendar')
 
-    Parameters
-    ----------
-    rofi : str
-        Rofi command to be run in a shell
-    cal : str
-        A column by column calendar list formatted for rofi
-
-    Returns
-    -------
-    str
-        Rofi selected cell content
-    """
-
-    cmd = subprocess.Popen(f"echo '{cal}'", shell=True, stdout=subprocess.PIPE)
-    out = (
-        subprocess.check_output(rofi, stdin=cmd.stdout, shell=True)
-        .decode("utf-8")
-        .replace("\n", "")
-    )
-    return out
-
-@intercept_rofi_error
-def show_rofi(txt_body, txt_head):
-    """Launch a rofi window
-
-    Parameters
-    ----------
-    txt_body : str
-        Text to display in rofi window
-    txt_head : str
-        Text to display in rofi prompt
-
-    Returns
-    -------
-    str
-        Rofi selected cell content
-    """
-
-    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
-    selection = (
-        subprocess.check_output(
-            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
-        )
-        .decode("utf-8")
-        .replace("\n", "")
-    )
-
-    return selection
+    if not os.path.exists(CACHE_PATH):
+        os.mkdir(CACHE_PATH)
 
 def get_arguments():
     """Parse command line arguments"""
@@ -587,16 +614,21 @@ def get_arguments():
         default="xdg-open",
     )
 
-    args = parser.parse_args()
-    return args
+    #args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
+    unknown = unknown if len(unknown) == 0 else "".join(unknown)
+    #print('====================', file=sys.stderr)
+    #print(unknown, file=sys.stderr)
+    #print(args, file=sys.stderr)
+    return args, unknown
 
 def joke(sym):
     """Just display stupid jokes in french"""
 
     if sym == " ":
-        print("Vous glissez entre les mois, vous perdez la notion du temps.")
+        print("Vous glissez entre les mois, vous perdez la notion du temps.", file=sys.stderr)
     elif sym in SYM_WEEK_DAYS:
-        print("Ceci n'est pas un jour! R.Magritte.")
+        print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
 def display_help(head_txt='help:'):
     """Show a rofi popup with help message"""
@@ -630,53 +662,77 @@ type enter to continue...
     show_rofi(txt, head_txt)
 
 
-def gen_rofi_conf(text, urgent, day_ind):
-    """Create a rofi command
-    theme by adi1090x : https://github.com/adi1090x/polybar-themes
-    """
+#def gen_rofi_conf(text, urgent):
+#    """Create a rofi command
+#    theme by adi1090x : https://github.com/adi1090x/polybar-themes
+#    """
+#
+#    rofi = f"""
+#
+#        BORDER="#1F1F1F"
+#        SEPARATOR="#1F1F1F"
+#        FOREGROUND="#FFFFFF"
+#        BACKGROUND="#1F1F1F"
+#        BACKGROUND_ALT="#252525"
+#        HIGHLIGHT_BACKGROUND="#8e24aa"
+#        HIGHLIGHT_FOREGROUND="#1F1F1F"
+#
+#        BLACK="#000000"
+#        WHITE="#ffffff"
+#        RED="#e53935"
+#        GREEN="#43a047"
+#        YELLOW="#fdd835"
+#        BLUE="#1e88e5"
+#        MAGENTA="#00897b"
+#        CYAN="#00acc1"
+#        PINK="#d81b60"
+#
+#        rofi -dmenu -p "{text}" \
+#        -show calendrier \
+#        -hide-scrollbar true \
+#        -bw 0 \
+#        -a 0,8,16,24,32,40,48 \
+#        -u {urgent} \
+#        -lines {ROW_NB} \
+#        -line-padding {CAL_LINE_PADDING} \
+#        -padding {CAL_PADDING} \
+#        -width {CAL_WIDTH} \
+#        -xoffset {CAL_X_OFFSET} -yoffset {CAL_Y_OFFSET} \
+#        -location {CAL_LOCATION} \
+#        -columns {COL_NB}\
+#        -color-enabled true \
+#        -color-window "$BACKGROUND,$BORDER,$SEPARATOR" \
+#        -color-normal "$BACKGROUND_ALT,$FOREGROUND,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
+#        -color-active "$BACKGROUND,$BLUE,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
+#        -color-urgent "$BACKGROUND,$YELLOW,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" """
+#
+#    return rofi
 
-    rofi = f"""
+class DateBuffer:
 
-        BORDER="#1F1F1F"
-        SEPARATOR="#1F1F1F"
-        FOREGROUND="#FFFFFF"
-        BACKGROUND="#1F1F1F"
-        BACKGROUND_ALT="#252525"
-        HIGHLIGHT_BACKGROUND="#8e24aa"
-        HIGHLIGHT_FOREGROUND="#1F1F1F"
+    def __init__(self):
 
-        BLACK="#000000"
-        WHITE="#ffffff"
-        RED="#e53935"
-        GREEN="#43a047"
-        YELLOW="#fdd835"
-        BLUE="#1e88e5"
-        MAGENTA="#00897b"
-        CYAN="#00acc1"
-        PINK="#d81b60"
+        self.buffer = configparser.ConfigParser()
 
-        rofi -dmenu -p "{text}" \
-        -show calendrier \
-        -hide-scrollbar true \
-        -bw 0 \
-        -a 0,8,16,24,32,40,48 \
-        -u {urgent} \
-        -selected-row {day_ind} \
-        -lines {ROW_NB} \
-        -line-padding {CAL_LINE_PADDING} \
-        -padding {CAL_PADDING} \
-        -width {CAL_WIDTH} \
-        -xoffset {CAL_X_OFFSET} -yoffset {CAL_Y_OFFSET} \
-        -location {CAL_LOCATION} \
-        -columns {COL_NB}\
-        -color-enabled true \
-        -color-window "$BACKGROUND,$BORDER,$SEPARATOR" \
-        -color-normal "$BACKGROUND_ALT,$FOREGROUND,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
-        -color-active "$BACKGROUND,$BLUE,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
-        -color-urgent "$BACKGROUND,$YELLOW,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" """
+    def iSconfig(self):
+        pass
 
-    return rofi
+    def read(self):
 
+        self.buffer.read(DATE_CACHE)
+        month = int(self.buffer['buffer']['month'])
+        year = int(self.buffer['buffer']['year'])
+
+        return calendar.datetime.date(year,month,1)
+
+    def write(self, date):
+
+        self.buffer['buffer'] = {
+            'year' : date.year,
+            'month' : date.month
+        }
+        with open(DATE_CACHE, 'w') as buff:
+            self.buffer.write(buff)
 
 if __name__ == "__main__":
     main()
