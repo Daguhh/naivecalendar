@@ -30,24 +30,13 @@ Dependancies
 Install
 -------
 
-Script
-^^^^^^
-
-Simply download the python script and make it executable.
+This script version use rofi script mode : 
 
 .. code::
 
-    chmod +x naivecalendar.py
-    ./naivecalendar.py 
+    chmod +x rofi_cmd.sh
+    ./rofi_cmd.sh 
 
-With setuptools
-^^^^^^^^^^^^^^^
-
-.. code:: bash
-
-   python3 setup.py install
-
-Command should be avaible in your $PATH
 
 Usage
 -----
@@ -68,7 +57,7 @@ You can use the naivecalendar to pick up dates in a script, for this, see comman
 
 .. code:: bash
 
-   ./naivecalendar.py -h
+   ./rofi_cmd.sh -h
 
 Build the doc
 -------------
