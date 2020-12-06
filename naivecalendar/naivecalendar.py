@@ -24,6 +24,7 @@ from itertools import chain
 from functools import wraps
 import argparse
 import configparser
+from tkinter import messagebox
 
 
 ############# Parameters #########################
@@ -59,6 +60,7 @@ SYM_HELP = ['help']
 
 # Rofi prompt date format:
 PROMT_DATE_FORMAT = "%b %Y"
+NOTES_DATE_FORMAT = "%d-%m-%Y"
 
 # Get locale week days, override WEEKS_DAYS variable to personalize day names
 locale.setlocale(locale.LC_ALL, '')
@@ -130,7 +132,8 @@ def main():
 
     print(f'\0prompt\x1f{date_prompt}\n')
     print(f'\0urgent\x1f{notes_inds}\n')
-    print(f'\0active\x1f{today_ind}\n')
+    if not rofi_output:
+        print(f'\0active\x1f{today_ind}\n')
     print(f'\0active\x1fa 0,8,16,24,32,40,48\n')
     print(cal)
 
@@ -325,8 +328,11 @@ def get_month_notes_heads(date):
     note_lst = get_month_notes(date)
 
     heads = [get_note_head(n) for n in note_lst]
+    prompts = [n.split('.')[-2].split('/')[-1] for n in note_lst]
 
-    return "".join(heads)
+    #date_prompt = date.strftime(NOTES_DATE_FORMAT).title()
+
+    return "\n".join([f'{p} : {h}' for p, h in zip(prompts, heads)])
 
 def get_note_head(note_path):
     """
@@ -344,7 +350,9 @@ def get_note_head(note_path):
     """
 
     with open(note_path, "r") as f:
-        head = f.read()
+        head = f.read().split('\n')[0]
+        print('--------------', file=sys.stderr)
+        print(head,file=sys.stderr)
     return head
 
 def rofi2cal_ind(ind):
@@ -478,20 +486,23 @@ def show_notes(date):
     """open rofi popup with notes list of selected month"""
 
     notes_heads = get_month_notes_heads(date)
+    subprocess.Popen(['pkill', '-9', 'rofi'])
     #rep = show_rofi(notes_heads, "liste des notes")
     #print(rep)
-    print(notes_heads)
+    #print(notes_heads)
+    #messagebox.showinfo('Notes', '\n'.join(notes_heads))
+    text_popup('Notes', notes_heads)
+    subprocess.Popen('./rofi_cmd.sh', shell=True)
 
 def open_note(day, date, editor):
     """open note for the selected date"""
 
+    subprocess.Popen(['pkill', '-9', 'rofi'])
     note_path = f"{NOTES_PATH}/{date.year}-{date.month}-{day}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
-    subprocess.Popen(cmd, shell=True)
-    #subprocess.Popen(['touch', note_path])
-    #subprocess.Popen(f'editor, note_path, '&'])
-    subprocess.Popen(['pkill', '-9', 'rofi'])
-    sys.exit(0)
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    sdtout, sdterr = p.communicate()
+    subprocess.Popen('./rofi_cmd.sh', shell=True)
 
 def print_selection(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
@@ -546,32 +557,32 @@ def print_selection(day, date, f):
 #    return out
 #
 #@intercept_rofi_error
-#def show_rofi(txt_body, txt_head):
-#    """Launch a rofi window
-#
-#    Parameters
-#    ----------
-#    txt_body : str
-#        Text to display in rofi window
-#    txt_head : str
-#        Text to display in rofi prompt
-#
-#    Returns
-#    -------
-#    str
-#        Rofi selected cell content
-#    """
-#
-#    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
-#    selection = (
-#        subprocess.check_output(
-#            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
-#        )
-#        .decode("utf-8")
-#        .replace("\n", "")
-#    )
-#
-#    return selection
+def show_rofi(txt_body, txt_head):
+    """Launch a rofi window
+
+    Parameters
+    ----------
+    txt_body : str
+        Text to display in rofi window
+    txt_head : str
+        Text to display in rofi prompt
+
+    Returns
+    -------
+    str
+        Rofi selected cell content
+    """
+
+    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
+    selection = (
+        subprocess.check_output(
+            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
+        )
+        .decode("utf-8")
+        .replace("\n", "")
+    )
+
+    return selection
 
 def first_time_init():
 
@@ -659,7 +670,10 @@ That's all :
 type enter to continue...
 """
 
-
+    subprocess.Popen(['pkill', '-9', 'rofi'])
+    #messagebox.showinfo('Help', txt)
+    text_popup('Help', txt)
+    subprocess.Popen('./rofi_cmd.sh', shell=True)
     #show_rofi(txt, head_txt)
 
 
@@ -710,6 +724,7 @@ type enter to continue...
 #    return rofi
 
 class DateBuffer:
+    """ Class to store date """
 
     def __init__(self):
 
@@ -734,6 +749,24 @@ class DateBuffer:
         }
         with open(DATE_CACHE, 'w') as buff:
             self.buffer.write(buff)
+
+def text_popup(head, body):
+    """ Display a popup msg with tkinter """
+
+    import tkinter as tk
+    import tkinter.scrolledtext as st
+
+    win = tk.Tk()
+    win.title(head)
+    text_area = st.ScrolledText(win,
+                                width = 50,
+                                height = 12,
+                                font = ("Noto Sans",
+                                10))
+    text_area.grid(column = 0, pady = 10, padx = 10)
+    text_area.insert(tk.INSERT, body)
+    text_area.configure(state ='disabled')
+    win.mainloop()
 
 if __name__ == "__main__":
     main()
