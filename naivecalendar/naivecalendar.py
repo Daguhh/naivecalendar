@@ -645,9 +645,9 @@ def display_help(head_txt='help:'):
 There's somme shortcut too, type it in rofi prompt :
 
        -- : go to previous year
-        - : go to previous month
-        + : go to next month
-       ++ : go to next year
+   n or - : go to previous month
+   p or + : go to next month
+ pp or ++ : go to next year
     notes : display notes of the month (first line)
      help : display this help
 
@@ -659,7 +659,8 @@ That's all :
 type enter to continue...
 """
 
-    show_rofi(txt, head_txt)
+
+    #show_rofi(txt, head_txt)
 
 
 #def gen_rofi_conf(text, urgent):

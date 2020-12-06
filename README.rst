@@ -44,11 +44,32 @@ Usage
 Basic
 ^^^^^
 
-just run the script, for more detail about commands, in the command prompt, type: 
+Launch ::
 
-.. code::
+    ./rofi_cmd.sh 
 
-   help
+and to interact with the calendar:
+ - Use mouse or keyboard to interact with the calendar.
+ - Hit bottom arrows to cycle through months.
+ - Hit a day to create a linked note.
+   (A day with attached note will appear yellow.)
+ - Notes are stored in {HOME}/.naivecalendar_notes/
+   (For now you've to manually delete it)
+
+There's somme shortcut too, type it in rofi prompt :
+
+====  =====  =======   ========================================
+Sym    Key   Alt-key   Action
+====  =====  =======   ========================================
+ <<      ..       --   go to previous year
+  <       n      `-`   go to previous month
+  >       p      `+`   go to next month
+ >>      pp       ++   go to next year
+ ..   notes       ..   display notes of the month (first line)
+ ..    help       ..   display this help
+====  =====  =======   ========================================
+
+*Sym* is the symbol displayed, you can type *Sym*, *Key* or *Alt-key* in rofi prompt to execute an action.
 
 In a script
 ^^^^^^^^^^^
