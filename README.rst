@@ -34,8 +34,8 @@ This script version use rofi script mode :
 
 .. code::
 
-    chmod +x rofi_cmd.sh
-    ./rofi_cmd.sh 
+    chmod +x naivecalendar.sh
+    ./naivecalendar.sh 
 
 
 Usage
@@ -46,7 +46,7 @@ Basic
 
 Launch ::
 
-    ./rofi_cmd.sh 
+    ./naivecalendar.sh 
 
 Then:
 
@@ -79,7 +79,7 @@ You can use the naivecalendar to pick up dates in a script, for this, see comman
 
 .. code:: bash
 
-   ./rofi_cmd.sh -h
+   ./naivecalendar.sh -h
 
 Build the doc
 -------------

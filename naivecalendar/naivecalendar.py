@@ -502,7 +502,7 @@ def open_n_reload_rofi(func):
 
         subprocess.Popen(["pkill", "-9", "rofi"])
         out = func(*args)
-        cmd = f"{script_path}/rofi_cmd.sh"
+        cmd = f"{script_path}/naivecalendar.sh"
         os.system(cmd)
 
         return out
@@ -613,7 +613,7 @@ def print_selection(day, date, f):
 #def reload_rofi():
 #
 #    path = os.path.abspath(os.path.dirname(sys.argv[0]))
-#    cmd = f"{path}/rofi_cmd.sh"
+#    cmd = f"{path}/naivecalendar_cmd.sh"
 #    os.system(cmd)
 #    #subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -710,7 +710,7 @@ close window to continue...
 
     # messagebox.showinfo('Help', txt)
     text_popup("Help", txt)
-    #subprocess.Popen("./rofi_cmd.sh", shell=True)
+    #subprocess.Popen("./naivecalendar_cmd.sh", shell=True)
     # show_rofi(txt, head_txt)
 
 
