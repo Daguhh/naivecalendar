@@ -24,8 +24,10 @@ if [[ $1 == '-h' ]] || [[ $1 == '--help' ]] ; then
     exit 0
 fi
 
+echo ${BASH_SOURCE%/*}
+
 rofi -show calendar \
-    -modi "calendar:./naivecalendar.py $param" \
+    -modi "calendar:${BASH_SOURCE%/*}/naivecalendar.py $param" \
 -hide-scrollbar true \
 -matching-negate-char * \
 -a 0,8,16,24,32,40,48 \
