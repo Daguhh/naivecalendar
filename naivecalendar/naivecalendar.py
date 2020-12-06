@@ -24,46 +24,45 @@ from itertools import chain
 from functools import wraps
 import argparse
 import configparser
-from tkinter import messagebox
 
 
 ############# Parameters #########################
 
 # day name lenght (enlarge calendar for larger values)
 DAY_ABBR_LENGHT = 3
-FIRST_DAY_WEEK = 1 # 0 : sunday, 1 : monday...
+FIRST_DAY_WEEK = 1  # 0 : sunday, 1 : monday...
 
 # path to save notes (retative to $HOME)
 NOTES_RELATIVE_PATH = ".naivecalendar_notes"
 
 # rofi shape parameters
-CAL_WIDTH = 320
-CAL_X_OFFSET = 320
-CAL_Y_OFFSET = 25
-CAL_LINE_PADDING = 5
-CAL_PADDING = 10
-CAL_LOCATION = 2
+# CAL_WIDTH = 320
+# CAL_X_OFFSET = 320
+# CAL_Y_OFFSET = 25
+# CAL_LINE_PADDING = 5
+# CAL_PADDING = 10
+# CAL_LOCATION = 2
 
 # rofi grid shape to contain calendar
-COL_NB = 7 # 7 days
-WEEK_NB = 6 # number of "complete" weeks, a month can extend up to 6 weeks
-ROW_NB = 1 + WEEK_NB + 1 # 1 day header + 6 weeks + 1 control menu
+COL_NB = 7  # 7 days
+WEEK_NB = 6  # number of "complete" weeks, a month can extend up to 6 weeks
+ROW_NB = 1 + WEEK_NB + 1  # 1 day header + 6 weeks + 1 control menu
 
 # Symbols displayed in the calendar
-SYM_NEXT_MONTH = ['>', '+', 'n'] # first symbol is displayed, others are just shortcuts
-SYM_NEXT_YEAR = ['>>', '++', 'nn']
-SYM_PREV_MONTH = ['<', '-', 'p']
-SYM_PREV_YEAR = ['<<', '--', 'pp']
-SYM_DAYS_NUM = [str(n) for n in range(1,32)]
-SYM_NOTES = ['notes']
-SYM_HELP = ['help']
+SYM_NEXT_MONTH = [">", "+", "n"]  # first symbol is displayed, others are just shortcuts
+SYM_NEXT_YEAR = [">>", "++", "nn"]
+SYM_PREV_MONTH = ["<", "-", "p"]
+SYM_PREV_YEAR = ["<<", "--", "pp"]
+SYM_DAYS_NUM = [str(n) for n in range(1, 32)]
+SYM_NOTES = ["notes"]
+SYM_HELP = ["help"]
 
 # Rofi prompt date format:
 PROMT_DATE_FORMAT = "%b %Y"
-NOTES_DATE_FORMAT = "%d-%m-%Y"
+# NOTES_DATE_FORMAT = "%Y-%m-%d"
 
 # Get locale week days, override WEEKS_DAYS variable to personalize day names
-locale.setlocale(locale.LC_ALL, '')
+locale.setlocale(locale.LC_ALL, "")
 get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
 week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
 SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
@@ -78,6 +77,7 @@ PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 
 
 ############ Script ##############################
+
 
 def main():
     """
@@ -122,7 +122,7 @@ def main():
         joke(out)
     else:
         pass
-        #print('No output',file=sys.stderr)
+        # print('No output',file=sys.stderr)
 
     # send new data to rofi
     cal = get_calendar_from_date(d)
@@ -130,15 +130,16 @@ def main():
     notes_inds = get_month_notes_ind(d)
     today_ind = cal2rofi_ind(d.day, d.month, d.year)
 
-    print(f'\0prompt\x1f{date_prompt}\n')
-    print(f'\0urgent\x1f{notes_inds}\n')
+    print(f"\0prompt\x1f{date_prompt}\n")
+    print(f"\0urgent\x1f{notes_inds}\n")
     if not rofi_output:
-        print(f'\0active\x1f{today_ind}\n')
-    print(f'\0active\x1fa 0,8,16,24,32,40,48\n')
+        print(f"\0active\x1f{today_ind}\n")
+    print(f"\0active\x1fa 0,8,16,24,32,40,48\n")
     print(cal)
 
     # write new date in buffer
     buffer.write(d)
+
 
 def get_calendar_from_date(date):
     r"""Return a montly calendar given date
@@ -170,19 +171,17 @@ def get_calendar_from_date(date):
     cal = [" "] * WEEK_NB * COL_NB
 
     # fill with day numbers
-    cal[start_day : month_length + start_day] = [str(n) for n in range(1, month_length + 1)]
+    cal[start_day : month_length + start_day] = [
+        str(n) for n in range(1, month_length + 1)
+    ]
 
     # create menu bar
-    cal_menu = [' '] * COL_NB
+    cal_menu = [" "] * COL_NB
     cal_menu[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
     cal_menu[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
 
     # chain calendar elements
-    cal = list(chain(
-        SYM_WEEK_DAYS,
-        cal,
-        cal_menu
-    ))
+    cal = list(chain(SYM_WEEK_DAYS, cal, cal_menu))
 
     # Format calendar for rofi (column by column)
     cal = list_transpose(cal)
@@ -191,6 +190,7 @@ def get_calendar_from_date(date):
     cal = list2rofi(cal)
 
     return cal
+
 
 def rofi_transpose(rofi_datas, column_number=COL_NB):
     """
@@ -222,6 +222,7 @@ def rofi_transpose(rofi_datas, column_number=COL_NB):
     bycol_datas = list_transpose(byrow_datas, column_number)
 
     return list2rofi(bycol_datas)
+
 
 def list_transpose(lst, col_nb=COL_NB):
     """
@@ -258,9 +259,10 @@ def list_transpose(lst, col_nb=COL_NB):
 
     # chain columns
     lst = list(chain(*col_list))
-    #print(lst, file=sys.stderr)
+    # print(lst, file=sys.stderr)
 
     return lst
+
 
 def list2rofi(datas):
     """
@@ -286,6 +288,7 @@ def list2rofi(datas):
 
     return "\n".join(datas)
 
+
 def rofi2list(datas):
     """
     Convert list formatted for rofi into python list object
@@ -308,7 +311,8 @@ def rofi2list(datas):
     [1,2,3,4,5,6]
     """
 
-    return datas.split('\n')
+    return datas.split("\n")
+
 
 def get_month_notes_heads(date):
     """
@@ -328,11 +332,10 @@ def get_month_notes_heads(date):
     note_lst = get_month_notes(date)
 
     heads = [get_note_head(n) for n in note_lst]
-    prompts = [n.split('.')[-2].split('/')[-1] for n in note_lst]
+    prompts = [n.split(".")[-2].split("/")[-1] for n in note_lst]
 
-    #date_prompt = date.strftime(NOTES_DATE_FORMAT).title()
+    return "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
 
-    return "\n".join([f'{p} : {h}' for p, h in zip(prompts, heads)])
 
 def get_note_head(note_path):
     """
@@ -350,14 +353,16 @@ def get_note_head(note_path):
     """
 
     with open(note_path, "r") as f:
-        head = f.read().split('\n')[0]
-        print('--------------', file=sys.stderr)
-        print(head,file=sys.stderr)
+        head = f.read().split("\n")[0]
+        print("--------------", file=sys.stderr)
+        print(head, file=sys.stderr)
     return head
+
 
 def rofi2cal_ind(ind):
     """ Convert coordinate from rofi to day number """
     pass
+
 
 def cal2rofi_ind(day, month, year):
     """
@@ -390,6 +395,7 @@ def cal2rofi_ind(day, month, year):
 
     return new_ind
 
+
 def get_month_notes(date):
     """
     Return notes files paths that are attached to date's month
@@ -410,6 +416,7 @@ def get_month_notes(date):
     note_lst = glob.glob(f"{NOTES_PATH}/{file_prefix}*")
 
     return note_lst
+
 
 def get_month_notes_ind(date):
     """
@@ -437,6 +444,7 @@ def get_month_notes_ind(date):
 
     return ind
 
+
 def add_year(sourcedate, years):
     """
     Increment or decrement date by a number of years
@@ -457,6 +465,7 @@ def add_year(sourcedate, years):
     year = sourcedate.year + years
     day = min(sourcedate.day, calendar.monthrange(year, sourcedate.month)[1])
     return datetime.date(year, sourcedate.month, day)
+
 
 def add_months(sourcedate, months):
     """
@@ -482,27 +491,32 @@ def add_months(sourcedate, months):
 
     return datetime.date(year, month, day)
 
+
 def show_notes(date):
     """open rofi popup with notes list of selected month"""
 
     notes_heads = get_month_notes_heads(date)
-    subprocess.Popen(['pkill', '-9', 'rofi'])
-    #rep = show_rofi(notes_heads, "liste des notes")
-    #print(rep)
-    #print(notes_heads)
-    #messagebox.showinfo('Notes', '\n'.join(notes_heads))
-    text_popup('Notes', notes_heads)
-    subprocess.Popen('./rofi_cmd.sh', shell=True)
+    subprocess.Popen(["pkill", "-9", "rofi"])
+    # rep = show_rofi(notes_heads, "liste des notes")
+    # print(rep)
+    # print(notes_heads)
+    # messagebox.showinfo('Notes', '\n'.join(notes_heads))
+    text_popup("Notes", notes_heads)
+    subprocess.Popen("./rofi_cmd.sh", shell=True)
+
 
 def open_note(day, date, editor):
     """open note for the selected date"""
 
-    subprocess.Popen(['pkill', '-9', 'rofi'])
+    subprocess.Popen(["pkill", "-9", "rofi"])
     note_path = f"{NOTES_PATH}/{date.year}-{date.month}-{day}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(
+        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     sdtout, sdterr = p.communicate()
-    subprocess.Popen('./rofi_cmd.sh', shell=True)
+    subprocess.Popen("./rofi_cmd.sh", shell=True)
+
 
 def print_selection(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
@@ -512,12 +526,13 @@ def print_selection(day, date, f):
     y = date.year
 
     pretty_date = datetime.date(y, m, d).strftime(f)
-    with open(PP_CACHE, 'w') as f:
-        f.write(pretty_date + '\n')
+    with open(PP_CACHE, "w") as f:
+        f.write(pretty_date + "\n")
 
     sys.exit(0)
 
-#def intercept_rofi_error(func):
+
+# def intercept_rofi_error(func):
 #    """A decorator to capture sdtout after rofi being killed"""
 #
 #    @wraps(func)
@@ -531,8 +546,8 @@ def print_selection(day, date, f):
 #
 #    return wrapper
 #
-#@intercept_rofi_error
-#def show_rofi_calendar(rofi, cal):
+# @intercept_rofi_error
+# def show_rofi_calendar(rofi, cal):
 #    """Launch a rofi window
 #
 #    Parameters
@@ -556,46 +571,48 @@ def print_selection(day, date, f):
 #    )
 #    return out
 #
-#@intercept_rofi_error
-def show_rofi(txt_body, txt_head):
-    """Launch a rofi window
+# @intercept_rofi_error
+# def show_rofi(txt_body, txt_head):
+#    """Launch a rofi window
+#
+#    Parameters
+#    ----------
+#    txt_body : str
+#        Text to display in rofi window
+#    txt_head : str
+#        Text to display in rofi prompt
+#
+#    Returns
+#    -------
+#    str
+#        Rofi selected cell content
+#    """
+#
+#    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
+#    selection = (
+#        subprocess.check_output(
+#            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
+#        )
+#        .decode("utf-8")
+#        .replace("\n", "")
+#    )
+#
+#    return selection
 
-    Parameters
-    ----------
-    txt_body : str
-        Text to display in rofi window
-    txt_head : str
-        Text to display in rofi prompt
-
-    Returns
-    -------
-    str
-        Rofi selected cell content
-    """
-
-    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
-    selection = (
-        subprocess.check_output(
-            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
-        )
-        .decode("utf-8")
-        .replace("\n", "")
-    )
-
-    return selection
 
 def first_time_init():
 
-    if shutil.which('rofi') == None:
-        print('please install rofi')
+    if shutil.which("rofi") == None:
+        print("please install rofi")
         sys.exit()
 
     if not os.path.exists(NOTES_PATH):
         os.mkdir(NOTES_PATH)
-        display_help(head_txt = 'Welcome to naivecalendar')
+        display_help(head_txt="Welcome to naivecalendar")
 
     if not os.path.exists(CACHE_PATH):
         os.mkdir(CACHE_PATH)
+
 
 def get_arguments():
     """Parse command line arguments"""
@@ -625,23 +642,25 @@ def get_arguments():
         default="xdg-open",
     )
 
-    #args = parser.parse_args()
     args, unknown = parser.parse_known_args()
     unknown = unknown if len(unknown) == 0 else "".join(unknown)
-    #print('====================', file=sys.stderr)
-    #print(unknown, file=sys.stderr)
-    #print(args, file=sys.stderr)
+
     return args, unknown
+
 
 def joke(sym):
     """Just display stupid jokes in french"""
 
     if sym == " ":
-        print("Vous glissez entre les mois, vous perdez la notion du temps.", file=sys.stderr)
+        print(
+            "Vous glissez entre les mois, vous perdez la notion du temps.",
+            file=sys.stderr,
+        )
     elif sym in SYM_WEEK_DAYS:
         print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
-def display_help(head_txt='help:'):
+
+def display_help(head_txt="help:"):
     """Show a rofi popup with help message"""
 
     txt = f"""This calendar is interactive. Here some tips:
@@ -667,17 +686,17 @@ There's some command line option too, dislay it with :
 
 That's all :
 
-type enter to continue...
+close window to continue...
 """
 
-    subprocess.Popen(['pkill', '-9', 'rofi'])
-    #messagebox.showinfo('Help', txt)
-    text_popup('Help', txt)
-    subprocess.Popen('./rofi_cmd.sh', shell=True)
-    #show_rofi(txt, head_txt)
+    subprocess.Popen(["pkill", "-9", "rofi"])
+    # messagebox.showinfo('Help', txt)
+    text_popup("Help", txt)
+    subprocess.Popen("./rofi_cmd.sh", shell=True)
+    # show_rofi(txt, head_txt)
 
 
-#def gen_rofi_conf(text, urgent):
+# def gen_rofi_conf(text, urgent):
 #    """Create a rofi command
 #    theme by adi1090x : https://github.com/adi1090x/polybar-themes
 #    """
@@ -723,6 +742,7 @@ type enter to continue...
 #
 #    return rofi
 
+
 class DateBuffer:
     """ Class to store date """
 
@@ -736,19 +756,17 @@ class DateBuffer:
     def read(self):
 
         self.buffer.read(DATE_CACHE)
-        month = int(self.buffer['buffer']['month'])
-        year = int(self.buffer['buffer']['year'])
+        month = int(self.buffer["buffer"]["month"])
+        year = int(self.buffer["buffer"]["year"])
 
-        return calendar.datetime.date(year,month,1)
+        return calendar.datetime.date(year, month, 1)
 
     def write(self, date):
 
-        self.buffer['buffer'] = {
-            'year' : date.year,
-            'month' : date.month
-        }
-        with open(DATE_CACHE, 'w') as buff:
+        self.buffer["buffer"] = {"year": date.year, "month": date.month}
+        with open(DATE_CACHE, "w") as buff:
             self.buffer.write(buff)
+
 
 def text_popup(head, body):
     """ Display a popup msg with tkinter """
@@ -758,15 +776,12 @@ def text_popup(head, body):
 
     win = tk.Tk()
     win.title(head)
-    text_area = st.ScrolledText(win,
-                                width = 50,
-                                height = 12,
-                                font = ("Noto Sans",
-                                10))
-    text_area.grid(column = 0, pady = 10, padx = 10)
+    text_area = st.ScrolledText(win, width=50, height=12, font=("Noto Sans", 10))
+    text_area.grid(column=0, pady=10, padx=10)
     text_area.insert(tk.INSERT, body)
-    text_area.configure(state ='disabled')
+    text_area.configure(state="disabled")
     win.mainloop()
+
 
 if __name__ == "__main__":
     main()
