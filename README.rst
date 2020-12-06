@@ -65,7 +65,7 @@ Sym    Key   Alt-key   Action
  <<      pp       --   go to previous year
   <       p      `-`   go to previous month
   >       n      `+`   go to next month
- >>      ..       ++   go to next year
+ >>      nn       ++   go to next year
  ..   notes       ..   display notes of the month (first line)
  ..    help       ..   display this help
 ====  =====  =======   ========================================
