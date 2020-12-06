@@ -56,15 +56,15 @@ and to interact with the calendar:
  - Notes are stored in {HOME}/.naivecalendar_notes/
    (For now you've to manually delete it)
 
-There's somme shortcut too, type it in rofi prompt :
+There's some shortcut too :
 
 ====  =====  =======   ========================================
 Sym    Key   Alt-key   Action
 ====  =====  =======   ========================================
- <<      ..       --   go to previous year
-  <       n      `-`   go to previous month
-  >       p      `+`   go to next month
- >>      pp       ++   go to next year
+ <<      pp       --   go to previous year
+  <       p      `-`   go to previous month
+  >       n      `+`   go to next month
+ >>      ..       ++   go to next year
  ..   notes       ..   display notes of the month (first line)
  ..    help       ..   display this help
 ====  =====  =======   ========================================
