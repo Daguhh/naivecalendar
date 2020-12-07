@@ -461,6 +461,7 @@ def open_n_reload_rofi(func):
 
     return wrapper
 
+
 @open_n_reload_rofi
 def show_notes(date):
     """open rofi popup with notes list of selected month"""
@@ -481,7 +482,6 @@ def open_note(day, date, editor):
     sdtout, sdterr = p.communicate()
 
 
-
 def print_selection(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
 
@@ -495,6 +495,7 @@ def print_selection(day, date, f):
 
     sys.exit(0)
 
+
 def first_time_init():
 
     if shutil.which("rofi") == None:
@@ -507,6 +508,107 @@ def first_time_init():
 
     if not os.path.exists(CACHE_PATH):
         os.mkdir(CACHE_PATH)
+
+
+class Date:
+    """ Class to store date """
+
+    def __init__(self):
+
+        self.today()
+        self._cache = configparser.ConfigParser()
+        self.year = Year(self)
+        self.month = Month(self)
+
+    def today(self):
+        self.date = datetime.date.today()
+        return self.date
+
+    def read_cache(self):
+
+        self._cache.read(DATE_CACHE)
+        day = 1
+        month = int(self._cache["buffer"]["month"])
+        year = int(self._cache["buffer"]["year"])
+
+        self.date = datetime.date(year, month, day)
+
+    def write_cache(self):
+
+        date = self.date
+        self._cache["buffer"] = {"year": date.year, "month": date.month}
+        with open(DATE_CACHE, "w") as buff:
+            self._cache.write(buff)
+
+
+class Year:
+    def __init__(self, outer):
+        self.outer = outer
+
+    def __repr__(self):
+        return f"Year({self.outer.date.year})"
+
+    def __add__(self, years):
+        """
+        Increment or decrement date by a number of years
+
+        Parameters
+        ----------
+        sourcedate : datetime.date
+            Date to Increment
+        months : int
+            number of years to add
+
+        Returns
+        -------
+        datetime.date
+            Incremented date
+        """
+
+        year = self.outer.date.year + years
+        month = self.outer.date.month
+        day = min(self.outer.date.day, calendar.monthrange(year, month)[1])
+        self.outer.date = datetime.date(year, month, day)
+
+    def __sub__(self, years):
+        self.__add__(-years)
+
+
+class Month:
+    def __init__(self, outer):
+        self.outer = outer
+
+    def __repr__(self):
+        return f"Month({self.outer.date.month})"
+
+    def __add__(self, months):
+        """
+        Increment or decrement date by a number of month
+
+        Parameters
+        ----------
+        sourcedate : datetime.date
+            Date to Increment
+        months : int
+            number of month to add
+
+        Returns
+        -------
+        datetime.date
+            Incremented date
+        """
+
+        month = self.outer.date.month - 1 + months
+        year = self.outer.date.year + month // 12
+        month = month % 12 + 1
+        day = min(self.outer.date.day, calendar.monthrange(year, month)[1])
+
+        self.outer.date = datetime.date(year, month, day)
+        # return datetime.date(year, month, day)
+
+    def __sub__(self, months):
+        self.__add__(-months)
+
 
 def get_arguments():
     """Parse command line arguments"""
@@ -554,6 +656,21 @@ def joke(sym):
         print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
 
+def text_popup(head, body):
+    """ Display a popup msg with tkinter """
+
+    import tkinter as tk
+    import tkinter.scrolledtext as st
+
+    win = tk.Tk()
+    win.title(head)
+    text_area = st.ScrolledText(win, width=50, height=12, font=("Noto Sans", 10))
+    text_area.grid(column=0, pady=10, padx=10)
+    text_area.insert(tk.INSERT, body)
+    text_area.configure(state="disabled")
+    win.mainloop()
+
+
 @open_n_reload_rofi
 def display_help(head_txt="help:"):
     """Show a rofi popup with help message"""
@@ -584,211 +701,7 @@ That's all :
 close window to continue...
 """
 
-    # messagebox.showinfo('Help', txt)
     text_popup("Help", txt)
-    #subprocess.Popen("./naivecalendar_cmd.sh", shell=True)
-    # show_rofi(txt, head_txt)
-
-
-# def gen_rofi_conf(text, urgent):
-#    """Create a rofi command
-#    theme by adi1090x : https://github.com/adi1090x/polybar-themes
-#    """
-#
-#    rofi = f"""
-#
-#        BORDER="#1F1F1F"
-#        SEPARATOR="#1F1F1F"
-#        FOREGROUND="#FFFFFF"
-#        BACKGROUND="#1F1F1F"
-#        BACKGROUND_ALT="#252525"
-#        HIGHLIGHT_BACKGROUND="#8e24aa"
-#        HIGHLIGHT_FOREGROUND="#1F1F1F"
-#
-#        BLACK="#000000"
-#        WHITE="#ffffff"
-#        RED="#e53935"
-#        GREEN="#43a047"
-#        YELLOW="#fdd835"
-#        BLUE="#1e88e5"
-#        MAGENTA="#00897b"
-#        CYAN="#00acc1"
-#        PINK="#d81b60"
-#
-#        rofi -dmenu -p "{text}" \
-#        -show calendrier \
-#        -hide-scrollbar true \
-#        -bw 0 \
-#        -a 0,8,16,24,32,40,48 \
-#        -u {urgent} \
-#        -lines {ROW_NB} \
-#        -line-padding {CAL_LINE_PADDING} \
-#        -padding {CAL_PADDING} \
-#        -width {CAL_WIDTH} \
-#        -xoffset {CAL_X_OFFSET} -yoffset {CAL_Y_OFFSET} \
-#        -location {CAL_LOCATION} \
-#        -columns {COL_NB}\
-#        -color-enabled true \
-#        -color-window "$BACKGROUND,$BORDER,$SEPARATOR" \
-#        -color-normal "$BACKGROUND_ALT,$FOREGROUND,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
-#        -color-active "$BACKGROUND,$BLUE,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
-#        -color-urgent "$BACKGROUND,$YELLOW,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" """
-#
-#    return rofi
-
-class Date:
-    """ Class to store date """
-
-    def __init__(self):
-
-        self.today()
-        self._cache = configparser.ConfigParser()
-        self.year = Year(self)
-        self.month = Month(self)
-    #    self.day = Day(self.date)
-
-    def iSconfig(self):
-        pass
-
-    def today(self):
-        self.date = datetime.date.today()
-        return self.date
-
-#    def set_date(self, y, m, d):
-#        self._date = datetime.date(y,m,d)
-#
-#    @property
-#    def date(self):
-#        return self._date
-#
-#    @date.setter
-#    def date(self, year, month, day):
-#        self._date = calendar.datetime.date(year, month, day)
-#
-    def read_cache(self):
-
-        self._cache.read(DATE_CACHE)
-        day = 1
-        month = int(self._cache["buffer"]["month"])
-        year = int(self._cache["buffer"]["year"])
-
-        self.date = datetime.date(year, month, day)
-        #return calendar.datetime.date(self._year, self._month, 1)
-
-    def write_cache(self):
-
-        date = self.date
-        self._cache["buffer"] = {"year": date.year, "month": date.month}
-        with open(DATE_CACHE, "w") as buff:
-            self._cache.write(buff)
-
-class Year:
-
-    def __init__(self, outer):
-        self.outer= outer
-
-    def __repr__(self):
-        return f"Year({self.outer.date.year})"
-
-    def __add__(self, years):
-        """
-        Increment or decrement date by a number of years
-
-        Parameters
-        ----------
-        sourcedate : datetime.date
-            Date to Increment
-        months : int
-            number of years to add
-
-        Returns
-        -------
-        datetime.date
-            Incremented date
-        """
-
-        year = self.outer.date.year + years
-        month = self.outer.date.month
-        day = min(self.outer.date.day, calendar.monthrange(year, month)[1])
-        self.outer.date = datetime.date(year, month, day)
-
-    def __sub__(self, years):
-        self.__add__(-years)
-
-class Month:
-
-    def __init__(self, outer):
-        self.outer= outer
-
-    def __repr__(self):
-        return f"Month({self.outer.date.month})"
-
-    def __add__(self, months):
-        """
-        Increment or decrement date by a number of month
-
-        Parameters
-        ----------
-        sourcedate : datetime.date
-            Date to Increment
-        months : int
-            number of month to add
-
-        Returns
-        -------
-        datetime.date
-            Incremented date
-        """
-
-        month = self.outer.date.month - 1 + months
-        year = self.outer.date.year + month // 12
-        month = month % 12 + 1
-        day = min(self.outer.date.day, calendar.monthrange(year, month)[1])
-
-        self.outer.date = datetime.date(year, month, day)
-        #return datetime.date(year, month, day)
-
-    def __sub__(self, months):
-        self.__add__(-months)
-
-
-class DateBuffer:
-    """ Class to store date """
-
-    def __init__(self):
-
-        self.buffer = configparser.ConfigParser()
-
-    def iSconfig(self):
-        pass
-
-    def read(self):
-
-        self.buffer.read(DATE_CACHE)
-        month = int(self.buffer["buffer"]["month"])
-        year = int(self.buffer["buffer"]["year"])
-
-        return calendar.datetime.date(year, month, 1)
-
-    def write(self, date):
-
-        self.buffer["buffer"] = {"year": date.year, "month": date.month}
-        with open(DATE_CACHE, "w") as buff:
-            self.buffer.write(buff)
-
-def text_popup(head, body):
-    """ Display a popup msg with tkinter """
-
-    import tkinter as tk
-    import tkinter.scrolledtext as st
-
-    win = tk.Tk()
-    win.title(head)
-    text_area = st.ScrolledText(win, width=50, height=12, font=("Noto Sans", 10))
-    text_area.grid(column=0, pady=10, padx=10)
-    text_area.insert(tk.INSERT, body)
-    text_area.configure(state="disabled")
-    win.mainloop()
 
 
 if __name__ == "__main__":
