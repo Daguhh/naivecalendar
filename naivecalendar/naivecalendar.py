@@ -93,29 +93,29 @@ def main():
     first_time_init()
 
     # read previous date or show actual month on first loop
-    buffer = DateBuffer()
+    d = Date()
     if rofi_output:
-        d = buffer.read()
+        d.read_cache()
     else:
-        d = calendar.datetime.date.today()
+        d.today()
 
     # react to rofi output
     out = rofi_output
     if out in SYM_PREV_YEAR:
-        d = add_year(d, -1)
+        d.year -= 1
     elif out in SYM_PREV_MONTH:
-        d = add_months(d, -1)
+        d.month -= 1
     elif out in SYM_NEXT_MONTH:
-        d = add_months(d, 1)
+        d.month += 1
     elif out in SYM_NEXT_YEAR:
-        d = add_year(d, 1)
+        d.year += 1
     elif out in SYM_DAYS_NUM:
         if args.print:
-            print_selection(out, d, args.format)
+            print_selection(out, d.date, args.format)
         else:
-            open_note(out, d, args.editor)
+            open_note(out, d.date, args.editor)
     elif out in SYM_NOTES:
-        show_notes(d)
+        show_notes(d.date)
     elif out in SYM_HELP:
         display_help()
     elif out == " " or out in SYM_WEEK_DAYS:
@@ -124,12 +124,14 @@ def main():
         pass
         # print('No output',file=sys.stderr)
 
-    # send new data to rofi
-    cal = get_calendar_from_date(d)
-    date_prompt = d.strftime(PROMT_DATE_FORMAT).title()
-    notes_inds = get_month_notes_ind(d)
-    today_ind = cal2rofi_ind(d.day, d.month, d.year)
+    # generate new datas
+    date = d.date
+    cal = get_calendar_from_date(date)
+    date_prompt = date.strftime(PROMT_DATE_FORMAT).title()
+    notes_inds = get_month_notes_ind(date)
+    today_ind = cal2rofi_ind(date.day, date.month, date.year)
 
+    # send datas
     print(f"\0prompt\x1f{date_prompt}\n")
     print(f"\0urgent\x1f{notes_inds}\n")
     if not rofi_output:
@@ -138,7 +140,7 @@ def main():
     print(cal)
 
     # write new date in buffer
-    buffer.write(d)
+    d.write_cache()
 
 
 def get_calendar_from_date(date):
@@ -259,7 +261,6 @@ def list_transpose(lst, col_nb=COL_NB):
 
     # chain columns
     lst = list(chain(*col_list))
-    # print(lst, file=sys.stderr)
 
     return lst
 
@@ -354,8 +355,6 @@ def get_note_head(note_path):
 
     with open(note_path, "r") as f:
         head = f.read().split("\n")[0]
-        print("--------------", file=sys.stderr)
-        print(head, file=sys.stderr)
     return head
 
 
@@ -445,53 +444,6 @@ def get_month_notes_ind(date):
     return ind
 
 
-def add_year(sourcedate, years):
-    """
-    Increment or decrement date by a number of years
-
-    Parameters
-    ----------
-    sourcedate : datetime.date
-        Date to Increment
-    months : int
-        number of years to add
-
-    Returns
-    -------
-    datetime.date
-        Incremented date
-    """
-
-    year = sourcedate.year + years
-    day = min(sourcedate.day, calendar.monthrange(year, sourcedate.month)[1])
-    return datetime.date(year, sourcedate.month, day)
-
-
-def add_months(sourcedate, months):
-    """
-    Increment or decrement date by a number of month
-
-    Parameters
-    ----------
-    sourcedate : datetime.date
-        Date to Increment
-    months : int
-        number of month to add
-
-    Returns
-    -------
-    datetime.date
-        Incremented date
-    """
-
-    month = sourcedate.month - 1 + months
-    year = sourcedate.year + month // 12
-    month = month % 12 + 1
-    day = min(sourcedate.day, calendar.monthrange(year, month)[1])
-
-    return datetime.date(year, month, day)
-
-
 def open_n_reload_rofi(func):
     """ decorator to open and reload the rofi script """
 
@@ -543,81 +495,6 @@ def print_selection(day, date, f):
 
     sys.exit(0)
 
-# def intercept_rofi_error(func):
-#    """A decorator to capture sdtout after rofi being killed"""
-#
-#    @wraps(func)
-#    def wrapper(*args):
-#        try:
-#            out = func(*args)
-#        except subprocess.CalledProcessError as e:
-#            print("Bye")
-#            sys.exit()
-#        return out
-#
-#    return wrapper
-#
-# @intercept_rofi_error
-# def show_rofi_calendar(rofi, cal):
-#    """Launch a rofi window
-#
-#    Parameters
-#    ----------
-#    rofi : str
-#        Rofi command to be run in a shell
-#    cal : str
-#        A column by column calendar list formatted for rofi
-#
-#    Returns
-#    -------
-#    str
-#        Rofi selected cell content
-#    """
-#
-#    cmd = subprocess.Popen(f"echo '{cal}'", shell=True, stdout=subprocess.PIPE)
-#    out = (
-#        subprocess.check_output(rofi, stdin=cmd.stdout, shell=True)
-#        .decode("utf-8")
-#        .replace("\n", "")
-#    )
-#    return out
-#
-# @intercept_rofi_error
-# def show_rofi(txt_body, txt_head):
-#    """Launch a rofi window
-#
-#    Parameters
-#    ----------
-#    txt_body : str
-#        Text to display in rofi window
-#    txt_head : str
-#        Text to display in rofi prompt
-#
-#    Returns
-#    -------
-#    str
-#        Rofi selected cell content
-#    """
-#
-#    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
-#    selection = (
-#        subprocess.check_output(
-#            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
-#        )
-#        .decode("utf-8")
-#        .replace("\n", "")
-#    )
-#
-#    return selection
-
-#def reload_rofi():
-#
-#    path = os.path.abspath(os.path.dirname(sys.argv[0]))
-#    cmd = f"{path}/naivecalendar_cmd.sh"
-#    os.system(cmd)
-#    #subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-
 def first_time_init():
 
     if shutil.which("rofi") == None:
@@ -630,7 +507,6 @@ def first_time_init():
 
     if not os.path.exists(CACHE_PATH):
         os.mkdir(CACHE_PATH)
-
 
 def get_arguments():
     """Parse command line arguments"""
@@ -759,6 +635,121 @@ close window to continue...
 #        -color-urgent "$BACKGROUND,$YELLOW,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" """
 #
 #    return rofi
+
+class Date:
+    """ Class to store date """
+
+    def __init__(self):
+
+        self.today()
+        self._cache = configparser.ConfigParser()
+        self.year = Year(self)
+        self.month = Month(self)
+    #    self.day = Day(self.date)
+
+    def iSconfig(self):
+        pass
+
+    def today(self):
+        self.date = datetime.date.today()
+        return self.date
+
+#    def set_date(self, y, m, d):
+#        self._date = datetime.date(y,m,d)
+#
+#    @property
+#    def date(self):
+#        return self._date
+#
+#    @date.setter
+#    def date(self, year, month, day):
+#        self._date = calendar.datetime.date(year, month, day)
+#
+    def read_cache(self):
+
+        self._cache.read(DATE_CACHE)
+        day = 1
+        month = int(self._cache["buffer"]["month"])
+        year = int(self._cache["buffer"]["year"])
+
+        self.date = datetime.date(year, month, day)
+        #return calendar.datetime.date(self._year, self._month, 1)
+
+    def write_cache(self):
+
+        date = self.date
+        self._cache["buffer"] = {"year": date.year, "month": date.month}
+        with open(DATE_CACHE, "w") as buff:
+            self._cache.write(buff)
+
+class Year:
+
+    def __init__(self, outer):
+        self.outer= outer
+
+    def __repr__(self):
+        return f"Year({self.outer.date.year})"
+
+    def __add__(self, years):
+        """
+        Increment or decrement date by a number of years
+
+        Parameters
+        ----------
+        sourcedate : datetime.date
+            Date to Increment
+        months : int
+            number of years to add
+
+        Returns
+        -------
+        datetime.date
+            Incremented date
+        """
+
+        year = self.outer.date.year + years
+        month = self.outer.date.month
+        day = min(self.outer.date.day, calendar.monthrange(year, month)[1])
+        self.outer.date = datetime.date(year, month, day)
+
+    def __sub__(self, years):
+        self.__add__(-years)
+
+class Month:
+
+    def __init__(self, outer):
+        self.outer= outer
+
+    def __repr__(self):
+        return f"Month({self.outer.date.month})"
+
+    def __add__(self, months):
+        """
+        Increment or decrement date by a number of month
+
+        Parameters
+        ----------
+        sourcedate : datetime.date
+            Date to Increment
+        months : int
+            number of month to add
+
+        Returns
+        -------
+        datetime.date
+            Incremented date
+        """
+
+        month = self.outer.date.month - 1 + months
+        year = self.outer.date.year + month // 12
+        month = month % 12 + 1
+        day = min(self.outer.date.day, calendar.monthrange(year, month)[1])
+
+        self.outer.date = datetime.date(year, month, day)
+        #return datetime.date(year, month, day)
+
+    def __sub__(self, months):
+        self.__add__(-months)
 
 
 class DateBuffer:
