@@ -450,7 +450,7 @@ def open_n_reload_rofi(func):
     script_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 
     @wraps(func)
-    def wrapper(*args):
+    def wrapper(*args, **kwargs):
 
         subprocess.Popen(["pkill", "-9", "rofi"])
         out = func(*args)

@@ -37,6 +37,7 @@ rofi -show calendar \
 -xoffset 320 -yoffset 25 \
 -location 2 2 \
 -columns 7 \
+-markup \
 -color-enabled true \
 -color-window "$BACKGROUND,$BORDER,$SEPARATOR" \
 -color-normal "$BACKGROUND_ALT,$FOREGROUND,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
