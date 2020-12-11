@@ -24,6 +24,7 @@ from itertools import chain
 from functools import wraps
 import argparse
 import configparser
+import time
 
 
 ############# Parameters #########################
@@ -58,7 +59,7 @@ SYM_NOTES = ["notes"]
 SYM_HELP = ["help"]
 
 # Rofi prompt date format:
-PROMT_DATE_FORMAT = "%b %Y"
+PROMT_DATE_FORMAT = "%B %Y"
 # NOTES_DATE_FORMAT = "%Y-%m-%d"
 
 # Get locale week days, override WEEKS_DAYS variable to personalize day names
@@ -119,9 +120,18 @@ def main():
 
     # send datas
     print(f"\0prompt\x1f{date_prompt}\n")
+    A_,d_,B_,Y_ = [date.strftime(x) for x in ['%A', '%d', '%B', '%Y']]
+
     print(f"\0urgent\x1f{notes_inds}\n")
     if not rofi_output:
+        d_ = f"""<span size="xx-large" >{d_}</span>"""
+        A_ = f"""<span rise="12000" size="small">{A_}</span>"""
+        print(f"\0message\x1f{d_} {A_}\n")
         print(f"\0active\x1f{today_ind}\n")
+    #else:
+    #    msg = """<span size="xx-small">A</span>"""
+    #    print(f"""\0message\x1f\n""")
+
     print(f"\0active\x1fa 0,8,16,24,32,40,48\n")
     print(cal)
 
