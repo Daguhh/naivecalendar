@@ -457,7 +457,7 @@ def get_month_notes_ind(date):
 
 
 def open_n_reload_rofi(func):
-    """ decorator to open and reload the rofi script """
+    """ decorator to open and reload the rofi script at the same date"""
 
     script_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 
@@ -509,6 +509,7 @@ def print_selection(day, date, f):
 
 
 def first_time_init():
+    """Create config files and paths given script head variables"""
 
     if shutil.which("rofi") == None:
         print("please install rofi")
@@ -523,7 +524,9 @@ def first_time_init():
 
 
 class Date:
-    """ Class to store date """
+    """Class to store date
+    Make easier reading and writing to date cache file
+    """
 
     def __init__(self):
 
@@ -533,10 +536,12 @@ class Date:
         self.month = Month(self)
 
     def today(self):
+        """Set and return today date"""
         self.date = datetime.date.today()
         return self.date
 
     def read_cache(self):
+        """load cache ini file"""
 
         self._cache.read(DATE_CACHE)
         day = 1
@@ -546,6 +551,7 @@ class Date:
         self.date = datetime.date(year, month, day)
 
     def write_cache(self):
+        """write date to ini cache file"""
 
         date = self.date
         self._cache["buffer"] = {"year": date.year, "month": date.month}
@@ -554,6 +560,7 @@ class Date:
 
 
 class Year:
+    """Make computation on date years"""
     def __init__(self, outer):
         self.outer = outer
 
@@ -587,6 +594,7 @@ class Year:
 
 
 class Month:
+    """Make computation on date months"""
     def __init__(self, outer):
         self.outer = outer
 
@@ -676,7 +684,15 @@ def joke(sym):
 
 
 def text_popup(head, body):
-    """ Display a popup msg with tkinter """
+    """ Display a popup msg with tkinter
+
+    Parameters
+    ----------
+    head :
+        str : window title
+    body :
+        str : message to Display
+    """
 
     import tkinter as tk
     import tkinter.scrolledtext as st
