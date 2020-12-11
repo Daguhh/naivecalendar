@@ -62,8 +62,8 @@ IS_TODAY_HEAD_MSG = True # toogle day num and name header display
 ##################################################
 
 # Get locale week days, override WEEKS_DAYS variable to personalize day names
+locale.setlocale(locale.LC_ALL, "")
 if not SYM_WEEK_DAYS:
-    locale.setlocale(locale.LC_ALL, "")
     get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
     week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
     SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
