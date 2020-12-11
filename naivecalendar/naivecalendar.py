@@ -64,12 +64,6 @@ IS_TODAY_HEAD_MSG = True # toogle day num and name header display
 ######### End User parameters ####################
 ##################################################
 
-# Get locale week days, override WEEKS_DAYS variable to personalize day names
-locale.setlocale(locale.LC_ALL, USER_LOCALE)
-if not SYM_WEEK_DAYS:
-    get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
-    week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
-    SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
 
 # create path to notes
 HOME = os.getenv("HOME")
@@ -94,6 +88,17 @@ def main():
     - open {EDITOR} and create a note for selected day
     """
     args, rofi_output = get_arguments()
+
+    # Get locale week days, override WEEKS_DAYS variable to personalize day names
+    if not args.locale:
+        locale.setlocale(locale.LC_ALL, USER_LOCALE)
+    else:
+        locale.setlocale(locale.LC_ALL, args.locale)
+    global SYM_WEEK_DAYS
+    if not SYM_WEEK_DAYS:
+        get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
+        week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
+        SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
 
     # create note path n test rofi intall
     first_time_init()
@@ -665,6 +670,14 @@ def get_arguments():
         help="""editor command to open notes""",
         dest="editor",
         default="xdg-open",
+    )
+
+    parser.add_argument(
+        "-l",
+        "--locale",
+        help="""force system locale, for example '-l es_ES.utf8'""",
+        dest="locale",
+        default="",
     )
 
     parser.add_argument(
