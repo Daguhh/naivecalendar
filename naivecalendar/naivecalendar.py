@@ -179,6 +179,7 @@ def get_calendar_from_date(date):
     -------
     str
         A str that contain chained columns of a calendar in a rofi format
+
     """
 
     start_day, month_length = calendar.monthrange(date.year, date.month)
@@ -228,9 +229,9 @@ def rofi_transpose(rofi_datas, column_number=COL_NB):
     Examples
     --------
 
-    >>> by_row = "1\n2\n3\n4\n5\n6"
+    >>> by_row = "1\\n2\\n3\\n4\\n5\\n6"
     >>> rofi_transpose(by_row, 3)
-    r"1\n4\n2\n5\n3\n6"
+    "1\\n4\\n2\\n5\\n3\\n6"
 
     """
 
@@ -259,10 +260,10 @@ def list_transpose(lst, col_nb=COL_NB):
 
     Examples
     --------
-
     >>> my_list = [1,2,3,4,5,6]
     >>> list_transpose(my_list, col_nb=3)
     [1,4,2,5,3,6]
+
     """
 
     # split into row
@@ -298,7 +299,7 @@ def list2rofi(datas):
 
     >>> my_list = [1,2,3,4,5,6]
     >>> list2rofi(my_list]
-    "1\n2\n3\n4\n5\n6"
+    "1\\n2\\n3\\n4\\n5\\n6"
     """
 
     return "\n".join(datas)
@@ -321,7 +322,7 @@ def rofi2list(datas):
     Examples
     --------
 
-    >>> rofi_list = "1\n2\n3\n4\n5\n6"
+    >>> rofi_list = "1\\n2\\n3\\n4\\n5\\n6"
     >>> rofi2list
     [1,2,3,4,5,6]
     """

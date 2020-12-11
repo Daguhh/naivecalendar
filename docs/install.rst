@@ -2,4 +2,4 @@ Howto
 =====
 
 .. include:: ../README.rst
-   :start-line: 22
+   :start-after: .. _dependancies:
