@@ -94,13 +94,12 @@ def main():
 
     # read previous date or show actual month on first loop
     d = Date()
-    print(args, file=sys.stderr)
     if rofi_output or args.read_cache:
         d.read_cache()
     else:
         d.today()
 
-    # react to rofi output
+    # react to rofi date change output
     out = rofi_output
     if out in SYM_PREV_YEAR:
         d.year -= 1
@@ -110,20 +109,6 @@ def main():
         d.month += 1
     elif out in SYM_NEXT_YEAR:
         d.year += 1
-    elif out in SYM_DAYS_NUM:
-        if args.print:
-            print_selection(out, d.date, args.format)
-        else:
-            open_note(out, d.date, args.editor)
-    elif out in SYM_NOTES:
-        show_notes(d.date)
-    elif out in SYM_HELP:
-        display_help()
-    elif out == " " or out in SYM_WEEK_DAYS:
-        joke(out)
-    else:
-        pass
-        # print('No output',file=sys.stderr)
 
     # generate new datas
     date = d.date
@@ -142,6 +127,22 @@ def main():
 
     # write new date in buffer
     d.write_cache()
+
+    # react to rofi output
+    if out in SYM_DAYS_NUM:
+        if args.print:
+            print_selection(out, d.date, args.format)
+        else:
+            open_note(out, d.date, args.editor)
+    elif out in SYM_NOTES:
+        show_notes(d.date)
+    elif out in SYM_HELP:
+        display_help()
+    elif out == " " or out in SYM_WEEK_DAYS:
+        joke(out)
+    else:
+        pass
+        # print('No output',file=sys.stderr)
 
 
 def get_calendar_from_date(date):
@@ -475,7 +476,7 @@ def show_notes(date):
 def open_note(day, date, editor):
     """open note for the selected date"""
 
-    note_path = f"{NOTES_PATH}/{date.year}-{date.month}-{day}.txt"
+    note_path = f"{NOTES_PATH}/{date.year}-{date.month:0>2}-{day:0>2}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
     p = subprocess.Popen(
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -626,7 +627,7 @@ def get_arguments():
     parser.add_argument(
         "-f",
         "--format",
-        help="""option '-p' output format (datetime.strftime format, defaut='%%Y-%%m-%%d')""",
+        help="""option '-p' output format (datetime.strftime format, defaut='%%Y-{%%m}-%%d')""",
         dest="format",
         default="%Y-%m-%d",
     )
