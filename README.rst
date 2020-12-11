@@ -34,13 +34,12 @@ Dependancies
 Install
 -------
 
-This script version use rofi script mode : 
+The naivecalendar use two files:
 
-.. code::
+- naivecalendar.py : that print a list-formatted calendar entries to sdtout
+- naivecalendar.sh : that run rofi in script mode with the previous file
 
-    chmod +x naivecalendar.sh
-    ./naivecalendar.sh 
-
+Simply copy these file in the same folder
 
 Usage
 -----
@@ -64,7 +63,7 @@ Then:
 Shortcuts
 ^^^^^^^^^
 
-Shortcuts have to by enter in the rofi command prompt.
+Shortcuts have to be entered in the rofi command prompt.
 *Sym* is the symbol displayed, you can type *Sym*, *Key* or *Alt-key* to execute an action
 
 ====  =====  =======   ========================================

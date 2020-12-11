@@ -35,6 +35,15 @@ Dépendances
 * python3_
 * rofi_
 
+
+Installation
+^^^^^^^^^^^^
+
+Le naivecalendar utilise deux fichiers:
+
+- naivecalendar.py : envoie la liste des entrées d'un calendrier vers la sortie standard
+- naivecalendar.sh : lance rofi en mode script en interaction avec le fichier précedent.
+
 Utilisation
 -----------
 
