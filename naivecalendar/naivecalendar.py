@@ -26,31 +26,26 @@ import argparse
 import configparser
 import time
 
+##################################################
+############# User parameters ####################
+##################################################
 
-############# Parameters #########################
+# Week parameters
+DAY_ABBR_LENGHT = 3 # day name lenght
+FIRST_DAY_WEEK = 1 # 0 : sunday, 1 : monday...
+SYM_WEEK_DAYS = [] # day names list, if empty, locale names will be set
 
-# day name lenght (enlarge calendar for larger values)
-DAY_ABBR_LENGHT = 3
-FIRST_DAY_WEEK = 1  # 0 : sunday, 1 : monday...
+# Notes conf
+NOTES_RELATIVE_PATH = ".naivecalendar_notes" # path to save notes (retative to $HOME)
+NOTES_DATE_FORMAT = "%Y-%m-%d" # strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
 
-# path to save notes (retative to $HOME)
-NOTES_RELATIVE_PATH = ".naivecalendar_notes"
-
-# rofi shape parameters
-# CAL_WIDTH = 320
-# CAL_X_OFFSET = 320
-# CAL_Y_OFFSET = 25
-# CAL_LINE_PADDING = 5
-# CAL_PADDING = 10
-# CAL_LOCATION = 2
-
-# rofi grid shape to contain calendar
+# Rofi/Calendar shape
 COL_NB = 7  # 7 days
 WEEK_NB = 6  # number of "complete" weeks, a month can extend up to 6 weeks
 ROW_NB = 1 + WEEK_NB + 1  # 1 day header + 6 weeks + 1 control menu
 
-# Symbols displayed in the calendar
-SYM_NEXT_MONTH = [">", "+", "n"]  # first symbol is displayed, others are just shortcuts
+# Calendar symbols and shorcuts
+SYM_NEXT_MONTH = [">", "+", "n"]  # 1st symbol : displayed, others : shortcuts
 SYM_NEXT_YEAR = [">>", "++", "nn"]
 SYM_PREV_MONTH = ["<", "-", "p"]
 SYM_PREV_YEAR = ["<<", "--", "pp"]
@@ -58,15 +53,20 @@ SYM_DAYS_NUM = [str(n) for n in range(1, 32)]
 SYM_NOTES = ["notes"]
 SYM_HELP = ["help"]
 
-# Rofi prompt date format:
+# Other display parameters
 PROMT_DATE_FORMAT = "%b %Y"
-# NOTES_DATE_FORMAT = "%Y-%m-%d"
+IS_TODAY_HEAD_MSG = True # toogle day num and name header display
+
+##################################################
+######### End User parameters ####################
+##################################################
 
 # Get locale week days, override WEEKS_DAYS variable to personalize day names
-locale.setlocale(locale.LC_ALL, "")
-get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
-week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
-SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
+if not SYM_WEEK_DAYS:
+    locale.setlocale(locale.LC_ALL, "")
+    get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
+    week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
+    SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
 
 # create path to notes
 HOME = os.getenv("HOME")
@@ -77,7 +77,9 @@ DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
 PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 
 
+##################################################
 ############ Script ##############################
+##################################################
 
 
 def main():
@@ -119,15 +121,15 @@ def main():
     today_ind = cal2rofi_ind(date.day, date.month, date.year)
 
     # send datas
+    # A_,d_,B_,Y_ = [date.strftime(x) for x in ['%A', '%d', '%B', '%Y']]
     print(f"\0prompt\x1f{date_prompt}\n")
-    A_,d_,B_,Y_ = [date.strftime(x) for x in ['%A', '%d', '%B', '%Y']]
-
     print(f"\0urgent\x1f{notes_inds}\n")
     if not rofi_output:
-        d_ = f"""<span size="xx-large" >{d_}</span>"""
-        A_ = f"""<span rise="12000" size="small">{A_}</span>"""
-        print(f"\0message\x1f{d_} {A_}\n")
         print(f"\0active\x1f{today_ind}\n")
+        if IS_TODAY_HEAD_MSG:
+            day_numb = f"""<span size="xx-large" >{date.strftime('%d')}</span>"""
+            day_name = f"""<span rise="12000" size="small">{date.strftime('%A')}</span>"""
+            print(f"\0message\x1f{day_numb} {day_name}\n")
     #else:
     #    msg = """<span size="xx-small">A</span>"""
     #    print(f"""\0message\x1f\n""")
@@ -422,8 +424,8 @@ def get_month_notes(date):
         list of files that belong to date.month
     """
 
-    # get note of the month list
-    file_prefix = f"{date.year}-{date.month}-"
+    pattern = NOTES_DATE_FORMAT.replace('%d', '*')
+    file_prefix = date.strftime(pattern) #f"{date.year}-{date.month}-"
     note_lst = glob.glob(f"{NOTES_PATH}/{file_prefix}*")
 
     return note_lst
@@ -447,7 +449,9 @@ def get_month_notes_ind(date):
     # get file list
     note_lst = get_month_notes(date)
     # get note day number
-    days = [re.search(r"([^-]*)\.txt", f).group(1) for f in note_lst]
+    pattern = re.sub('%d',r'([0-9]*)', NOTES_DATE_FORMAT)
+    pattern = re.sub('%.','[a-zA-Z0-9]*', pattern)
+    days = [re.match(pattern, f.split('/')[-1]).group(1) for f in note_lst]
     # transform into rofi index
     ind = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
     # format into rofi command
@@ -486,7 +490,8 @@ def show_notes(date):
 def open_note(day, date, editor):
     """open note for the selected date"""
 
-    note_path = f"{NOTES_PATH}/{date.year}-{date.month:0>2}-{day:0>2}.txt"
+    note_name = datetime.date(date.year, date.month, int(day)).strftime(NOTES_DATE_FORMAT)
+    note_path = f"{NOTES_PATH}/{note_name}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
     p = subprocess.Popen(
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
