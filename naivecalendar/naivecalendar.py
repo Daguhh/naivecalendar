@@ -59,7 +59,7 @@ SYM_NOTES = ["notes"]
 SYM_HELP = ["help"]
 
 # Rofi prompt date format:
-PROMT_DATE_FORMAT = "%B %Y"
+PROMT_DATE_FORMAT = "%b %Y"
 # NOTES_DATE_FORMAT = "%Y-%m-%d"
 
 # Get locale week days, override WEEKS_DAYS variable to personalize day names
