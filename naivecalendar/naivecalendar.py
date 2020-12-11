@@ -30,6 +30,9 @@ import time
 ############# User parameters ####################
 ##################################################
 
+# Locate
+USER_LOCALE = "" # keep empty to get system locale, use 'locale -a" on your system to list locales
+
 # Week parameters
 DAY_ABBR_LENGHT = 3 # day name lenght
 FIRST_DAY_WEEK = 1 # 0 : sunday, 1 : monday...
@@ -62,7 +65,7 @@ IS_TODAY_HEAD_MSG = True # toogle day num and name header display
 ##################################################
 
 # Get locale week days, override WEEKS_DAYS variable to personalize day names
-locale.setlocale(locale.LC_ALL, "")
+locale.setlocale(locale.LC_ALL, USER_LOCALE)
 if not SYM_WEEK_DAYS:
     get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
     week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
