@@ -94,7 +94,8 @@ def main():
 
     # read previous date or show actual month on first loop
     d = Date()
-    if rofi_output:
+    print(args, file=sys.stderr)
+    if rofi_output or args.read_cache:
         d.read_cache()
     else:
         d.today()
@@ -454,7 +455,7 @@ def open_n_reload_rofi(func):
 
         subprocess.Popen(["pkill", "-9", "rofi"])
         out = func(*args)
-        cmd = f"{script_path}/naivecalendar.sh"
+        cmd = f"{script_path}/naivecalendar.sh -c"
         os.system(cmd)
 
         return out
@@ -636,6 +637,13 @@ def get_arguments():
         help="""editor command to open notes""",
         dest="editor",
         default="xdg-open",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--read-cache",
+        dest="read_cache",
+        action="store_true",
     )
 
     args, unknown = parser.parse_known_args()
