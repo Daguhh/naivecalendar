@@ -19,14 +19,15 @@ CYAN="#00acc1"
 PINK="#d81b60"
 
 param="$@"
+cmd="${BASH_SOURCE%/*}/naivecalendar.py $param"
 
-if [[ $1 == '-h' ]] || [[ $1 == '--help' ]] ; then
-    ./naivecalendar.py -h
+if [[ " ${param[@]} " =~ " -h " ]] || [[ " ${param[@]} " =~ " --help " ]] ; then
+    $cmd
     exit 0
 fi
 
 rofi -show calendar \
-    -modi "calendar:${BASH_SOURCE%/*}/naivecalendar.py $param" \
+    -modi "calendar:$cmd" \
 -hide-scrollbar true \
 -matching-negate-char * \
 -a 0,8,16,24,32,40,48 \
@@ -37,11 +38,10 @@ rofi -show calendar \
 -xoffset 320 -yoffset 25 \
 -location 2 2 \
 -columns 7 \
--markup \
 -color-enabled true \
 -color-window "$BACKGROUND,$BORDER,$SEPARATOR" \
 -color-normal "$BACKGROUND_ALT,$FOREGROUND,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
--color-active "$BACKGROUND,$BLUE,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
+-color-active "$BACKGROUND,$BLUE,$BACKGROUND,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND" \
 -color-urgent "$BACKGROUND,$YELLOW,$BACKGROUND_ALT,$HIGHLIGHT_BACKGROUND,$HIGHLIGHT_FOREGROUND"
 
 if [[ " ${param[@]} " =~ " -p " ]] || [[ " ${param[@]} " =~ " --print " ]]; then

@@ -43,15 +43,19 @@ NOTES_RELATIVE_PATH = ".naivecalendar_notes" # path to save notes (retative to $
 NOTES_DATE_FORMAT = "%Y-%m-%d" # strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
 
 # Rofi/Calendar shape
-COL_NB = 7  # 7 days
-WEEK_NB = 6  # number of "complete" weeks, a month can extend up to 6 weeks
-ROW_NB = 1 + WEEK_NB + 1  # 1 day header + 6 weeks + 1 control menu
+NB_COL = 7  # 7 days
+NB_WEEK = 6  # number of "complete" weeks, a month can extend up to 6 weeks
+NB_ROW = 1 + NB_WEEK + 1  # 1 day header + 6 weeks + 1 control menu
+
+ROW_WEEK_SYM = 0
+ROW_CAL_START = 1
+ROW_CONTROL_MENU = 7
 
 # Calendar symbols and shorcuts
-SYM_NEXT_MONTH = [">", "+", "n"]  # 1st symbol : displayed, others : shortcuts
-SYM_NEXT_YEAR = [">>", "++", "nn"]
-SYM_PREV_MONTH = ["<", "-", "p"]
-SYM_PREV_YEAR = ["<<", "--", "pp"]
+SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"]  # 1st symbol : displayed, others : shortcuts
+SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"]
+SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"]
+SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"]
 SYM_DAYS_NUM = [str(n) for n in range(1, 32)]
 SYM_NOTES = ["notes"]
 SYM_HELP = ["help"]
@@ -64,6 +68,20 @@ IS_TODAY_HEAD_MSG = True # toogle day num and name header display
 ######### End User parameters ####################
 ##################################################
 
+# week days symbols : can be changed by locale
+def set_locale_n_week_day_names(cmd_line_locale):
+
+    global SYM_WEEK_DAYS
+
+    if cmd_line_locale:
+        locale.setlocale(locale.LC_ALL, cmd_line_locale)
+    else:
+        locale.setlocale(locale.LC_ALL, USER_LOCALE)
+
+    if not SYM_WEEK_DAYS:
+        get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
+        week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
+        SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
 
 # create path to notes
 HOME = os.getenv("HOME")
@@ -72,7 +90,6 @@ NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 CACHE_PATH = f"{HOME}/.cache/naivecalendar"
 DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
 PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
-
 
 ##################################################
 ############ Script ##############################
@@ -89,16 +106,7 @@ def main():
     """
     args, rofi_output = get_arguments()
 
-    # Get locale week days, override WEEKS_DAYS variable to personalize day names
-    if not args.locale:
-        locale.setlocale(locale.LC_ALL, USER_LOCALE)
-    else:
-        locale.setlocale(locale.LC_ALL, args.locale)
-    global SYM_WEEK_DAYS
-    if not SYM_WEEK_DAYS:
-        get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
-        week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
-        SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
+    set_locale_n_week_day_names(args.locale)
 
     # create note path n test rofi intall
     first_time_init()
@@ -142,7 +150,9 @@ def main():
     #    msg = """<span size="xx-small">A</span>"""
     #    print(f"""\0message\x1f\n""")
 
-    print(f"\0active\x1fa 0,8,16,24,32,40,48\n")
+    #print(f"\0active\x1fa 0,8,16,24,32,40,48\n")
+    print(f"\0active\x1f{get_row_rofi_inds(ROW_WEEK_SYM)}\n")
+    print(f"\0active\x1f{get_row_rofi_inds(ROW_CONTROL_MENU)}\n")
     print(cal)
 
     # write new date in buffer
@@ -192,8 +202,8 @@ def get_calendar_from_date(date):
 
     start_day, month_length = calendar.monthrange(date.year, date.month)
 
-    # init calendar with WEEK_NB blank week
-    cal = [" "] * WEEK_NB * COL_NB
+    # init calendar with NB_WEEK blank week
+    cal = [" "] * NB_WEEK * NB_COL
 
     # fill with day numbers
     cal[start_day : month_length + start_day] = [
@@ -201,12 +211,17 @@ def get_calendar_from_date(date):
     ]
 
     # create menu bar
-    cal_menu = [" "] * COL_NB
+    cal_menu = [" "] * NB_COL
     cal_menu[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
     cal_menu[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
 
+    index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_CONTROL_MENU)
+    content=[SYM_WEEK_DAYS, cal, cal_menu]
+
+    index, content = (list(x) for x in zip(*sorted(zip(index, content))))
+
     # chain calendar elements
-    cal = list(chain(SYM_WEEK_DAYS, cal, cal_menu))
+    cal = list(chain(*content))
 
     # Format calendar for rofi (column by column)
     cal = list_transpose(cal)
@@ -217,7 +232,7 @@ def get_calendar_from_date(date):
     return cal
 
 
-def rofi_transpose(rofi_datas, column_number=COL_NB):
+def rofi_transpose(rofi_datas, column_number=NB_COL):
     """
     Transpose (math) a row by row rofi-list into column by column rofi-list
     given column number
@@ -249,7 +264,7 @@ def rofi_transpose(rofi_datas, column_number=COL_NB):
     return list2rofi(bycol_datas)
 
 
-def list_transpose(lst, col_nb=COL_NB):
+def list_transpose(lst, col_nb=NB_COL):
     """
     Transpose (math) a row by row list into column by column list
     given column number
@@ -380,6 +395,9 @@ def get_note_head(note_path):
         head = f.read().split("\n")[0]
     return head
 
+def get_row_rofi_inds(row):
+
+    return ",".join(str(i * NB_ROW + row) for i in range(NB_COL))
 
 def rofi2cal_ind(ind):
     """ Convert coordinate from rofi to day number """
@@ -407,13 +425,13 @@ def cal2rofi_ind(day, month, year):
     # correct day offset
     day = int(day) - 1  # make month start at 0
     start, _ = calendar.monthrange(year, month)
-    ind = day + COL_NB + start
+    ind = day + NB_COL * ROW_CAL_START + start
 
     # calendar coordinate
-    row, col = ind // COL_NB, ind % COL_NB
+    row, col = ind // NB_COL, ind % NB_COL
 
     # rofi coordinate
-    new_ind = col * ROW_NB + row
+    new_ind = col * NB_ROW + row
 
     return new_ind
 
