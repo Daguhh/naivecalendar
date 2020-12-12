@@ -83,7 +83,6 @@ def set_locale_n_week_day_names(cmd_line_locale):
         get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
         week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
         SYM_WEEK_DAYS = [day_align_format.format(get_loc_day(x, DAY_ABBR_LENGHT)) for x in week_order]
-        print(SYM_WEEK_DAYS, file=sys.stderr)
 
 # create path to notes
 HOME = os.getenv("HOME")
@@ -214,7 +213,6 @@ def get_calendar_from_date(date):
     cal[start_day : month_length + start_day] = [
         temp.format(n) for n in range(1, month_length + 1)
     ]
-    print(cal, file=sys.stderr)
 
     # create menu bar
     cal_menu = [" "] * NB_COL
@@ -709,6 +707,14 @@ def get_arguments():
         "--read-cache",
         dest="read_cache",
         action="store_true",
+        help="""force calendar to read old date from cache"""
+    )
+
+    parser.add_argument(
+        "-t",
+        "--theme",
+        help="""set calendar theme, default=classic_dark (theme file name without extention)""",
+        dest="theme"
     )
 
     args, unknown = parser.parse_known_args()
