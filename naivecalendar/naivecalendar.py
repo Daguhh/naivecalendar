@@ -79,9 +79,11 @@ def set_locale_n_week_day_names(cmd_line_locale):
         locale.setlocale(locale.LC_ALL, USER_LOCALE)
 
     if not SYM_WEEK_DAYS:
+        day_align_format = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT >=2 else 2) + '}'
         get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
         week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
-        SYM_WEEK_DAYS = [get_loc_day(x, DAY_ABBR_LENGHT) for x in week_order]
+        SYM_WEEK_DAYS = [day_align_format.format(get_loc_day(x, DAY_ABBR_LENGHT)) for x in week_order]
+        print(SYM_WEEK_DAYS, file=sys.stderr)
 
 # create path to notes
 HOME = os.getenv("HOME")
@@ -135,6 +137,7 @@ def main():
     date_prompt = date.strftime(PROMT_DATE_FORMAT).title()
     notes_inds = get_month_notes_ind(date)
     today_ind = cal2rofi_ind(date.day, date.month, date.year)
+
 
     # send datas
     # A_,d_,B_,Y_ = [date.strftime(x) for x in ['%A', '%d', '%B', '%Y']]
@@ -206,9 +209,12 @@ def get_calendar_from_date(date):
     cal = [" "] * NB_WEEK * NB_COL
 
     # fill with day numbers
+    temp = '{:' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
+    #temp = '{:' + str(2) + '}'
     cal[start_day : month_length + start_day] = [
-        str(n) for n in range(1, month_length + 1)
+        temp.format(n) for n in range(1, month_length + 1)
     ]
+    print(cal, file=sys.stderr)
 
     # create menu bar
     cal_menu = [" "] * NB_COL
