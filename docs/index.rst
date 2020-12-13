@@ -6,7 +6,6 @@ NaïveCalendar
    :maxdepth: 2
 
    install  
-   support
    module
    themes
    license
