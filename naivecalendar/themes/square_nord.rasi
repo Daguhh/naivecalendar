@@ -42,8 +42,8 @@
     line-padding:           10;
     padding:                6px;
     width:                  330px;
-    xoffset:                320;
-    yoffset:                25;
+    x-offset:               -3%;
+    y-offset:               4%;
     location:               2;
     columns:                7;
     border-color:           @blue;

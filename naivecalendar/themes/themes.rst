@@ -19,7 +19,7 @@ Nord : Round light & Square dark
 |round light nord| |square dark nord|
 
 
-.. |classic dark| image:: ./screenshots/classic_dark.png
+.. |classic dark| image:: ../themes/screenshots/classic_dark.png
     :height: 180px
 
 .. |classic light| image:: ./screenshots/classic_light.png

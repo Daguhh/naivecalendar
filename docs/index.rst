@@ -8,6 +8,7 @@ NaïveCalendar
    install  
    support
    module
+   themes
    license
 
 .. include:: ../README.rst

@@ -27,6 +27,9 @@ rofi -show calendar \
     -modi "calendar:$cmd" \
     -theme $THEME \
     -hide-scrollbar true \
+    -x-offset 0 \
+    -y-offset 55 \
+    -location 3 \
 
 
 if [[ " ${param[@]} " =~ " -p " ]] || [[ " ${param[@]} " =~ " --print " ]]; then
