@@ -211,7 +211,7 @@ def get_calendar_from_date(date):
     temp = '{:' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
     #temp = '{:' + str(2) + '}'
     cal[start_day : month_length + start_day] = [
-        temp.format(n) for n in range(1, month_length + 1)
+        temp.format(n) for n in SYM_DAYS_NUM[:month_length]
     ]
 
     # create menu bar
