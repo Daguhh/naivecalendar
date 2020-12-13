@@ -138,6 +138,11 @@ def main():
     today_ind = cal2rofi_ind(date.day, date.month, date.year)
 
 
+    if out in SYM_DAYS_NUM:
+        if args.print:
+            print_selection(out, d.date, args.format)
+        else:
+            open_note(out, d.date, args.editor)
     # send datas
     # A_,d_,B_,Y_ = [date.strftime(x) for x in ['%A', '%d', '%B', '%Y']]
     print(f"\0prompt\x1f{date_prompt}\n")
@@ -161,12 +166,7 @@ def main():
     d.write_cache()
 
     # react to rofi output
-    if out in SYM_DAYS_NUM:
-        if args.print:
-            print_selection(out, d.date, args.format)
-        else:
-            open_note(out, d.date, args.editor)
-    elif out in SYM_NOTES:
+    if out in SYM_NOTES:
         show_notes(d.date)
     elif out in SYM_HELP:
         display_help()
@@ -718,7 +718,7 @@ def get_arguments():
     )
 
     args, unknown = parser.parse_known_args()
-    unknown = unknown if len(unknown) == 0 else "".join(unknown)
+    unknown = unknown if len(unknown) == 0 else "".join(unknown).strip(' ')
 
     return args, unknown
 
