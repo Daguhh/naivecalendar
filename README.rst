@@ -19,7 +19,7 @@ A popup calendar with `rofi`_ and `python3`_:
 * Cycle through calendar month by month.
 * Create notes linked to days. *Days with notes will appear colored*.
 
-.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar/themes/screenshot/classic_dark.png
+.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar/themes/screenshots/classic_dark.png
     :width: 200 px
     :align: center
 
@@ -93,6 +93,11 @@ You can edit parameters :
 
 - calendar content : in  naivecalendar.py header
 - calendar appearance : rofi command in naivecalendar.sh
+
+Themes
+------
+
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/naivecalendar/themes/themes.rst>`_, load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes* 
 
 Build the doc
 -------------
