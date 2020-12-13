@@ -3,28 +3,17 @@
 A simple calendar made with rofi and python3.
 
 Cycle through month and create linked note to days.
-
-rofi theme by adi1090x : https://github.com/adi1090x/polybar-themes
 """
 
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
 
-
-import glob, os
-import sys
-import subprocess
-import shutil
-import re
-import datetime
-import calendar
-import locale
+import glob, os, sys, subprocess, shutil
+import re, argparse, configparser
+import datetime, calendar, locale
 from itertools import chain
 from functools import wraps
-import argparse
-import configparser
-import time
 
 ##################################################
 ############# User parameters ####################
@@ -93,9 +82,8 @@ DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
 PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 
 ##################################################
-############ Script ##############################
+################# Script #########################
 ##################################################
-
 
 def main():
     """
@@ -105,22 +93,22 @@ def main():
     - switch between month
     - open {EDITOR} and create a note for selected day
     """
+
+    first_time_init() # create note path n test rofi intall
+
     args, rofi_output = get_arguments()
+    is_first_loop = bool(rofi_output)
+    out = rofi_output
 
     set_locale_n_week_day_names(args.locale)
 
-    # create note path n test rofi intall
-    first_time_init()
-
-    # read previous date or show actual month on first loop
     d = Date()
-    if rofi_output or args.read_cache:
+    if is_first_loop or args.is_force_read_cache:
         d.read_cache()
     else:
         d.today()
 
-    # react to rofi date change output
-    out = rofi_output
+    # react to rofi output : date change
     if out in SYM_PREV_YEAR:
         d.year -= 1
     elif out in SYM_PREV_MONTH:
@@ -129,52 +117,51 @@ def main():
         d.month += 1
     elif out in SYM_NEXT_YEAR:
         d.year += 1
-
-    # generate new datas
-    date = d.date
-    cal = get_calendar_from_date(date)
-    date_prompt = date.strftime(PROMT_DATE_FORMAT).title()
-    notes_inds = get_month_notes_ind(date)
-    today_ind = cal2rofi_ind(date.day, date.month, date.year)
-
-
-    if out in SYM_DAYS_NUM:
+    elif out in SYM_DAYS_NUM:
         if args.print:
             print_selection(out, d.date, args.format)
         else:
             open_note(out, d.date, args.editor)
-    # send datas
-    # A_,d_,B_,Y_ = [date.strftime(x) for x in ['%A', '%d', '%B', '%Y']]
+    elif out == "" or out in SYM_WEEK_DAYS:
+        joke(out)
+
+    update_rofi(d.date, is_first_loop)
+
+    d.write_cache()
+
+    # react to rofi output (read cache file to reload rofi)
+    if out in SYM_NOTES:
+        show_notes(d.date)
+    elif out in SYM_HELP:
+        display_help()
+    else:
+        pass
+
+
+def update_rofi(date, is_first_loop):
+    """generate and send calendar data to stdout/rofi"""
+
+    # generate new datas
+    cal = get_calendar_from_date(date)
+    date_prompt = date.strftime(PROMT_DATE_FORMAT).title()
+    notes_inds = get_month_notes_ind(date)
+    today_ind = cal2rofi_ind(date.day, date.month, date.year)
+    week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
+    control_sym_row =get_row_rofi_inds(ROW_CONTROL_MENU)
+
+    # send datas to stdout
     print(f"\0prompt\x1f{date_prompt}\n")
     print(f"\0urgent\x1f{notes_inds}\n")
-    if not rofi_output:
+    if not is_first_loop:
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
             day_numb = f"""<span size="xx-large" >{date.strftime('%d')}</span>"""
             day_name = f"""<span rise="12000" size="small">{date.strftime('%A')}</span>"""
             print(f"\0message\x1f{day_numb} {day_name}\n")
-    #else:
-    #    msg = """<span size="xx-small">A</span>"""
-    #    print(f"""\0message\x1f\n""")
 
-    #print(f"\0active\x1fa 0,8,16,24,32,40,48\n")
-    print(f"\0active\x1f{get_row_rofi_inds(ROW_WEEK_SYM)}\n")
-    print(f"\0active\x1f{get_row_rofi_inds(ROW_CONTROL_MENU)}\n")
+    print(f"\0active\x1f{week_sym_row}\n")
+    print(f"\0active\x1f{control_sym_row}\n")
     print(cal)
-
-    # write new date in buffer
-    d.write_cache()
-
-    # react to rofi output
-    if out in SYM_NOTES:
-        show_notes(d.date)
-    elif out in SYM_HELP:
-        display_help()
-    elif out == " " or out in SYM_WEEK_DAYS:
-        joke(out)
-    else:
-        pass
-        # print('No output',file=sys.stderr)
 
 
 def get_calendar_from_date(date):
@@ -208,8 +195,7 @@ def get_calendar_from_date(date):
     cal = [" "] * NB_WEEK * NB_COL
 
     # fill with day numbers
-    temp = '{:' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
-    #temp = '{:' + str(2) + '}'
+    temp = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
     cal[start_day : month_length + start_day] = [
         temp.format(n) for n in SYM_DAYS_NUM[:month_length]
     ]
@@ -705,7 +691,7 @@ def get_arguments():
     parser.add_argument(
         "-c",
         "--read-cache",
-        dest="read_cache",
+        dest="is_force_read_cache",
         action="store_true",
         help="""force calendar to read old date from cache"""
     )
@@ -726,7 +712,7 @@ def get_arguments():
 def joke(sym):
     """Just display stupid jokes in french"""
 
-    if sym == " ":
+    if sym == "":
         print(
             "Vous glissez entre les mois, vous perdez la notion du temps.",
             file=sys.stderr,
