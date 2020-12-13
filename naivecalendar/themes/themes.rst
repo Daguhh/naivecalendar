@@ -2,6 +2,11 @@
 Themes
 ======
 
+thèmes :
+ - `nordtheme <https://www.nordtheme.com/>`_
+ - `polybar-themes <https://github.com/adi1090x/polybar-themes>`_
+ - own interpretarion
+
 Classic dark & light
 --------------------
 
