@@ -1,0 +1,166 @@
+/************************************************
+ * ROFI Color theme
+ * User: Daguhh
+ * Copyright: 2020 Daguhh
+ ***********************************************/
+
+* {
+    nord0: 	        #2e3440;	
+    nord1: 	        #3b4252;	
+    nord2:          #434c5e;
+    nord3: 	        #4c566a;	
+    nord4: 	        #d8dee9;	
+    nord5: 	        #e5e9f0;	
+    nord6: 	        #eceff4;	
+    nord7: 	        #8fbcbb;	
+    nord8: 	        #88c0d0;	
+    nord9: 	        #81a1c1;	
+    nord11:         #bf616a;
+    nord12:         #d08770;
+    nord13: 	    #ebcb8b;	
+    nord14: 	    #a3be8c;	
+    nord15: 	    #b48ead;	
+    blue:           #56769E;
+    blue2:          #1E88E5;
+    dark1:                       #1F1F1F;
+    dark2:                       #252525;
+    white1:                      #FFFFFF;
+    blue3:                       #8E24AA;
+    foreground:                  @white1;
+    background:                  @dark1;
+    foreground-normal:           @foreground;
+    background-normal:           @dark2;
+    foreground-urgent:           @nord13;
+    background-urgent:           @background-normal;
+    foreground-active:           @blue2;
+    background-active:           @background;
+    foreground-select:           @foreground;
+    background-select:           @blue3;
+    border:                      @nord15;
+    lightbg:                     #434c5e;
+}
+#window {
+    fullscreen:             false;
+    hide-scrollbar:         true;
+    line-padding:           10;
+    padding:                10px;
+    width:                  300px;
+    x-offset:               -3%;
+    y-offset:               4%;
+    border-color:           @blue;
+    background-color:       @background;
+    text-color:             @foreground;
+}
+#mainbox {
+    border:  0;
+    padding: 0;
+    background-color:   @background;
+}
+#message {
+    border-color: @background;
+    padding:      1px ;
+    background-color:   @background;
+}
+#textbox {
+    text-color: @foreground;
+    background-color:   @background;
+}
+#listview {
+    fixed-height: 0;
+    border:       2px 0px 0px ;
+    border-color: @background;
+    background-color:   @background;
+    spacing:      3px;
+    scrollbar:    false;
+    padding:      1px 1px 1px ;
+    columns:      7;
+    lines:        8;
+}
+#element {
+    border:  0;
+    padding: 8px 0px 0px ;
+    background-color:   @background;
+    horizontal-align: true;
+}
+#element.normal.normal {
+    background-color: @background-normal;
+    text-color:       @foreground-normal;
+}
+#element.normal.urgent {
+    background-color: @background-urgent;
+    text-color:       @foreground-urgent;
+}
+#element.normal.active {
+    background-color: @background-active;
+    text-color:       @foreground-active;
+}
+#element.selected.normal {
+    background-color: @background-select;
+    text-color:       @foreground-select;
+}
+#element.selected.urgent {
+    background-color: @background-select;
+    text-color:       @foreground-select;
+}
+#element.selected.active {
+    background-color: @background-select;
+    text-color:       @foreground-select;
+}
+#element.alternate.normal {
+    background-color: @background-normal;
+    text-color:       @foreground-normal;
+}
+#element.alternate.urgent {
+    background-color: @background-urgent;
+    text-color:       @foreground-urgent;
+}
+#element.alternate.active {
+    background-color: @background-active;
+    text-color:       @foreground-active;
+}
+#mode-switcher {
+    border:       0px 0px 0px ;
+    border-color: @background;
+    foreground-color:   @background;
+    background-color:   @background;
+}
+#button {
+    spacing:    0;
+    text-color: @foreground;
+    background-color:   @background;
+}
+#button.selected {
+    background-color: @background;
+    text-color:       @foreground;
+}
+#inputbar {
+    spacing:    0;
+    text-color: @foreground;
+    padding:    1px ;
+    background-color:   @background;
+}
+#case-indicator {
+    spacing:    0;
+    text-color: @foreground;
+    background-color:   @background;
+}
+#entry {
+    spacing:    0;
+    text-color: @foreground;
+    background-color:   @background;
+}
+#prompt {
+    spacing:    0;
+    text-color: @foreground;
+    background-color:   @background;
+}
+#inputbar {
+    children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
+}
+#textbox-prompt-colon {
+    expand:     false;
+    str:        ":";
+    margin:     0px 0.3em 0em 0em ;
+    text-color: @foreground;
+    background-color:   @background;
+}

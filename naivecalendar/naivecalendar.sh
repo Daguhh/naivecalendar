@@ -8,7 +8,7 @@ if [[ " ${param[@]} " =~ " -h " ]] || [[ " ${param[@]} " =~ " --help " ]] ; then
     exit 0
 fi
 
-THEME="${BASH_SOURCE%/*}/themes/classic_dark.rasi"
+THEME="${BASH_SOURCE%/*}/themes/default.rasi"
 if [[ " ${param[@]} " =~ " -t " ]] || [[ " ${param[@]} " =~ " --theme " ]] ; then
     while [[ $# -gt 0 ]] ; do
         key="$1"
