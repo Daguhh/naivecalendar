@@ -8,7 +8,12 @@ if [[ " ${param[@]} " =~ " -h " ]] || [[ " ${param[@]} " =~ " --help " ]] ; then
     exit 0
 fi
 
-THEME="${BASH_SOURCE%/*}/themes/default.rasi"
+THEME_CACHE_FILE="$HOME/.cache/naivecalendar/theme_cache.txt"
+if test -f "$THEME_CACHE_FILE"; then
+    THEME="${BASH_SOURCE%/*}/themes/$(cat $THEME_CACHE_FILE).rasi"
+else
+    THEME="${BASH_SOURCE%/*}/themes/default.rasi"
+fi
 if [[ " ${param[@]} " =~ " -t " ]] || [[ " ${param[@]} " =~ " --theme " ]] ; then
     while [[ $# -gt 0 ]] ; do
         key="$1"

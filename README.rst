@@ -75,6 +75,7 @@ Sym    Key   Alt-key   Action
  >>      nn       ++   go to next year
  ..   notes       ..   display notes of the month (first line)
  ..    help       ..   display this help
+ ..   theme       ..   display theme selector
 ====  =====  =======   ========================================
 
 In a script

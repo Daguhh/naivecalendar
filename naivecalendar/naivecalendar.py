@@ -48,6 +48,7 @@ SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"]
 SYM_DAYS_NUM = [str(n) for n in range(1, 32)]
 SYM_NOTES = ["notes"]
 SYM_HELP = ["help"]
+SYM_THEME = ["theme"]
 
 # Other display parameters
 PROMT_DATE_FORMAT = "%b %Y"
@@ -75,11 +76,14 @@ def set_locale_n_week_day_names(cmd_line_locale):
 
 # create path to notes
 HOME = os.getenv("HOME")
+DIRNAME = os.path.dirname(__file__)
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 
 CACHE_PATH = f"{HOME}/.cache/naivecalendar"
 DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
 PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
+THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
+THEME_PATH = f"{DIRNAME}/themes"
 
 ##################################################
 ################# Script #########################
@@ -134,8 +138,11 @@ def main():
         show_notes(d.date)
     elif out in SYM_HELP:
         display_help()
+    elif out in SYM_THEME:
+        ask_theme()
     else:
         pass
+
 
 
 def update_rofi(date, is_first_loop):
@@ -515,6 +522,15 @@ def open_note(day, date, editor):
     )
     sdtout, sdterr = p.communicate()
 
+@open_n_reload_rofi
+def ask_theme():
+    themes = glob.glob(f'{THEME_PATH}/*.rasi')
+    themes = (t.split('/')[-1].split('.')[0]for t in themes)
+    #themes = '\n'.join((t.split('/')[-1] for t in themes))
+
+    out = text_list_popup("select theme", themes)
+    print(out, file=sys.stderr)
+
 
 def print_selection(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
@@ -743,6 +759,52 @@ def text_popup(head, body):
     text_area.configure(state="disabled")
     win.mainloop()
 
+def text_list_popup(head, lst):
+
+    import tkinter as tk
+    from tkinter import Listbox
+
+    win = tk.Tk()
+    win.title(head)
+    l = Listbox(win)
+    l.insert(1,*lst)
+    l.pack()
+
+    win.bind('<Return>', lambda _:[set_theme_cache(l.get(l.curselection()[0])), win.destroy()])
+
+    win.mainloop()
+
+def set_theme_cache(selected):
+
+    with open(THEME_CACHE, 'w') as f:
+        f.write(selected)
+
+def rofi_popup(txt_body, txt_head):
+    """Launch a rofi window
+
+    Parameters
+    ----------
+    txt_body : str
+        Text to display in rofi window
+    txt_head : str
+        Text to display in rofi prompt
+
+    Returns
+    -------
+    str
+        Rofi selected cell content
+    """
+
+    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
+    selection = (
+        subprocess.check_output(
+            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
+        )
+        .decode("utf-8")
+        .replace("\n", "")
+    )
+
+    return selection
 
 @open_n_reload_rofi
 def display_help(head_txt="help:"):
@@ -765,6 +827,7 @@ There's somme shortcut too, type it in rofi prompt :
  pp or ++ : go to next year
     notes : display notes of the month (first line)
      help : display this help
+    theme : show theme selector
 
 There's some command line option too, dislay it with :
     ./naivecalendar -h
