@@ -9,6 +9,9 @@ test:
   - branches
   except:
   - master
+  artifacts:
+    expire_in: '10'
+    when: always
 
 pages:
   stage: deploy
@@ -16,13 +19,11 @@ pages:
   - pip install -U -r docs/requirements.txt
   - sphinx-build -b html docs public
   artifacts:
+    expire_in: '10'
+    when: always
     paths:
     - public
   only:
   - master
 
-job:
-  artifacts:
-    expire_in: '10'
-    when: always
     
