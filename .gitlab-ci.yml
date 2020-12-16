@@ -20,3 +20,9 @@ pages:
     - public
   only:
   - master
+
+job:
+  artifacts:
+    expire_in: '10'
+    when: always
+    
