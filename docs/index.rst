@@ -1,6 +1,9 @@
-=============
-NaïveCalendar
-=============
+
+.. include:: ../README.rst
+   :end-before: Dependancies
+
+.. include:: ../README.rst
+   :start-after: .. _start-link:
 
 .. toctree::
    :maxdepth: 2
@@ -9,10 +12,3 @@ NaïveCalendar
    module
    themes
    license
-
-.. include:: ../README.rst
-   :start-after: NaïveCalendar
-   :end-before: Dependancies
-
-.. include:: ../README.rst
-   :start-after: .. _start-link:

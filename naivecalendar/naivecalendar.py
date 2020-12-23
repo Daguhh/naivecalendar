@@ -19,40 +19,40 @@ from functools import wraps
 ############# User parameters ####################
 ##################################################
 
-# Locate
-USER_LOCALE = "" # keep empty to get system locale, use 'locale -a" on your system to list locales
+# set Locate
+USER_LOCALE = "" #: keep empty to get system locale, use 'locale -a" on your system to list locales
 
 # Week parameters
-DAY_ABBR_LENGHT = 3 # day name lenght
-FIRST_DAY_WEEK = 1 # 0 : sunday, 1 : monday...
-SYM_WEEK_DAYS = [] # day names list, if empty, locale names will be set
+DAY_ABBR_LENGHT = 3 #: day name lenght
+FIRST_DAY_WEEK = 1 #: 0 : sunday, 1 : monday...
+SYM_WEEK_DAYS = [] #: day names list, if empty, locale names will be set
 
 # Notes conf
-NOTES_RELATIVE_PATH = ".naivecalendar_notes" # path to save notes (retative to $HOME)
-NOTES_DATE_FORMAT = "%Y-%m-%d" # strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
+NOTES_RELATIVE_PATH = ".naivecalendar_notes" #: path to save notes (retative to $HOME)
+NOTES_DATE_FORMAT = "%Y-%m-%d" #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
 
 # Rofi/Calendar shape
-NB_COL = 7  # 7 days
-NB_WEEK = 6  # number of "complete" weeks, a month can extend up to 6 weeks
-NB_ROW = 1 + NB_WEEK + 1  # 1 day header + 6 weeks + 1 control menu
+NB_COL = 7  #: 7 days
+NB_WEEK = 6  #: number of "complete" weeks, a month can extend up to 6 weeks
+NB_ROW = 1 + NB_WEEK + 1  #: 1 day header + 6 weeks + 1 control menu
 
-ROW_WEEK_SYM = 0
-ROW_CAL_START = 1
-ROW_CONTROL_MENU = 7
+ROW_WEEK_SYM = 0 #:
+ROW_CAL_START = 1 #:
+ROW_CONTROL_MENU = 7 #:
 
-# Calendar symbols and shorcuts
-SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"]  # 1st symbol : displayed, others : shortcuts
-SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"]
-SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"]
-SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"]
-SYM_DAYS_NUM = [str(n) for n in range(1, 32)]
-SYM_NOTES = ["notes"]
-SYM_HELP = ["help"]
-SYM_THEME = ["theme"]
+#: Calendar symbols and shorcuts
+SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"]  #: 1st symbol : displayed, others : shortcuts
+SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"] #:
+SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"] #!
+SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"] #!
+SYM_DAYS_NUM = [str(n) for n in range(1, 32)] #:
+SYM_NOTES = ["notes"] #:
+SYM_HELP = ["help"] #:
+SYM_THEME = ["theme"] #:
 
 # Other display parameters
-PROMT_DATE_FORMAT = "%b %Y"
-IS_TODAY_HEAD_MSG = True # toogle day num and name header display
+PROMT_DATE_FORMAT = "%b %Y" #:
+IS_TODAY_HEAD_MSG = True #: toogle day num and name header display
 
 ##################################################
 ######### End User parameters ####################
