@@ -150,7 +150,19 @@ def main():
         pass
 
 def update_rofi(date, is_first_loop):
-    """generate and send calendar data to stdout/rofi"""
+    """generate and send calendar data to stdout/rofi
+
+    It use the rofi `custom script mode <https://github.com/davatorium/rofi/wiki/mode-Specs>`_ to communicate with rofi
+    and `pango markup <https://developer.gnome.org/pygtk/stable/pango-markup-language.html>`_ for theming
+
+    Parameters
+    ----------
+    date : datetime.date
+        A day of the month to display
+    is_first_loop : bool
+        True on first loop, if true, update today highlights
+
+    """
 
     # generate new datas
     cal = get_calendar_from_date(date)
