@@ -20,11 +20,11 @@ from functools import wraps
 ##################################################
 
 # set Locate
-USER_LOCALE = "" #: keep empty to get system locale, use 'locale -a" on your system to list locales
+USER_LOCALE = "" #: keep empty to get system locale, use 'locale -a' on your system to list locales
 
 # Week parameters
 DAY_ABBR_LENGHT = 3 #: day name lenght
-FIRST_DAY_WEEK = 1 #: 0 : sunday, 1 : monday...
+FIRST_DAY_WEEK = 1 #: 0 = sunday, 1 = monday...
 SYM_WEEK_DAYS = [] #: day names list, if empty, locale names will be set
 
 # Notes conf
@@ -32,27 +32,33 @@ NOTES_RELATIVE_PATH = ".naivecalendar_notes" #: path to save notes (retative to 
 NOTES_DATE_FORMAT = "%Y-%m-%d" #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
 
 # Rofi/Calendar shape
-NB_COL = 7  #: 7 days
+NB_COL = 7  #: 7 days for a week
 NB_WEEK = 6  #: number of "complete" weeks, a month can extend up to 6 weeks
 NB_ROW = 1 + NB_WEEK + 1  #: 1 day header + 6 weeks + 1 control menu
 
-ROW_WEEK_SYM = 0 #:
-ROW_CAL_START = 1 #:
-ROW_CONTROL_MENU = 7 #:
+ROW_WEEK_SYM = 0 #: row number where to display day symbols
+ROW_CAL_START = 1 #: row number where to display calendar first line
+ROW_CONTROL_MENU = 7 #: row number where to display buttons
 
 #: Calendar symbols and shorcuts
-SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"]  #: 1st symbol : displayed, others : shortcuts
-SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"] #:
-SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"] #!
-SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"] #!
+SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"] #: 1st symbol is displayed, others are simply shortcuts
+SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"] #: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"] #: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"] #: 1st symbol is displayed, others are simply shortcuts
 SYM_DAYS_NUM = [str(n) for n in range(1, 32)] #:
-SYM_NOTES = ["notes"] #:
-SYM_HELP = ["help"] #:
-SYM_THEME = ["theme"] #:
+SYM_NOTES = ["notes"] #: shortcut to display notes popup
+SYM_HELP = ["help"] #: shortcut to display help popup
+SYM_THEME = ["theme"] #: shortcut to display theme chooser popup
 
-# Other display parameters
-PROMT_DATE_FORMAT = "%b %Y" #:
+# Date header display (rofi prompt)
+PROMT_DATE_FORMAT = "%b %Y" #: date format in rofi prompt
+
+# Today header display
 IS_TODAY_HEAD_MSG = True #: toogle day num and name header display
+TODAY_HEAD_NUMB_SIZE = "xx-large" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
+TODAY_HEAD_NUMB_RISE = 0 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
+TODAY_HEAD_NAME_SIZE = "small" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
+TODAY_HEAD_NAME_RISE = 12000 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
 
 ##################################################
 ######### End User parameters ####################
@@ -143,8 +149,6 @@ def main():
     else:
         pass
 
-
-
 def update_rofi(date, is_first_loop):
     """generate and send calendar data to stdout/rofi"""
 
@@ -162,8 +166,8 @@ def update_rofi(date, is_first_loop):
     if not is_first_loop:
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
-            day_numb = f"""<span size="xx-large" >{date.strftime('%d')}</span>"""
-            day_name = f"""<span rise="12000" size="small">{date.strftime('%A')}</span>"""
+            day_numb = f"""<span rise="{TODAY_HEAD_NUMB_RISE}" size="{TODAY_HEAD_NUMB_SIZE}">{date.strftime('%d')}</span>"""
+            day_name = f"""<span rise="{TODAY_HEAD_NAME_RISE}" size="{TODAY_HEAD_NAME_SIZE}">{date.strftime('%A')}</span>"""
             print(f"\0message\x1f{day_numb} {day_name}\n")
 
     print(f"\0active\x1f{week_sym_row}\n")
