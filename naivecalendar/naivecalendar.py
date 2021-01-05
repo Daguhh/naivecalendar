@@ -21,46 +21,48 @@ from functools import wraps
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.cfg")
 
+cfg = config['CONFIG']
+
 # set Locate
-USER_LOCALE = config['CONFIG']["USER_LOCALE"] #"" #: keep empty to get system locale, use 'locale -a' on your system to list locales
+USER_LOCALE = cfg["USER_LOCALE"] #"" #: keep empty to get system locale, use 'locale -a' on your system to list locales
 
 # Week parameters
-DAY_ABBR_LENGHT = int(config['CONFIG']["DAY_ABBR_LENGHT"]) #: day name lenght
-FIRST_DAY_WEEK = int(config['CONFIG']["FIRST_DAY_WEEK"]) #: 0 = sunday, 1 = monday...
-SYM_WEEK_DAYS = config['CONFIG']["SYM_WEEK_DAYS"].split(',') #: day names list, if empty, locale names will be set
+DAY_ABBR_LENGHT = int(cfg["DAY_ABBR_LENGHT"]) #: day name lenght
+FIRST_DAY_WEEK = int(cfg["FIRST_DAY_WEEK"]) #: 0 = sunday, 1 = monday...
+SYM_WEEK_DAYS = cfg["SYM_WEEK_DAYS"].split(',') #: day names list, if empty, locale names will be set
 
 # Notes conf
-NOTES_RELATIVE_PATH = config['CONFIG']["NOTES_RELATIVE_PATH"] # ".naivecalendar_notes" #: path to save notes (retative to $HOME)
-NOTES_DATE_FORMAT = config['CONFIG']["NOTES_DATE_FORMAT"] #"%Y-%m-%d" #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
+NOTES_RELATIVE_PATH = cfg["NOTES_RELATIVE_PATH"] # ".naivecalendar_notes" #: path to save notes (retative to $HOME)
+NOTES_DATE_FORMAT = cfg["NOTES_DATE_FORMAT"] #"%Y-%m-%d" #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
 
 # Rofi/Calendar shape
-NB_COL = int(config['CONFIG']['NB_COL']) #  7  #: 7 days for a week
-NB_WEEK = int(config['CONFIG']['NB_WEEK']) # 6  #: number of "complete" weeks, a month can extend up to 6 weeks
-NB_ROW = int(config['CONFIG']['NB_ROW']) # 1 + NB_WEEK + 1  #: 1 day header + 6 weeks + 1 control menu
+NB_COL = int(cfg['NB_COL']) #  7  #: 7 days for a week
+NB_WEEK = int(cfg['NB_WEEK']) # 6  #: number of "complete" weeks, a month can extend up to 6 weeks
+NB_ROW = int(cfg['NB_ROW']) # 1 + NB_WEEK + 1  #: 1 day header + 6 weeks + 1 control menu
 
-ROW_WEEK_SYM = int(config['CONFIG']['ROW_WEEK_SYM']) # 0 #: row number where to display day symbols
-ROW_CAL_START = int(config['CONFIG']['ROW_CAL_START']) # 1 #: row number where to display calendar first line
-ROW_CONTROL_MENU = int(config['CONFIG']['ROW_CONTROL_MENU']) # 7 #: row number where to display buttons
+ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM']) # 0 #: row number where to display day symbols
+ROW_CAL_START = int(cfg['ROW_CAL_START']) # 1 #: row number where to display calendar first line
+ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU']) # 7 #: row number where to display buttons
 
 #: Calendar symbols and shorcuts
-SYM_NEXT_MONTH = config['CONFIG']['SYM_NEXT_MONTH'].split(',')  # [ "▶",  ">",  "+",  "n"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_NEXT_YEAR = config['CONFIG']['SYM_NEXT_YEAR'].split(',')  #  ["▶▶", ">>", "++", "nn"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_PREV_MONTH = config['CONFIG']['SYM_PREV_MONTH'].split(',')  # [ "◀",  "<",  "-",  "p"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_PREV_YEAR = config['CONFIG']['SYM_PREV_YEAR'].split(',')  #  ["◀◀", "<<", "--", "pp"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_DAYS_NUM = config['CONFIG']['SYM_DAYS_NUM'].split(',')  # [str(n) for n in range(1, 32)] #:
-SYM_NOTES = config['CONFIG']['SYM_NOTES'].split(',')  # ["notes"] #: shortcut to display notes popup
-SYM_HELP = config['CONFIG']['SYM_HELP'].split(',')  # ["help"] #: shortcut to display help popup
-SYM_THEME = config['CONFIG']['SYM_THEME'].split(',')  # ["theme"] #: shortcut to display theme chooser popup
+SYM_NEXT_MONTH = cfg['SYM_NEXT_MONTH'].split(',')  # [ "▶",  ">",  "+",  "n"] #: 1st symbol is displayed, others are simply shortcuts
+SYM_NEXT_YEAR = cfg['SYM_NEXT_YEAR'].split(',')  #  ["▶▶", ">>", "++", "nn"] #: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_MONTH = cfg['SYM_PREV_MONTH'].split(',')  # [ "◀",  "<",  "-",  "p"] #: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_YEAR = cfg['SYM_PREV_YEAR'].split(',')  #  ["◀◀", "<<", "--", "pp"] #: 1st symbol is displayed, others are simply shortcuts
+SYM_DAYS_NUM = cfg['SYM_DAYS_NUM'].split(',')  # [str(n) for n in range(1, 32)] #:
+SYM_NOTES = cfg['SYM_NOTES'].split(',')  # ["notes"] #: shortcut to display notes popup
+SYM_HELP = cfg['SYM_HELP'].split(',')  # ["help"] #: shortcut to display help popup
+SYM_THEME = cfg['SYM_THEME'].split(',')  # ["theme"] #: shortcut to display theme chooser popup
 
 # Date header display (rofi prompt)
-PROMT_DATE_FORMAT = config['CONFIG']['PROMT_DATE_FORMAT'] # "%b %Y" #: date format in rofi prompt
+PROMT_DATE_FORMAT = cfg['PROMT_DATE_FORMAT'] # "%b %Y" #: date format in rofi prompt
 
 # Today header display
 IS_TODAY_HEAD_MSG = config.getboolean('CONFIG', 'IS_TODAY_HEAD_MSG') # True #: toogle day num and name header display
-TODAY_HEAD_NUMB_SIZE = config['CONFIG']['TODAY_HEAD_NUMB_SIZE'] # "xx-large" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
-TODAY_HEAD_NUMB_RISE = int(config['CONFIG']['TODAY_HEAD_NUMB_RISE']) # 0 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
-TODAY_HEAD_NAME_SIZE = config['CONFIG']['TODAY_HEAD_NAME_SIZE'] # "small" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
-TODAY_HEAD_NAME_RISE = int(config['CONFIG']['TODAY_HEAD_NAME_RISE']) # 12000 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
+TODAY_HEAD_NUMB_SIZE = cfg['TODAY_HEAD_NUMB_SIZE'] # "xx-large" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
+TODAY_HEAD_NUMB_RISE = int(cfg['TODAY_HEAD_NUMB_RISE']) # 0 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
+TODAY_HEAD_NAME_SIZE = cfg['TODAY_HEAD_NAME_SIZE'] # "small" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
+TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE']) # 12000 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
 
 ##################################################
 ######### End User parameters ####################
