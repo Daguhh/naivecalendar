@@ -68,7 +68,7 @@ ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM']) #: row number where to display day symbo
 ROW_CAL_START = int(cfg['ROW_CAL_START']) #: row number where to display calendar first line
 ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU']) #: row number where to display buttons
 
-#: Calendar symbols and shorcuts
+# Calendar symbols and shorcuts
 cfg = config['CONTROL']
 SYM_NEXT_MONTH = to_list(cfg['SYM_NEXT_MONTH']) #: 1st symbol is displayed, others are simply shortcuts
 SYM_NEXT_YEAR = to_list(cfg['SYM_NEXT_YEAR']) #: 1st symbol is displayed, others are simply shortcuts
@@ -76,7 +76,7 @@ SYM_PREV_MONTH = to_list(cfg['SYM_PREV_MONTH']) #: 1st symbol is displayed, othe
 SYM_PREV_YEAR = to_list(cfg['SYM_PREV_YEAR']) #: 1st symbol is displayed, others are simply shortcuts
 
 cfg = config['DAYS']
-SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM']) #:symbols for day numbers
+SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM']) # symbols for day numbers
 
 cfg = config['SHORTCUTS']
 SYM_NOTES = to_list(cfg['SYM_NOTES']) #: shortcut to display notes popup
@@ -122,7 +122,7 @@ NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 # Mon Thu ...
 # __1 __2 ...
 DAY_FORMAT = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
-SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted]
+SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted] #: symbols for day numbers
 ##################################################
 ################# Script #########################
 ##################################################
