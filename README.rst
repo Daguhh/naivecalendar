@@ -38,11 +38,12 @@ The naivecalendar use two files:
 - naivecalendar.py : that print a list-formatted calendar entries to sdtout
 - naivecalendar.sh : that run rofi in script mode with the previous file
 
-Plus, a theme file:
+Plus, a couple of theme files:
 
 - /themes/<theme>.rasi : a rofi configration file (shape and colors)
+- /themes/<theme>.cfg : an ini file that define calendar content
 
-Simply copy those files in the same folder
+Simply copy those files in the same folder (.ie : keep the tree as it is)
 
 Then, Launch with::
 
@@ -97,8 +98,12 @@ Customize
 
 You can edit parameters :
 
-- calendar content : **naivecalendar.py** header
+- calendar content : **<theme>.cfg** files in theme folder
 - calendar appearance : **<theme>.rasi** files in themes folder 
+
+.. warning::
+
+   adjusting content that can induce row number variation may require editing calendar shape too
 
 Themes
 ------
@@ -116,6 +121,7 @@ Function                           File
 rofi command                       ./naivecalendar.sh
 script called by rofi              ./naivecalendar.py
 rofi theme files                   ./themes/\*.rasi
+calendar content configuration     ./themes/\*.cfg 
 day notes path                     ~/.naivecalendar_notes/
 cache files path                   ~/.cache/naivecalendar/
 remember date throught loops       ~/.cache/naivecalendar/date_cache.ini
