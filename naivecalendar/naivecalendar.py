@@ -15,6 +15,20 @@ import datetime, calendar, locale
 from itertools import chain
 from functools import wraps
 
+# create path to notes
+HOME = os.getenv("HOME")
+DIRNAME = os.path.dirname(__file__)
+
+CACHE_PATH = f"{HOME}/.cache/naivecalendar"
+DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
+PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
+THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
+THEME_PATH = f"{DIRNAME}/themes"
+
+with open(THEME_CACHE, 'r') as theme_cache:
+    theme = theme_cache.read()
+    THEME_CONFIG_FILE = f"{THEME_PATH}/{theme}.cfg"
+
 ##################################################
 ############# User parameters ####################
 ##################################################
@@ -23,7 +37,7 @@ def to_list(cfg_list):
     return [word.strip() for word in cfg_list.split(',')]
 
 config = configparser.ConfigParser(interpolation=None)
-config.read("config.cfg")
+config.read(THEME_CONFIG_FILE)
 
 # set Locate
 cfg = config['LOCALE']
@@ -96,17 +110,8 @@ def set_locale_n_week_day_names(cmd_line_locale):
         week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
         SYM_WEEK_DAYS = [day_align_format.format(get_loc_day(x, DAY_ABBR_LENGHT)) for x in week_order]
 
-# create path to notes
-HOME = os.getenv("HOME")
-DIRNAME = os.path.dirname(__file__)
+
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
-
-CACHE_PATH = f"{HOME}/.cache/naivecalendar"
-DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
-PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
-THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
-THEME_PATH = f"{DIRNAME}/themes"
-
 # right align symbols given day abbreviation header length by adding spaces
 # example (_ represents spaces):
 # Mon Thu ...
