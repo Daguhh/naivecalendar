@@ -166,6 +166,12 @@ SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatt
 
 #SYM_WEEK_DAYS = set_locale_n_week_day_names(args.locale)
 
+# create menu bar
+CAL_MENU = [" "] * NB_COL
+CAL_MENU[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
+CAL_MENU[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
+
+
 #############
 ###Script ###
 #############
@@ -292,20 +298,14 @@ def get_calendar_from_date(date):
     # init calendar with NB_WEEK blank week
     cal = [" "] * NB_WEEK * NB_COL
 
-    # index
+    # fill with day numbers
     ind_first_day = (start_day - (FIRST_DAY_WEEK - 1)) % 7
     ind_last_day = ind_first_day + month_length
-
-    # fill with day numbers
     cal[ind_first_day : ind_last_day] = SYM_DAYS_NUM[:month_length]
 
-    # create menu bar
-    cal_menu = [" "] * NB_COL
-    cal_menu[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
-    cal_menu[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
-
+    # join calendar parts given user order
     index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_CONTROL_MENU)
-    content = [SYM_WEEK_DAYS, cal, cal_menu]
+    content = [SYM_WEEK_DAYS, cal, CAL_MENU]
     index, content = (list(x) for x in zip(*sorted(zip(index, content))))
 
     # chain calendar elements
