@@ -24,7 +24,7 @@ USER_LOCALE = "" #: keep empty to get system locale, use 'locale -a' on your sys
 
 # Week parameters
 DAY_ABBR_LENGHT = 3 #: day name lenght
-FIRST_DAY_WEEK = 1 #: 0 = sunday, 1 = monday...
+FIRST_DAY_WEEK = 6 #: 0 = sunday, 1 = monday...
 SYM_WEEK_DAYS = [] #: day names list, if empty, locale names will be set
 
 # Notes conf
@@ -45,7 +45,7 @@ SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"] #: 1st symbol is displayed, others a
 SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"] #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"] #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_DAYS_NUM = [str(n) for n in range(1, 32)] #:
+SYM_DAYS_NUM_raw = [str(n) for n in range(1, 32)] #:
 SYM_NOTES = ["notes"] #: shortcut to display notes popup
 SYM_HELP = ["help"] #: shortcut to display help popup
 SYM_THEME = ["theme"] #: shortcut to display theme chooser popup
@@ -91,6 +91,12 @@ PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
 THEME_PATH = f"{DIRNAME}/themes"
 
+# right align symbols given day abbreviation header length by adding spaces
+# example (_ represents spaces):
+# Mon Thu ...
+# __1 __2 ...
+DAY_FORMAT = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
+SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_raw]
 ##################################################
 ################# Script #########################
 ##################################################
@@ -217,11 +223,12 @@ def get_calendar_from_date(date):
     # init calendar with NB_WEEK blank week
     cal = [" "] * NB_WEEK * NB_COL
 
+    # index
+    ind_first_day = (start_day - (FIRST_DAY_WEEK - 1)) % 7
+    ind_last_day = ind_first_day + month_length
+
     # fill with day numbers
-    temp = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
-    cal[start_day : month_length + start_day] = [
-        temp.format(n) for n in SYM_DAYS_NUM[:month_length]
-    ]
+    cal[ind_first_day : ind_last_day] = SYM_DAYS_NUM[:month_length]
 
     # create menu bar
     cal_menu = [" "] * NB_COL
@@ -229,9 +236,9 @@ def get_calendar_from_date(date):
     cal_menu[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
 
     index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_CONTROL_MENU)
-    content=[SYM_WEEK_DAYS, cal, cal_menu]
-
+    content = [SYM_WEEK_DAYS, cal, cal_menu]
     index, content = (list(x) for x in zip(*sorted(zip(index, content))))
+    print(content, file=sys.stderr)
 
     # chain calendar elements
     cal = list(chain(*content))
@@ -436,17 +443,20 @@ def cal2rofi_ind(day, month, year):
         A rofi index
     """
     # correct day offset
+    cal_offset = NB_COL * ROW_CAL_START
     day = int(day) - 1  # make month start at 0
-    start, _ = calendar.monthrange(year, month)
-    ind = day + NB_COL * ROW_CAL_START + start
+    start_day, _ = calendar.monthrange(year, month)
+    ind_start_day = (start_day - (FIRST_DAY_WEEK - 1)) % 7
+
+    ind_r = cal_offset + day + ind_start_day
 
     # calendar coordinate
-    row, col = ind // NB_COL, ind % NB_COL
+    row, col = ind_r // NB_COL, ind_r % NB_COL
 
     # rofi coordinate
-    new_ind = col * NB_ROW + row
+    ind_c = col * NB_ROW + row
 
-    return new_ind
+    return ind_c
 
 
 def get_month_notes(date):
