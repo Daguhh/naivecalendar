@@ -15,117 +15,160 @@ import datetime, calendar, locale
 from itertools import chain
 from functools import wraps
 
-# create path to notes
+######################
+### Path constants ###
+######################
 HOME = os.getenv("HOME")
 DIRNAME = os.path.dirname(__file__)
-
 CACHE_PATH = f"{HOME}/.cache/naivecalendar"
 DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
 PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
 THEME_PATH = f"{DIRNAME}/themes"
 
-try:
+#######################################
+### load a theme configuration file ###
+#######################################
+try: # cache file
     with open(THEME_CACHE, 'r') as theme_cache:
         theme = theme_cache.read()
         THEME_CONFIG_FILE = f"{THEME_PATH}/{theme}.cfg"
-except FileNotFoundError: #  not initialized
+except FileNotFoundError: #  default if not initialized
     theme = "classic_dark"
     THEME_CONFIG_FILE = f"{THEME_PATH}/{theme}.cfg"
 
-##################################################
-############# User parameters ####################
-##################################################
-
+############################
+### Load user parameters ###
+############################
 def to_list(cfg_list):
+    """convert string with comma separated elements into python list"""
     return [word.strip() for word in cfg_list.split(',')]
 
 config = configparser.ConfigParser(interpolation=None)
 config.read(THEME_CONFIG_FILE)
 
-# set Locate
+### set Locate ###
 cfg = config['LOCALE']
-USER_LOCALE = cfg["USER_LOCALE"]  #: keep empty to get system locale, use 'locale -a' on your system to list locales
+#: keep empty to get system locale,
+#: use 'locale -a' on your system to list locales
+USER_LOCALE = cfg["USER_LOCALE"]
 
-# Week parameters
+### Week parameters ###
 cfg = config['DAY NAMES']
-DAY_ABBR_LENGHT = int(cfg["DAY_ABBR_LENGHT"]) #: day name lenght
-FIRST_DAY_WEEK = int(cfg["FIRST_DAY_WEEK"]) #: 0 = sunday, 1 = monday...
-SYM_WEEK_DAYS = to_list(cfg["SYM_WEEK_DAYS"]) #: day names list, if empty, locale names will be set
+#: day name lenght
+DAY_ABBR_LENGHT = int(cfg["DAY_ABBR_LENGHT"])
+#: 0 = sunday, 1 = monday...
+FIRST_DAY_WEEK = int(cfg["FIRST_DAY_WEEK"])
+#: day names list, if empty, locale names will be set
+SYM_WEEK_DAYS = to_list(cfg["SYM_WEEK_DAYS"])
 
-# Notes conf
+### Notes conf ###
 cfg = config['NOTES']
-NOTES_RELATIVE_PATH = cfg["NOTES_RELATIVE_PATH"] #: path to save notes (retative to $HOME)
-NOTES_DATE_FORMAT = cfg["NOTES_DATE_FORMAT"] #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
+#: path to save notes (retative to $HOME)
+NOTES_RELATIVE_PATH = cfg["NOTES_RELATIVE_PATH"]
+#: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...)
+NOTES_DATE_FORMAT = cfg["NOTES_DATE_FORMAT"]
 
-# Rofi/Calendar shape
+### Rofi/Calendar shape ###
 cfg = config['SHAPE']
-NB_COL = 7 #: 7 days for a week
-NB_WEEK = 6 #: number of "complete" weeks, a month can extend up to 6 weeks
-NB_ROW = 8 #: 1 day header + 6 weeks + 1 control menu
+#: 7 days for a week
+NB_COL = 7
+#: number of "complete" weeks, a month can extend up to 6 weeks
+NB_WEEK = 6
+#: 1 day header + 6 weeks + 1 control menu
+NB_ROW = 8
+#: row number where to display day symbols
+ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM'])
+#: row number where to display calendar first line
+ROW_CAL_START = int(cfg['ROW_CAL_START'])
+#: row number where to display buttons
+ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU'])
 
-ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM']) #: row number where to display day symbols
-ROW_CAL_START = int(cfg['ROW_CAL_START']) #: row number where to display calendar first line
-ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU']) #: row number where to display buttons
-
-# Calendar symbols and shorcuts
+### Calendar symbols and shortcuts ###
 cfg = config['CONTROL']
-SYM_NEXT_MONTH = to_list(cfg['SYM_NEXT_MONTH']) #: 1st symbol is displayed, others are simply shortcuts
-SYM_NEXT_YEAR = to_list(cfg['SYM_NEXT_YEAR']) #: 1st symbol is displayed, others are simply shortcuts
-SYM_PREV_MONTH = to_list(cfg['SYM_PREV_MONTH']) #: 1st symbol is displayed, others are simply shortcuts
-SYM_PREV_YEAR = to_list(cfg['SYM_PREV_YEAR']) #: 1st symbol is displayed, others are simply shortcuts
+#: 1st symbol is displayed, others are simply shortcuts
+SYM_NEXT_MONTH = to_list(cfg['SYM_NEXT_MONTH'])
+#: 1st symbol is displayed, others are simply shortcuts
+SYM_NEXT_YEAR = to_list(cfg['SYM_NEXT_YEAR'])
+#: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_MONTH = to_list(cfg['SYM_PREV_MONTH'])
+#: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_YEAR = to_list(cfg['SYM_PREV_YEAR'])
 
+### Day numbers symbols
 cfg = config['DAYS']
-SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM']) # symbols for day numbers
+# symbols for day numbers
+SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM'])
 
+### Shortcuts for popup windows ###
 cfg = config['SHORTCUTS']
-SYM_NOTES = to_list(cfg['SYM_NOTES']) #: shortcut to display notes popup
-SYM_HELP = to_list(cfg['SYM_HELP']) #: shortcut to display help popup
-SYM_THEME = to_list(cfg['SYM_THEME']) #: shortcut to display theme chooser popup
+#: shortcut to display notes popup
+SYM_NOTES = to_list(cfg['SYM_NOTES'])
+#: shortcut to display help popup
+SYM_HELP = to_list(cfg['SYM_HELP'])
+#: shortcut to display theme chooser popup
+SYM_THEME = to_list(cfg['SYM_THEME'])
 
-# Date header display (rofi prompt)
+### Today header display ###
 cfg = config['HEADER']
-PROMT_DATE_FORMAT = cfg['PROMT_DATE_FORMAT']#: date format in rofi prompt
+#: date format in rofi prompt
+PROMT_DATE_FORMAT = cfg['PROMT_DATE_FORMAT']
+#: toogle day num and name header display
+IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
+#: Size of day number in the header. See pango markup language spec
+TODAY_HEAD_NUMB_SIZE = cfg['TODAY_HEAD_NUMB_SIZE']
+#: Vertical position of day number in header. See pango markup language spec
+TODAY_HEAD_NUMB_RISE = int(cfg['TODAY_HEAD_NUMB_RISE'])
+#: Size of day name in the header. See pango markup language spec
+TODAY_HEAD_NAME_SIZE = cfg['TODAY_HEAD_NAME_SIZE']
+#: Vertical position of day name in header. See pango markup language spec
+TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])
 
-# Today header display
-IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')#: toogle day num and name header display
-TODAY_HEAD_NUMB_SIZE = cfg['TODAY_HEAD_NUMB_SIZE']#: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
-TODAY_HEAD_NUMB_RISE = int(cfg['TODAY_HEAD_NUMB_RISE'])#: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
-TODAY_HEAD_NAME_SIZE = cfg['TODAY_HEAD_NAME_SIZE']#: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
-TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])#: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
+############################################
+### Configure paramters given users ones ###
+############################################
 
-##################################################
-######### End User parameters ####################
-##################################################
-
-# week days symbols : can be changed by locale
-def set_locale_n_week_day_names(cmd_line_locale):
-
-    global SYM_WEEK_DAYS
-
-    if cmd_line_locale:
-        locale.setlocale(locale.LC_ALL, cmd_line_locale)
-    else:
-        locale.setlocale(locale.LC_ALL, USER_LOCALE)
-
-    if not SYM_WEEK_DAYS or len(SYM_WEEK_DAYS) == 1:
-        day_align_format = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT >=2 else 2) + '}'
-        get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
-        week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
-        SYM_WEEK_DAYS = [day_align_format.format(get_loc_day(x, DAY_ABBR_LENGHT)) for x in week_order]
-
-
-NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
-
-# right align symbols given day abbreviation header length by adding spaces
+# format to align all signs to right given size of day names
 # example (_ represents spaces):
 # Mon Thu ...
 # __1 __2 ...
 DAY_FORMAT = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
-SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted] #: symbols for day numbers
-##################################################
-################# Script #########################
-##################################################
+
+# week days symbols : can be changed by locale
+def set_locale_n_week_day_names(arg_locale):
+    """ Set SYM_WEEK_DAYS constante given command line argument """
+
+    global SYM_WEEK_DAYS
+
+    if arg_locale:
+        locale.setlocale(locale.LC_ALL, arg_locale)
+    else:
+        locale.setlocale(locale.LC_ALL, USER_LOCALE)
+
+    if not SYM_WEEK_DAYS or len(SYM_WEEK_DAYS) == 1:
+
+        def get_loc_day(day_num, lenght):
+            """return locale day names truncated at lenght and titlized"""
+            return locale.nl_langinfo(locale.DAY_1 + day_num)[:lenght].title()
+
+        days_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
+
+        SYM_WEEK_DAYS = [DAY_FORMAT.format(
+            get_loc_day(day_num, DAY_ABBR_LENGHT)
+        ) for day_num in days_order]
+
+        #return SYM_WEEK_DAYS
+
+NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
+
+#: symbols for day numbers
+SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted]
+
+#SYM_WEEK_DAYS = set_locale_n_week_day_names(args.locale)
+
+#############
+###Script ###
+#############
 
 def main():
     """
