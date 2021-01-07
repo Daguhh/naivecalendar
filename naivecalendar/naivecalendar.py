@@ -19,46 +19,62 @@ from functools import wraps
 ############# User parameters ####################
 ##################################################
 
+def to_list(cfg_list):
+    return [word.strip() for word in cfg_list.split(',')]
+
+config = configparser.ConfigParser(interpolation=None)
+config.read("config.cfg")
+
 # set Locate
-USER_LOCALE = "" #: keep empty to get system locale, use 'locale -a' on your system to list locales
+cfg = config['LOCALE']
+USER_LOCALE = cfg["USER_LOCALE"] #"" #: keep empty to get system locale, use 'locale -a' on your system to list locales
 
 # Week parameters
-DAY_ABBR_LENGHT = 3 #: day name lenght
-FIRST_DAY_WEEK = 1 #: 0 = sunday, 1 = monday...
-SYM_WEEK_DAYS = [] #: day names list, if empty, locale names will be set
+cfg = config['DAY NAMES']
+DAY_ABBR_LENGHT = int(cfg["DAY_ABBR_LENGHT"]) #: day name lenght
+FIRST_DAY_WEEK = int(cfg["FIRST_DAY_WEEK"]) #: 0 = sunday, 1 = monday...
+SYM_WEEK_DAYS = to_list(cfg["SYM_WEEK_DAYS"]) #: day names list, if empty, locale names will be set
 
 # Notes conf
-NOTES_RELATIVE_PATH = ".naivecalendar_notes" #: path to save notes (retative to $HOME)
-NOTES_DATE_FORMAT = "%Y-%m-%d" #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
+cfg = config['NOTES']
+NOTES_RELATIVE_PATH = cfg["NOTES_RELATIVE_PATH"] # ".naivecalendar_notes" #: path to save notes (retative to $HOME)
+NOTES_DATE_FORMAT = cfg["NOTES_DATE_FORMAT"] #"%Y-%m-%d" #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
 
 # Rofi/Calendar shape
-NB_COL = 7  #: 7 days for a week
-NB_WEEK = 6  #: number of "complete" weeks, a month can extend up to 6 weeks
-NB_ROW = 1 + NB_WEEK + 1  #: 1 day header + 6 weeks + 1 control menu
+cfg = config['SHAPE']
+NB_COL = 7 #int(cfg['NB_COL'])#: 7 days for a week
+NB_WEEK = 6 #int(cfg['NB_WEEK'])#: number of "complete" weeks, a month can extend up to 6 weeks
+NB_ROW = 8 #int(cfg['NB_ROW'])#: 1 day header + 6 weeks + 1 control menu
 
-ROW_WEEK_SYM = 0 #: row number where to display day symbols
-ROW_CAL_START = 1 #: row number where to display calendar first line
-ROW_CONTROL_MENU = 7 #: row number where to display buttons
+ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM'])#: row number where to display day symbols
+ROW_CAL_START = int(cfg['ROW_CAL_START'])#: row number where to display calendar first line
+ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU'])#: row number where to display buttons
 
 #: Calendar symbols and shorcuts
-SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_DAYS_NUM_raw = [str(n) for n in range(1, 32)] #:
-SYM_NOTES = ["notes"] #: shortcut to display notes popup
-SYM_HELP = ["help"] #: shortcut to display help popup
-SYM_THEME = ["theme"] #: shortcut to display theme chooser popup
+cfg = config['CONTROL']
+SYM_NEXT_MONTH = to_list(cfg['SYM_NEXT_MONTH']) #: 1st symbol is displayed, others are simply shortcuts
+SYM_NEXT_YEAR = to_list(cfg['SYM_NEXT_YEAR']) #: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_MONTH = to_list(cfg['SYM_PREV_MONTH']) #: 1st symbol is displayed, others are simply shortcuts
+SYM_PREV_YEAR = to_list(cfg['SYM_PREV_YEAR']) #: 1st symbol is displayed, others are simply shortcuts
+
+cfg = config['DAYS']
+SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM']) #:
+
+cfg = config['SHORTCUTS']
+SYM_NOTES = to_list(cfg['SYM_NOTES']) #: shortcut to display notes popup
+SYM_HELP = to_list(cfg['SYM_HELP']) #: shortcut to display help popup
+SYM_THEME = to_list(cfg['SYM_THEME']) #: shortcut to display theme chooser popup
 
 # Date header display (rofi prompt)
-PROMT_DATE_FORMAT = "%b %Y" #: date format in rofi prompt
+cfg = config['HEADER']
+PROMT_DATE_FORMAT = cfg['PROMT_DATE_FORMAT']#: date format in rofi prompt
 
 # Today header display
-IS_TODAY_HEAD_MSG = True #: toogle day num and name header display
-TODAY_HEAD_NUMB_SIZE = "xx-large" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
-TODAY_HEAD_NUMB_RISE = 0 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
-TODAY_HEAD_NAME_SIZE = "small" #: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
-TODAY_HEAD_NAME_RISE = 12000 #: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
+IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')#: toogle day num and name header display
+TODAY_HEAD_NUMB_SIZE = cfg['TODAY_HEAD_NUMB_SIZE']#: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
+TODAY_HEAD_NUMB_RISE = int(cfg['TODAY_HEAD_NUMB_RISE'])#: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
+TODAY_HEAD_NAME_SIZE = cfg['TODAY_HEAD_NAME_SIZE']#: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', see pango markup language spec
+TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])#: The vertical displacement from the baseline, in ten thousandths of an em, see pango markup language spec
 
 ##################################################
 ######### End User parameters ####################
@@ -74,7 +90,7 @@ def set_locale_n_week_day_names(cmd_line_locale):
     else:
         locale.setlocale(locale.LC_ALL, USER_LOCALE)
 
-    if not SYM_WEEK_DAYS:
+    if not SYM_WEEK_DAYS or len(SYM_WEEK_DAYS) == 1:
         day_align_format = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT >=2 else 2) + '}'
         get_loc_day = lambda d, l: locale.nl_langinfo(locale.DAY_1 + d)[:l].title()
         week_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
@@ -96,7 +112,7 @@ THEME_PATH = f"{DIRNAME}/themes"
 # Mon Thu ...
 # __1 __2 ...
 DAY_FORMAT = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
-SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_raw]
+SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted]
 ##################################################
 ################# Script #########################
 ##################################################
@@ -135,7 +151,7 @@ def main():
         d.month += 1
     elif out in SYM_NEXT_YEAR:
         d.year += 1
-    elif out in SYM_DAYS_NUM_raw:
+    elif out in SYM_DAYS_NUM_unformatted:
         if args.print:
             print_selection(out, d.date, args.format)
         else:
@@ -541,7 +557,7 @@ def show_notes(date):
 def open_note(day_sym, date, editor):
     """open note for the selected date"""
 
-    day_ind = SYM_DAYS_NUM_raw.index(day_sym) + 1
+    day_ind = SYM_DAYS_NUM_unformatted.index(day_sym) + 1
 
     note_name = datetime.date(date.year, date.month, day_ind).strftime(NOTES_DATE_FORMAT)
     note_path = f"{NOTES_PATH}/{note_name}.txt"
