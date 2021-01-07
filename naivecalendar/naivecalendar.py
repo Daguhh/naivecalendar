@@ -25,8 +25,12 @@ PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
 THEME_PATH = f"{DIRNAME}/themes"
 
-with open(THEME_CACHE, 'r') as theme_cache:
-    theme = theme_cache.read()
+try:
+    with open(THEME_CACHE, 'r') as theme_cache:
+        theme = theme_cache.read()
+        THEME_CONFIG_FILE = f"{THEME_PATH}/{theme}.cfg"
+except FileNotFoundError: #  not initialized
+    theme = "classic_dark"
     THEME_CONFIG_FILE = f"{THEME_PATH}/{theme}.cfg"
 
 ##################################################
@@ -41,7 +45,7 @@ config.read(THEME_CONFIG_FILE)
 
 # set Locate
 cfg = config['LOCALE']
-USER_LOCALE = cfg["USER_LOCALE"] #"" #: keep empty to get system locale, use 'locale -a' on your system to list locales
+USER_LOCALE = cfg["USER_LOCALE"]  #: keep empty to get system locale, use 'locale -a' on your system to list locales
 
 # Week parameters
 cfg = config['DAY NAMES']
@@ -51,18 +55,18 @@ SYM_WEEK_DAYS = to_list(cfg["SYM_WEEK_DAYS"]) #: day names list, if empty, local
 
 # Notes conf
 cfg = config['NOTES']
-NOTES_RELATIVE_PATH = cfg["NOTES_RELATIVE_PATH"] # ".naivecalendar_notes" #: path to save notes (retative to $HOME)
-NOTES_DATE_FORMAT = cfg["NOTES_DATE_FORMAT"] #"%Y-%m-%d" #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
+NOTES_RELATIVE_PATH = cfg["NOTES_RELATIVE_PATH"] #: path to save notes (retative to $HOME)
+NOTES_DATE_FORMAT = cfg["NOTES_DATE_FORMAT"] #: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...) identifier
 
 # Rofi/Calendar shape
 cfg = config['SHAPE']
-NB_COL = 7 #int(cfg['NB_COL'])#: 7 days for a week
-NB_WEEK = 6 #int(cfg['NB_WEEK'])#: number of "complete" weeks, a month can extend up to 6 weeks
-NB_ROW = 8 #int(cfg['NB_ROW'])#: 1 day header + 6 weeks + 1 control menu
+NB_COL = 7 #: 7 days for a week
+NB_WEEK = 6 #: number of "complete" weeks, a month can extend up to 6 weeks
+NB_ROW = 8 #: 1 day header + 6 weeks + 1 control menu
 
-ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM'])#: row number where to display day symbols
-ROW_CAL_START = int(cfg['ROW_CAL_START'])#: row number where to display calendar first line
-ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU'])#: row number where to display buttons
+ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM']) #: row number where to display day symbols
+ROW_CAL_START = int(cfg['ROW_CAL_START']) #: row number where to display calendar first line
+ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU']) #: row number where to display buttons
 
 #: Calendar symbols and shorcuts
 cfg = config['CONTROL']
@@ -72,7 +76,7 @@ SYM_PREV_MONTH = to_list(cfg['SYM_PREV_MONTH']) #: 1st symbol is displayed, othe
 SYM_PREV_YEAR = to_list(cfg['SYM_PREV_YEAR']) #: 1st symbol is displayed, others are simply shortcuts
 
 cfg = config['DAYS']
-SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM']) #:
+SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM']) #:symbols for day numbers
 
 cfg = config['SHORTCUTS']
 SYM_NOTES = to_list(cfg['SYM_NOTES']) #: shortcut to display notes popup
@@ -112,6 +116,7 @@ def set_locale_n_week_day_names(cmd_line_locale):
 
 
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
+
 # right align symbols given day abbreviation header length by adding spaces
 # example (_ represents spaces):
 # Mon Thu ...
@@ -609,6 +614,11 @@ def first_time_init():
 
     if not os.path.exists(CACHE_PATH):
         os.mkdir(CACHE_PATH)
+        date = datetime.date.today()
+        date_buff = configparser.ConfigParser()
+        date_buff["buffer"] = {"year": date.year, "month": date.month}
+        with open(DATE_CACHE, 'w') as date_cache:
+            date_buff.write(date_cache)
 
 
 class Date:
