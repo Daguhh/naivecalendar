@@ -24,7 +24,7 @@ USER_LOCALE = "" #: keep empty to get system locale, use 'locale -a' on your sys
 
 # Week parameters
 DAY_ABBR_LENGHT = 3 #: day name lenght
-FIRST_DAY_WEEK = 6 #: 0 = sunday, 1 = monday...
+FIRST_DAY_WEEK = 1 #: 0 = sunday, 1 = monday...
 SYM_WEEK_DAYS = [] #: day names list, if empty, locale names will be set
 
 # Notes conf
@@ -45,7 +45,7 @@ SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"] #: 1st symbol is displayed, others a
 SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"] #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"] #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_DAYS_NUM_raw = list('abcdefghijklmnopqrstuvwxyzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxabcdeghijklmnop')#[str(n) for n in range(1, 32)] #:
+SYM_DAYS_NUM_raw = [str(n) for n in range(1, 32)] #:
 SYM_NOTES = ["notes"] #: shortcut to display notes popup
 SYM_HELP = ["help"] #: shortcut to display help popup
 SYM_THEME = ["theme"] #: shortcut to display theme chooser popup
