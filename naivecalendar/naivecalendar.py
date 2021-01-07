@@ -45,7 +45,7 @@ SYM_NEXT_MONTH = [ "▶",  ">",  "+",  "n"] #: 1st symbol is displayed, others a
 SYM_NEXT_YEAR =  ["▶▶", ">>", "++", "nn"] #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_MONTH = [ "◀",  "<",  "-",  "p"] #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_YEAR =  ["◀◀", "<<", "--", "pp"] #: 1st symbol is displayed, others are simply shortcuts
-SYM_DAYS_NUM_raw = [str(n) for n in range(1, 32)] #:
+SYM_DAYS_NUM_raw = list('abcdefghijklmnopqrstuvwxyzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxabcdeghijklmnop')#[str(n) for n in range(1, 32)] #:
 SYM_NOTES = ["notes"] #: shortcut to display notes popup
 SYM_HELP = ["help"] #: shortcut to display help popup
 SYM_THEME = ["theme"] #: shortcut to display theme chooser popup
@@ -124,6 +124,8 @@ def main():
     else:
         d.today()
 
+    print('---------------------', file=sys.stderr)
+    print(out,file=sys.stderr)
     # react to rofi output : date change
     if out in SYM_PREV_YEAR:
         d.year -= 1
@@ -133,7 +135,7 @@ def main():
         d.month += 1
     elif out in SYM_NEXT_YEAR:
         d.year += 1
-    elif out in SYM_DAYS_NUM:
+    elif out in SYM_DAYS_NUM_raw:
         if args.print:
             print_selection(out, d.date, args.format)
         else:
@@ -238,7 +240,6 @@ def get_calendar_from_date(date):
     index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_CONTROL_MENU)
     content = [SYM_WEEK_DAYS, cal, cal_menu]
     index, content = (list(x) for x in zip(*sorted(zip(index, content))))
-    print(content, file=sys.stderr)
 
     # chain calendar elements
     cal = list(chain(*content))
@@ -537,10 +538,12 @@ def show_notes(date):
 
 
 @open_n_reload_rofi
-def open_note(day, date, editor):
+def open_note(day_sym, date, editor):
     """open note for the selected date"""
 
-    note_name = datetime.date(date.year, date.month, int(day)).strftime(NOTES_DATE_FORMAT)
+    day_ind = SYM_DAYS_NUM_raw.index(day_sym) + 1
+
+    note_name = datetime.date(date.year, date.month, day_ind).strftime(NOTES_DATE_FORMAT)
     note_path = f"{NOTES_PATH}/{note_name}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
     p = subprocess.Popen(
