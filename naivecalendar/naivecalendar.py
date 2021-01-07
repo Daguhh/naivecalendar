@@ -150,8 +150,6 @@ def main():
     else:
         d.today()
 
-    print('---------------------', file=sys.stderr)
-    print(out,file=sys.stderr)
     # react to rofi output : date change
     if out in SYM_PREV_YEAR:
         d.year -= 1
