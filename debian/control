@@ -1,0 +1,14 @@
+Source: naivecalendar
+Section: misc
+Priority: optional
+Maintainer: Daguhh <code.daguhh@zaclys.net>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.5.1
+Homepage: https://framagit.org/Daguhh/naivecalendar
+Rules-Requires-Root: no
+
+Package: naivecalendar
+Architecture: all
+Depends: ${misc:Depends}, python3 (>=3.6), rofi
+Description: Simple rofi calendar popup
+ A simple calendar popup with rofi and python3

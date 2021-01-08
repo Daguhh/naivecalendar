@@ -9,8 +9,12 @@ if [[ " ${param[@]} " =~ " -h " ]] || [[ " ${param[@]} " =~ " --help " ]] ; then
 fi
 
 THEME_CACHE_FILE="$HOME/.cache/naivecalendar/theme_cache.txt"
+THEME_USER_PATH="$HOME/.config/naivecalendar/themes"
 if test -f "$THEME_CACHE_FILE"; then
-    THEME="${BASH_SOURCE%/*}/themes/$(cat $THEME_CACHE_FILE).rasi"
+    THEME="$THEME_USER_PATH/$(cat $THEME_CACHE_FILE).rasi"
+    if ! test -f "$THEME"; then
+        THEME="${BASH_SOURCE%/*}/themes/$(cat $THEME_CACHE_FILE).rasi"
+    fi
 else
     THEME="${BASH_SOURCE%/*}/themes/classic_dark.rasi"
 fi

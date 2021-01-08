@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/usr/share/naivecalendar/naivecalendar.sh "$@"

@@ -24,7 +24,8 @@ CACHE_PATH = f"{HOME}/.cache/naivecalendar"
 DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
 PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
-THEME_PATH = f"{DIRNAME}/themes"
+THEME_USER_PATH = f"{HOME}/.config/naivecalendar/themes"
+THEME_PATHS = [THEME_USER_PATH, f"{DIRNAME}/themes"]
 
 #######################################
 ### load a theme configuration file ###
@@ -32,10 +33,14 @@ THEME_PATH = f"{DIRNAME}/themes"
 try: # cache file
     with open(THEME_CACHE, 'r') as theme_cache:
         theme = theme_cache.read()
-        THEME_CONFIG_FILE = f"{THEME_PATH}/{theme}.cfg"
+        for path in THEME_PATHS:
+            THEME_CONFIG_FILE = f"{path}/{theme}.cfg"
+            print(THEME_CONFIG_FILE, file=sys.stderr)
+            if os.path.isfile(THEME_CONFIG_FILE):
+                break
 except FileNotFoundError: #  default if not initialized
     theme = "classic_dark"
-    THEME_CONFIG_FILE = f"{THEME_PATH}/{theme}.cfg"
+    THEME_CONFIG_FILE = f"{THEME_PATHS[-1]}/{theme}.cfg"
 
 ############################
 ### Load user parameters ###
@@ -46,6 +51,7 @@ def to_list(cfg_list):
 
 config = configparser.ConfigParser(interpolation=None)
 config.read(THEME_CONFIG_FILE)
+
 
 ### set Locate ###
 cfg = config['LOCALE']
@@ -620,7 +626,9 @@ def open_note(day_sym, date, editor):
 
 @open_n_reload_rofi
 def ask_theme():
-    themes = glob.glob(f'{THEME_PATH}/*.rasi')
+    themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS]))
+    for t in themes:
+        print(t, file=sys.stderr)
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
@@ -649,8 +657,10 @@ def first_time_init():
         print("please install rofi")
         sys.exit()
 
-    if not os.path.exists(NOTES_PATH):
-        os.mkdir(NOTES_PATH)
+    if not os.path.exists(THEME_USER_PATH):
+        os.mkdir(THEME_USER_PATH)
+        if not os.path.exists(NOTES_PATH):
+            os.mkdir(NOTES_PATH)
         display_help(head_txt="Welcome to naivecalendar")
 
     if not os.path.exists(CACHE_PATH):
