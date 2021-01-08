@@ -626,8 +626,6 @@ def open_note(day_sym, date, editor):
 @open_n_reload_rofi
 def ask_theme():
     themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS]))
-    for t in themes:
-        print(t, file=sys.stderr)
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
