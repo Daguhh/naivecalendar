@@ -35,7 +35,6 @@ try: # cache file
         theme = theme_cache.read()
         for path in THEME_PATHS:
             THEME_CONFIG_FILE = f"{path}/{theme}.cfg"
-            print(THEME_CONFIG_FILE, file=sys.stderr)
             if os.path.isfile(THEME_CONFIG_FILE):
                 break
 except FileNotFoundError: #  default if not initialized
