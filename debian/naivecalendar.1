@@ -13,6 +13,8 @@ naivecalendar
 .I LOCALE
 .B ] [-c] [-t 
 .I THEME
+.B ] [-d
+.I DATE
 .B ]
 
 .SH DESCRIPTION
@@ -51,7 +53,7 @@ print date to stdout instead of opening a note
 
 .TP
 .B -f|--format FORMAT
-option '-p' output format (datetime.strftime format, defaut='%Y-{%m}-%d')
+option '-p' output format (datetime.strftime format, defaut='%Y-%m-%d')
 
 .TP
 .B -e|--editor EDITOR
@@ -68,6 +70,10 @@ force calendar to read old date from cache
 .TP
 .B -t|--theme THEME
 set calendar theme, default=classic_dark (theme file name without extention)
+
+.TP
+.B -d|--date DATE  
+display calendar at the given month, format='%m-%Y'
 
 .SH FILES
 .I /usr/share/naivecalendar/themes/<theme>.rasi
@@ -103,3 +109,5 @@ pass date to bash when -p option
 .I ~/.cache/naivecalendar/theme_cache.txt
 .RS
 remember theme after quitting      
+
+

@@ -193,13 +193,17 @@ def main():
     first_time_init() # create note path n test rofi intall
 
     args, rofi_output = get_arguments()
-    is_first_loop = bool(rofi_output)
+    is_first_loop = not bool(rofi_output)
     out = rofi_output
 
     set_locale_n_week_day_names(args.locale)
 
+    print(sys.argv, file=sys.stderr)
+    print(is_first_loop, file=sys.stderr)
     d = Date()
-    if is_first_loop or args.is_force_read_cache:
+    if is_first_loop and args.date:
+        d.set_month(args.date)
+    elif not is_first_loop or args.is_force_read_cache:
         d.read_cache()
     else:
         d.today()
@@ -261,7 +265,7 @@ def update_rofi(date, is_first_loop):
     # send datas to stdout
     print(f"\0prompt\x1f{date_prompt}\n")
     print(f"\0urgent\x1f{notes_inds}\n")
-    if not is_first_loop:
+    if is_first_loop:
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
             day_numb = f"""<span rise="{TODAY_HEAD_NUMB_RISE}" size="{TODAY_HEAD_NUMB_SIZE}">{date.strftime('%d')}</span>"""
@@ -686,6 +690,23 @@ class Date:
         self.date = datetime.date.today()
         return self.date
 
+    def set_month(self, month):
+        """Set and return date of the given Month
+
+        Parameters
+            month : str
+                month to set in '%m-%Y' format
+
+        Returns
+            datetime.date
+                a day of the month
+        """
+
+        m, y = [int(x) for x in month.split('-')]
+        self.date = datetime.date(y,m,1)
+
+        return self.date
+
     def read_cache(self):
         """load cache ini file"""
 
@@ -826,6 +847,14 @@ def get_arguments():
         help="""set calendar theme, default=classic_dark (theme file name without extention)""",
         dest="theme"
     )
+    parser.add_argument(
+        "-d",
+        "--date",
+        help="""display calendar at the given month, format='%%m-%%Y'""",
+        dest="date",
+        default=False
+    )
+
 
     args, unknown = parser.parse_known_args()
     unknown = unknown if len(unknown) == 0 else "".join(unknown).strip(' ')
