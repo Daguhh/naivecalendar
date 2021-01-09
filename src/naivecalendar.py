@@ -692,12 +692,14 @@ class Date:
         """Set and return date of the given Month
 
         Parameters
-            month : str
-                month to set in '%m-%Y' format
+        ----------
+        month : str
+            month to set in '%m-%Y' format
 
         Returns
-            datetime.date
-                a day of the month
+        -------
+        datetime.date
+            a day of the month
         """
 
         m, y = [int(x) for x in month.split('-')]
