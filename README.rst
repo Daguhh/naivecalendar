@@ -18,9 +18,8 @@ A popup calendar with `rofi`_ and `python3`_:
 * Cycle through calendar month by month.
 * Create notes linked to days. *Days with notes will appear colored*.
 
-.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_dark.png
-    :width: 200 px
-    :align: center
+|classic dark| |square dark nord| |round_light nord| |classic light compact| 
+
 
 .. _dependancies:
 
@@ -148,3 +147,15 @@ Build the doc
     :target: https://framagit.org/Daguhh/naivecalendar
 .. |readme_fr| image:: https://img.shields.io/badge/Readme-fr-blue?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAgBAMAAACm+uYvAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAG1BMVEUAHpYAHJUfOqPf4/L////85ObwP0/tIjTuJDb4vwGgAAAAAWJLR0QEj2jZUQAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB+QMCxQNM0KhjcMAAAAbSURBVCjPY2CAACETFzBwTe+AAIZRiVGJUQkAzmzIQZyPCzQAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMTItMTFUMjA6MTI6NTIrMDA6MDDP69WKAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTEyLTExVDIwOjEyOjUyKzAwOjAwvrZtNgAAAABJRU5ErkJggg==&style=plastic
    :target: https://framagit.org/Daguhh/naivecalendar/-/blob/dev-interactive/README_fr.rst
+
+.. |classic dark| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_dark.png
+    :width: 200 px
+
+.. |square dark nord| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/square_dark_nord.png
+    :width: 200 px
+
+.. |round_light nord| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/round_light_nord.png
+    :width: 200 px
+
+.. |classic light compact| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_light_compact.png
+    :width: 200 px
