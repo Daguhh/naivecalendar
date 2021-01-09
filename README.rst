@@ -149,13 +149,13 @@ Build the doc
    :target: https://framagit.org/Daguhh/naivecalendar/-/blob/dev-interactive/README_fr.rst
 
 .. |classic dark| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_dark.png
-    :width: 200 px
+    :height: 200 px
 
 .. |square dark nord| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/square_dark_nord.png
-    :width: 200 px
+    :height: 200 px
 
 .. |round_light nord| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/round_light_nord.png
-    :width: 200 px
+    :height: 200 px
 
 .. |classic light compact| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_light_compact.png
-    :width: 200 px
+    :height: 200 px
