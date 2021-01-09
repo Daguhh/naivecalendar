@@ -1,3 +1,9 @@
+naivecalendar (0.3.1) UNRELEASED; urgency=medium
+
+  * Make deb package
+
+ -- Daguhh <code.daguhh@zaclys.net>  Fri, 08 Jan 2021 15:58:02 +0100
+
 naivecalendar (0.3) unstable; urgency=medium
 
   * Initial release 
