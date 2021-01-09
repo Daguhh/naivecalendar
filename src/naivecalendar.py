@@ -198,8 +198,6 @@ def main():
 
     set_locale_n_week_day_names(args.locale)
 
-    print(sys.argv, file=sys.stderr)
-    print(is_first_loop, file=sys.stderr)
     d = Date()
     if is_first_loop and args.date:
         d.set_month(args.date)
