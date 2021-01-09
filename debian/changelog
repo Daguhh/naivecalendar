@@ -1,3 +1,9 @@
+naivecalendar (0.3.2) UNRELEASED; urgency=medium
+
+  * Add "open at date" command option
+
+ -- Daguhh <code.daguhh@zaclys.net>  Sat, 09 Jan 2021 23:23:42 +0100
+
 naivecalendar (0.3.1) UNRELEASED; urgency=medium
 
   * Make deb package
