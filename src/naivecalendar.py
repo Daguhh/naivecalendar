@@ -657,7 +657,7 @@ def first_time_init():
         sys.exit()
 
     if not os.path.exists(THEME_USER_PATH):
-        os.mkdirs(THEME_USER_PATH)
+        os.makedirs(THEME_USER_PATH)
         if not os.path.exists(NOTES_PATH):
             os.mkdir(NOTES_PATH)
         display_help(head_txt="Welcome to naivecalendar")
