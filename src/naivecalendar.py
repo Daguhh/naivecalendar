@@ -657,7 +657,7 @@ def first_time_init():
         sys.exit()
 
     if not os.path.exists(THEME_USER_PATH):
-        os.mkdir(THEME_USER_PATH)
+        os.mkdirs(THEME_USER_PATH)
         if not os.path.exists(NOTES_PATH):
             os.mkdir(NOTES_PATH)
         display_help(head_txt="Welcome to naivecalendar")
@@ -692,12 +692,14 @@ class Date:
         """Set and return date of the given Month
 
         Parameters
-            month : str
-                month to set in '%m-%Y' format
+        ----------
+        month : str
+            month to set in '%m-%Y' format
 
         Returns
-            datetime.date
-                a day of the month
+        -------
+        datetime.date
+            a day of the month
         """
 
         m, y = [int(x) for x in month.split('-')]
