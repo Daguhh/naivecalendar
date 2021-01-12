@@ -492,6 +492,18 @@ def get_note_head(note_path):
     return head
 
 def get_row_rofi_inds(row):
+    """Get all rofi index of a row
+
+    Parameters
+    ----------
+    row : int
+        row number (start at 0)
+
+    Returns
+    -------
+    str
+        a ',' separate list of rofi indexes
+    """
 
     return ",".join(str(i * NB_ROW + row) for i in range(NB_COL))
 
@@ -629,6 +641,8 @@ def open_note(day_sym, date, editor):
 
 @open_n_reload_rofi
 def ask_theme():
+    """Search themes in paths and open a popup"""
+
     themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS]))
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
     themes = list2rofi(themes)
@@ -915,6 +929,7 @@ def joke(sym):
 #    win.mainloop()
 
 def set_theme_cache(selected):
+    """Write theme name to cache file"""
 
     with open(THEME_CACHE, 'w') as f:
         f.write(selected)
