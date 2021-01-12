@@ -14,6 +14,7 @@ import re, argparse, configparser
 import datetime, calendar, locale
 from itertools import chain
 from functools import wraps
+import time
 
 ######################
 ### Path constants ###
@@ -594,6 +595,7 @@ def open_n_reload_rofi(func):
     def wrapper(*args, **kwargs):
 
         subprocess.Popen(["pkill", "-9", "rofi"])
+        time.sleep(0.1)
         out = func(*args)
         cmd = f"{script_path}/naivecalendar.sh -c"
         os.system(cmd)
@@ -608,7 +610,7 @@ def show_notes(date):
     """open rofi popup with notes list of selected month"""
 
     notes_heads = get_month_notes_heads(date)
-    text_popup("Notes", notes_heads)
+    rofi_popup("Notes", notes_heads)
 
 
 @open_n_reload_rofi
@@ -629,10 +631,11 @@ def open_note(day_sym, date, editor):
 def ask_theme():
     themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS]))
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
+    themes = list2rofi(themes)
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    out = text_list_popup("select theme", themes)
-    print(out, file=sys.stderr)
+    theme = rofi_popup("select theme", themes)
+    set_theme_cache(theme)
 
 
 def print_selection(day, date, f):
@@ -874,49 +877,49 @@ def joke(sym):
         print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
 
-def text_popup(head, body):
-    """ Display a popup msg with tkinter
-
-    Parameters
-    ----------
-    head :
-        str : window title
-    body :
-        str : message to Display
-    """
-
-    import tkinter as tk
-    import tkinter.scrolledtext as st
-
-    win = tk.Tk()
-    win.title(head)
-    text_area = st.ScrolledText(win, width=50, height=12, font=("Noto Sans", 10))
-    text_area.grid(column=0, pady=10, padx=10)
-    text_area.insert(tk.INSERT, body)
-    text_area.configure(state="disabled")
-    win.mainloop()
-
-def text_list_popup(head, lst):
-
-    import tkinter as tk
-    from tkinter import Listbox
-
-    win = tk.Tk()
-    win.title(head)
-    l = Listbox(win)
-    l.insert(1,*lst)
-    l.pack()
-
-    win.bind('<Return>', lambda _:[set_theme_cache(l.get(l.curselection()[0])), win.destroy()])
-
-    win.mainloop()
+#def text_popup(head, body):
+#    """ Display a popup msg with tkinter
+#
+#    Parameters
+#    ----------
+#    head :
+#        str : window title
+#    body :
+#        str : message to Display
+#    """
+#
+#    import tkinter as tk
+#    import tkinter.scrolledtext as st
+#
+#    win = tk.Tk()
+#    win.title(head)
+#    text_area = st.ScrolledText(win, width=50, height=12, font=("Noto Sans", 10))
+#    text_area.grid(column=0, pady=10, padx=10)
+#    text_area.insert(tk.INSERT, body)
+#    text_area.configure(state="disabled")
+#    win.mainloop()
+#
+#def text_list_popup(head, lst):
+#
+#    import tkinter as tk
+#    from tkinter import Listbox
+#
+#    win = tk.Tk()
+#    win.title(head)
+#    l = Listbox(win)
+#    l.insert(1,*lst)
+#    l.pack()
+#
+#    win.bind('<Return>', lambda _:[set_theme_cache(l.get(l.curselection()[0])), win.destroy()])
+#
+#    win.mainloop()
 
 def set_theme_cache(selected):
 
     with open(THEME_CACHE, 'w') as f:
         f.write(selected)
 
-def rofi_popup(txt_body, txt_head):
+def rofi_popup(txt_head, txt_body):
     """Launch a rofi window
 
     Parameters
@@ -974,7 +977,7 @@ That's all :
 close window to continue...
 """
 
-    text_popup("Help", txt)
+    rofi_popup("Help", txt)
 
 
 if __name__ == "__main__":
