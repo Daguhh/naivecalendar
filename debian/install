@@ -1,0 +1,3 @@
+naivecalendar /usr/bin/ 
+src/* /usr/share/naivecalendar/
+debian/naivecalendar.1 /usr/share/man/man1/

@@ -1,0 +1,113 @@
+.TH NAIVECALENDAR 1 "January 6, 2021"
+
+.SH NAME
+naivecalendar 
+- rofi calendar popup
+
+.SH SYNOPSIS
+.B naivecalendar [-h] [-p] [-f 
+.I FORMAT
+.B ] [-e 
+.I EDITOR
+.B ] [-l 
+.I LOCALE
+.B ] [-c] [-t 
+.I THEME
+.B ] [-d
+.I DATE
+.B ]
+
+.SH DESCRIPTION
+.B naivecalendar
+is made using rofi and python3 stdlib.
+it can be used as an interactive calendar or a simple popup to pickup date
+
+.RS
+.nf
+- Use mouse or keyboard to interact with the calendar.
+- Hit bottom arrows to cycle through months.
+- Hit a day to create a linked note.
+(A day with attached note will appear yellow.)
+- Notes are stored in {HOME}/.naivecalendar_notes/
+(For now you've to manually delete it)
+
+There's somme shortcut to be entered in rofi prompt :
+
+       -- : go to previous year
+   n or - : go to previous month
+   p or + : go to next month
+ pp or ++ : go to next year
+    notes : display notes of the month (first line)
+     help : display this help
+    theme : show theme selector
+
+.SH OPTIONS
+
+.TP
+.B -h|--help 
+show this help message and exit
+
+.TP
+.B -p|--print
+print date to stdout instead of opening a note
+
+.TP
+.B -f|--format FORMAT
+option '-p' output format (datetime.strftime format, defaut='%Y-%m-%d')
+
+.TP
+.B -e|--editor EDITOR
+editor command to open notes
+
+.TP
+.B -l|--locale LOCALE
+force system locale, for example '-l es_ES.utf8'
+
+.TP
+.B -c|--read-cache      
+force calendar to read old date from cache
+
+.TP
+.B -t|--theme THEME
+set calendar theme, default=classic_dark (theme file name without extention)
+
+.TP
+.B -d|--date DATE  
+display calendar at the given month, format='%m-%Y'
+
+.SH FILES
+.I /usr/share/naivecalendar/themes/<theme>.rasi
+.RS 
+a rofi configuration file for shape and theme
+
+.RE
+.I /usr/share/naivecalendar/themes/<theme>.cfg
+.RS 
+an ini file to configure calendar content
+
+.RE
+.I ~/.naivecalendar_notes/
+.RS
+day notes path                     
+
+.RE
+.I ~/.config/naivecalendar/themes
+.RS
+user themes folder (copy or create both a .rasi and a .cfg file to add a theme)
+
+.RE
+.I ~/.cache/naivecalendar/date_cache.ini
+.RS
+remember date throught loops       
+
+.RE
+.I ~/.cache/naivecalendar/pretty_print_cache.txt
+.RS
+pass date to bash when -p option   
+
+.RE
+.I ~/.cache/naivecalendar/theme_cache.txt
+.RS
+remember theme after quitting      
+
+
