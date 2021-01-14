@@ -2,6 +2,9 @@
 NaïveCalendar
 =============
 
+this is a mirror of https://framagit.org/Daguhh/naivecalendar
+=============================================================
+
 |readme_fr| |git_badge| 
 
     **naïf, naïve n. adj**.
