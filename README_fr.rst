@@ -10,22 +10,14 @@ NaïveCalendar
 
     LeRobert_
 
-|python_stable_badge| |python_dev_badge| |git_badge|
-
-.. image:: https://img.shields.io/badge/Source-git-success
-    :target: https://framagit.org/Daguhh/naivecalendar
-
-.. image:: https://img.shields.io/badge/Download-script-yellow
-   :target: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar/naivecalendar.py?inline=false
 
 Un popup calendrier avec rofi_ et python3_ :
 
 * Parcourez le calendrier de mois en mois
 * Créez et éditez des notes liés à chaque date du calendrier. *Une date possédant une note apparait colorée*
 
-.. image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/Misc/naivecalendar_screenshot.png
-    :width: 200 px
-    :align: center
+|classic dark| |square dark nord| |round_light nord| |classic light compact| 
+
 
 .. _dependancies:
 
@@ -35,7 +27,6 @@ Dépendances
 * python3_
 * rofi_
 
-
 Installation
 ^^^^^^^^^^^^
 
@@ -44,20 +35,24 @@ Le naivecalendar utilise deux fichiers:
 - naivecalendar.py : envoie la liste des entrées d'un calendrier vers la sortie standard
 - naivecalendar.sh : lance rofi en mode script en interaction avec le fichier précedent.
 
+Plus, deux fichiers de configuration:
+
+- /themes/<theme>.rasi : fichier de configuration rofi (forme et couleurs)
+- /themes/<theme>.cfg : un fichier .ini qui défini le contenu du calendrier
+
+Copiez simplement les fichiers dans le même dossier (en respectant l'arborescece)
+
+finallement, lancez avec::
+
+    ./naivecalendar.sh 
+
 Utilisation
 -----------
 
 Basique
 ^^^^^^^
 
-Lancer le programme:
-
-.. code::
-
-    chmod +x naivecalendar.sh
-    ./naivecalendar.sh
-
-Puis:
+Executez le script, puis:
 
 - Interagisez avec la souris ou le clavier
 - Utlisez les flêches pour parcourir le calendrier
@@ -72,17 +67,19 @@ Raccourcis
 Les raccourcis sont à entrer dans l'invite de commande rofi.
 *Sym* est le symbole affiché à l'écran. *Sym*, *Touche* et *Alt-Key* peuvent être utilisés pour executer une action.
 
-====  ========  =======   ========================================
-Sym    Touche   Alt-key   Action
-====  ========  =======   ========================================
- <<         pp       --   année précédente
-  <          p      `-`   mois précédent
-  >          n      `+`   mois suivant
- >>         nn       ++   année suivante
- ..      notes       ..   montrer les notes du mois courant
- ..       help       ..   afficher l'aide
-====  ========  =======   ========================================
-
+====  =====  =======  ========  ========================================
+Sym    Keys                     Action
+----  ------------------------  ----------------------------------------
+  ..     ..       ..        ..  ..
+====  =====  =======  ========  ========================================
+ ◀◀      <<       pp       --   année précédente
+  ◀       <        p      `-`   mois précédent
+  ▶       >        n      `+`   mois suivant
+ ▶▶      >>       nn       ++   année suivante
+ ..   notes       ..       ..   montrer les notes du mois courant
+ ..    help       ..       ..   afficher l'aide
+ ..   theme       ..       ..   changer de theme
+====  =====  =======  ========  ========================================
 
 Dans un script
 ^^^^^^^^^^^^^^
@@ -96,11 +93,39 @@ Vous pouvez utiliser le naivecalendar dans un script pour demander interactiveme
 Personnalisation
 ^^^^^^^^^^^^^^^^
 
-Editer les paramètres suivant:
+Editer les paramètres dans les fichiers suivant:
 
-- contenu du calendrier : en entête du fichier naivecalendar.py
-- apparence du calendrier : modifiez la commande rofi dans le fichier naivecalendar.sh
+- contenu du calendrier : ./*themes*/**<theme>.cfg**
+- apparence du calendrier : ./*themes*/**<theme>.rasi** 
 
+
+.. warning::
+
+   modifier le contenu du calendrier peut demander la modification conjointe de l'apparence de ce dernier.
+
+Themes
+------
+
+Des `themes sont disponibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/naivecalendar/themes/themes.rst>`_, vous pouvez les appliquer en tapant *theme* dans l'init de rofi ou les charger temporairement en précisnat l'arugment *--theme*. Vous pouvez créer vos propres fichiers de thème (`rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_), placez les dans le dossier *./themes/* 
+
+Files
+-----
+
+Voici un brêve description des fichiers demandés/générés par le calendrier
+
+=================================   ==============================================
+Fonction                            Fichier
+=================================   ==============================================
+commande rofi                       ./naivecalendar.sh
+script appellé par rofi             ./naivecalendar.py
+fichiers de thème rofi              ./themes/\*.rasi
+configuration du contenu            ./themes/\*.cfg 
+chemin d'enregistrement des notes   ~/.naivecalendar_notes/
+dossier des fichiers de cache       ~/.cache/naivecalendar/
+sauvegarde la date                  ~/.cache/naivecalendar/date_cache.ini
+sauve la date avec l'option -p      ~/.cache/naivecalendar/pretty_print_cache.txt
+sauvegarde le theme choisi          ~/.cache/naivecalendar/theme_cache.txt
+=================================   ==============================================
 
 Documentation
 -------------
@@ -126,3 +151,15 @@ Construisez la documentation
 
 .. |git_badge| image:: https://img.shields.io/badge/Source-git-red?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABpFBMVEUAAADwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDP////R9jl6AAAAinRSTlMAAANVzvz5wEICYOrfTGHt4k1d7vBn7wUUAWLCOdM49fFAPzdctQ2B+DYLqXlL91Qk41PkgjDo1QRu8qwd/souDPtRfK7SM2ONdpDQMhmI9lbpB5PeQc2zCSm8pKe/ssPGNUXmThghwVm7SAoWT8Va89HU+ozhdEblt2wg4F8rnmX9Stu5h6jn3MffBpBlAAAAAWJLR0SL8m9H4AAAAAd0SU1FB+QLGg4tBCSsxiIAAAJwSURBVFjDpdTpXxJBGMDxfQjQVVHMEqkszeToULqMNCq7bwLJisouKkoty+47O6znr24ZZnFgd2efnZ2XOL/vx515djXNeUFgXTAUbmsH0JQW6B2daKyuiJoAencPshXtVRHWejVB7FWE5t67ALC+D9GHANC9Af0JgY39ygLEBuLgQwB90+YtoC6w8x/cqizw+1MWGvfPhb5tQyEvgjA/TIgNbx/ZMRomC03zVxPYSCSSKaLQMr+D6fpW2LmL9hSt84+7+U7YM0YRLH1onO+DzF7CXVh6DO1rAPvdb9PaIx4wH+HghOs82PV4KMOB7OFJF8G2R5w6wu/BTXDoMXf0GED8uPFuygWnHnH6hDGNJ0dALjj3DAicOn1GKkj6OjCFQZkg602gLsTOnjt/4WKoVdA7nPsGgMFLUF+Xr+RFIQLa1QISAPY/sAcuzogbSte0WSQBeP0Gn6qbUXFHWZsmArd0DhRHxR15LUUEZswXQ78t7khpd4jAXJEDibvijntae4kGTNznX7gHQ8KGhxUNIlESgHOPDAHg8RPh753VuPFTb5QE5J4+G5hfWHwu9i/itVGUCCKAuPSy7VXe0kuFZqBlmb1MkAFrvURYXnQExN5RmHy9YLw/1TeuvYMQfptlh/zuvWtvL3xI8ENOuve2wkdz/NP97r2NsFwxb+nTZ0JvFXJfTOBrgdJbhW9Zfgbff5B6i9Czwr66kJkl9hbh5/i88TlPl8m9RVj69Tv5Z9VDL383Kb1coPQygdY7C9TeSaD39oKX3k7w1luFgse+Jqx0+enZh6jkpxcFtZ4Jf2v9alWtrwnD5bHwv4ou6/8Djb7EGx2gqrEAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMTEtMjZUMTM6NDU6MDQrMDE6MDADclLHAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTExLTI2VDEzOjQ1OjA0KzAxOjAwci/qewAAAABJRU5ErkJggg==&style=plastic
     :target: https://framagit.org/Daguhh/naivecalendar
+
+.. |classic dark| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_dark.png
+    :height: 130 px
+
+.. |square dark nord| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/square_dark_nord.png
+    :height: 130 px
+
+.. |round_light nord| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/round_light_nord.png
+    :height: 130 px
+
+.. |classic light compact| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_light_compact.png
+    :height: 130 px
