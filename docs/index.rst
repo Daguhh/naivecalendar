@@ -1,6 +1,6 @@
 
 .. include:: ../README.rst
-   :end-before: Dependancies
+   :end-before: .. contents:: 
 
 .. include:: ../README.rst
    :start-after: .. _start-link:

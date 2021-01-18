@@ -2,4 +2,4 @@ Howto
 =====
 
 .. include:: ../README.rst
-   :start-after: .. _dependancies:
+   :start-after: .. _installation:
