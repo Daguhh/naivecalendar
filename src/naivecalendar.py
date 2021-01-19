@@ -52,7 +52,6 @@ def to_list(cfg_list):
 config = configparser.ConfigParser(interpolation=None)
 config.read(THEME_CONFIG_FILE)
 
-
 ### set Locate ###
 cfg = config['LOCALE']
 #: keep empty to get system locale,
@@ -138,76 +137,57 @@ TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])
 # example (_ represents spaces):
 # Mon Thu ...
 # __1 __2 ...
-DAY_FORMAT = '{:>' + str(DAY_ABBR_LENGHT if DAY_ABBR_LENGHT>=2 else 2) + '}'
-
-# week days symbols : can be changed by locale
-def set_locale_n_week_day_names(arg_locale):
-    """ Set SYM_WEEK_DAYS constante given command line argument """
-
-    global SYM_WEEK_DAYS
-
-    if arg_locale:
-        locale.setlocale(locale.LC_ALL, arg_locale)
-    else:
-        locale.setlocale(locale.LC_ALL, USER_LOCALE)
-
-    if not SYM_WEEK_DAYS or len(SYM_WEEK_DAYS) == 1:
-
-        def get_loc_day(day_num, lenght):
-            """return locale day names truncated at lenght and titlized"""
-            return locale.nl_langinfo(locale.DAY_1 + day_num)[:lenght].title()
-
-        days_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
-
-        SYM_WEEK_DAYS = [DAY_FORMAT.format(
-            get_loc_day(day_num, DAY_ABBR_LENGHT)
-        ) for day_num in days_order]
-
-        #return SYM_WEEK_DAYS
-
+DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}'
+# absolute path
 NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
-
 #: symbols for day numbers
 SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted]
-
-#SYM_WEEK_DAYS = set_locale_n_week_day_names(args.locale)
-
 # create menu bar
 CAL_MENU = [" "] * NB_COL
 CAL_MENU[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
 CAL_MENU[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
-
 
 #############
 ###Script ###
 #############
 
 def main():
-    """
-    Display a calendar with rofi
-    Calendar is interactive :
+    """Print calendar to stdout"""
 
-    - switch between month
-    - open {EDITOR} and create a note for selected day
-    """
+    # create note path n test rofi intall
+    first_time_init()
 
-    first_time_init() # create note path n test rofi intall
-
+    # get command line arguments and if exist : rofi output
     args, rofi_output = get_arguments()
+    set_locale_n_week_day_names(args.locale)
     is_first_loop = not bool(rofi_output)
     out = rofi_output
 
-    set_locale_n_week_day_names(args.locale)
+    # get date given context
+    d = get_date(is_first_loop, args)
+    # react to rofi output
+    d = process_event_date(out, d, args)
+    # send next datas to rofi
+    update_rofi(d.date, is_first_loop)
+    # save  date
+    d.write_cache()
+    # react to rofi output (read cache file to reload rofi)
+    process_event_popup(out, d)
+
+def get_date(is_first_loop, args):
 
     d = Date()
-    if is_first_loop and args.date:
-        d.set_month(args.date)
-    elif not is_first_loop or args.is_force_read_cache:
-        d.read_cache()
-    else:
+    if not is_first_loop or args.is_force_read_cache:
+        d.read_cache() # read previous date
+    elif is_first_loop and args.date:
+        d.set_month(args.date) # command line force date
+    else: # at first loop if no force option
         d.today()
 
-    # react to rofi output : date change
+    return d
+
+def process_event_date(out, d, args):
+
     if out in SYM_PREV_YEAR:
         d.year -= 1
     elif out in SYM_PREV_MONTH:
@@ -224,11 +204,10 @@ def main():
     elif out == "" or out in SYM_WEEK_DAYS:
         joke(out)
 
-    update_rofi(d.date, is_first_loop)
+    return d
 
-    d.write_cache()
+def process_event_popup(out, d):
 
-    # react to rofi output (read cache file to reload rofi)
     if out in SYM_NOTES:
         show_notes(d.date)
     elif out in SYM_HELP:
@@ -994,6 +973,30 @@ close window to continue...
 
     rofi_popup("Help", txt)
 
+# week days symbols : can be changed by locale
+def set_locale_n_week_day_names(arg_locale):
+    """ Set SYM_WEEK_DAYS constante given command line argument """
+
+    global SYM_WEEK_DAYS
+
+    if arg_locale:
+        locale.setlocale(locale.LC_ALL, arg_locale)
+    else:
+        locale.setlocale(locale.LC_ALL, USER_LOCALE)
+
+    if not SYM_WEEK_DAYS or len(SYM_WEEK_DAYS) == 1:
+
+        def get_loc_day(day_num, lenght):
+            """return locale day names truncated at lenght and titlized"""
+            return locale.nl_langinfo(locale.DAY_1 + day_num)[:lenght].title()
+
+        days_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
+
+        SYM_WEEK_DAYS = [DAY_FORMAT.format(
+            get_loc_day(day_num, DAY_ABBR_LENGHT)
+        ) for day_num in days_order]
+
+        #return SYM_WEEK_DAYS
 
 if __name__ == "__main__":
     main()
