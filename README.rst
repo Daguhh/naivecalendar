@@ -36,8 +36,16 @@ Features
 Dependancies
 ------------
 
+Requirements
+^^^^^^^^^^^^
+
 * python3_ (stdlib)
 * rofi_
+
+Recommends
+^^^^^^^^^^
+
+* xclip (copy to clipboard option)
 
 Install
 -------

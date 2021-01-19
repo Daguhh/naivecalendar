@@ -10,5 +10,6 @@ Rules-Requires-Root: no
 Package: naivecalendar
 Architecture: all
 Depends: ${misc:Depends}, python3 (>=3.6), rofi
+Recommends: xclip
 Description: Simple rofi calendar popup
  A simple calendar popup with rofi and python3

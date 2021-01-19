@@ -199,6 +199,8 @@ def process_event_date(out, d, args):
     elif out in SYM_DAYS_NUM_unformatted:
         if args.print:
             print_selection(out, d.date, args.format)
+        elif args.clipboard:
+            send2clipboard(out, d.date, args.format)
         else:
             open_note(out, d.date, args.editor)
     elif out == "" or out in SYM_WEEK_DAYS:
@@ -644,6 +646,23 @@ def print_selection(day, date, f):
 
     sys.exit(0)
 
+@open_n_reload_rofi
+def send2clipboard(day, date, f):
+    """return select date to stdout given cmd line parameter '--format'"""
+
+    if shutil.which("xclip") == None:
+        print("\nplease install xclip to use 'copy-to-clipboard' option (-x/--clipboard)\n", file=sys.stderr)
+        sys.exit(0)
+
+    d = int(day)
+    m = date.month
+    y = date.year
+
+    pretty_date = datetime.date(y, m, d).strftime(f)
+    p = subprocess.Popen(('echo', pretty_date), stdout=subprocess.PIPE)
+    subprocess.check_output(('xclip', '-selection', 'clipboard'), stdin=p.stdout)
+
+    sys.exit(0)
 
 def first_time_init():
     """Create config files and paths given script head variables"""
@@ -798,17 +817,26 @@ def get_arguments():
 
     parser = argparse.ArgumentParser(description="""A simple popup calendar""")
 
-    parser.add_argument(
+    cmd_group = parser.add_mutually_exclusive_group()
+
+    cmd_group.add_argument(
         "-p",
         "--print",
         help="print date to stdout instead of opening a note",
         action="store_true",
     )
 
+    cmd_group.add_argument(
+        "-x",
+        "--clipboard",
+        help="copy date to clipboard",
+        action="store_true",
+    )
+
     parser.add_argument(
         "-f",
         "--format",
-        help="""option '-p' output format (datetime.strftime format, defaut='%%Y-{%%m}-%%d')""",
+        help="""option '-p' or '-x' output format (datetime.strftime format, defaut='%%Y-{%%m}-%%d')""",
         dest="format",
         default="%Y-%m-%d",
     )
