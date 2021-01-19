@@ -152,7 +152,7 @@ CAL_MENU[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
 #############
 
 def main():
-    """Print calendar to stdout"""
+    """Print calendar to stdout and react to rofi output"""
 
     # create note path n test rofi intall
     first_time_init()
@@ -164,8 +164,8 @@ def main():
     out = rofi_output
 
     # get date given context
-    d = get_date(is_first_loop, args)
-    # react to rofi output
+    d = get_date(is_first_loop, args.is_force_read_cache, args.date)
+    # react to "date" event from rofi
     d = process_event_date(out, d, args)
     # send next datas to rofi
     update_rofi(d.date, is_first_loop)
@@ -174,19 +174,38 @@ def main():
     # react to rofi output (read cache file to reload rofi)
     process_event_popup(out, d)
 
-def get_date(is_first_loop, args):
+
+def get_date(is_first_loop, is_force_read_cache, arg_date):
+    """get date given the context
+
+    Parameters
+    ----------
+    is_first_loop : bool
+        true on first calendar call
+    is_force_read_cache : bool
+        force date from cache
+    arg_date : str
+        date in '%m%Y' format
+
+    Returns
+    -------
+    Date
+       Date object that contain the date to display
+    """
 
     d = Date()
-    if not is_first_loop or args.is_force_read_cache:
+    if not is_first_loop or is_force_read_cache:
         d.read_cache() # read previous date
-    elif is_first_loop and args.date:
-        d.set_month(args.date) # command line force date
+    elif is_first_loop and arg_date:
+        d.set_month(arg_date) # command line force date
     else: # at first loop if no force option
         d.today()
 
     return d
 
+
 def process_event_date(out, d, args):
+    """React to rofi output for "date" events"""
 
     if out in SYM_PREV_YEAR:
         d.year -= 1
@@ -208,7 +227,9 @@ def process_event_date(out, d, args):
 
     return d
 
+
 def process_event_popup(out, d):
+    """React when shortcut for popup is enter in rofi prompt"""
 
     if out in SYM_NOTES:
         show_notes(d.date)
@@ -216,8 +237,7 @@ def process_event_popup(out, d):
         display_help()
     elif out in SYM_THEME:
         ask_theme()
-    else:
-        pass
+
 
 def update_rofi(date, is_first_loop):
     """generate and send calendar data to stdout/rofi
@@ -472,6 +492,7 @@ def get_note_head(note_path):
         head = f.read().split("\n")[0]
     return head
 
+
 def get_row_rofi_inds(row):
     """Get all rofi index of a row
 
@@ -487,6 +508,7 @@ def get_row_rofi_inds(row):
     """
 
     return ",".join(str(i * NB_ROW + row) for i in range(NB_COL))
+
 
 def rofi2cal_ind(ind):
     """ Convert coordinate from rofi to day number """
@@ -620,6 +642,7 @@ def open_note(day_sym, date, editor):
     )
     sdtout, sdterr = p.communicate()
 
+
 @open_n_reload_rofi
 def ask_theme():
     """Search themes in paths and open a popup"""
@@ -631,7 +654,6 @@ def ask_theme():
 
     theme = rofi_popup("select theme", themes)
     set_theme_cache(theme)
-
 
 def print_selection(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
@@ -645,6 +667,7 @@ def print_selection(day, date, f):
         f.write(pretty_date + "\n")
 
     sys.exit(0)
+
 
 @open_n_reload_rofi
 def send2clipboard(day, date, f):
@@ -663,6 +686,7 @@ def send2clipboard(day, date, f):
     subprocess.check_output(('xclip', '-selection', 'clipboard'), stdin=p.stdout)
 
     sys.exit(0)
+
 
 def first_time_init():
     """Create config files and paths given script head variables"""
@@ -836,7 +860,7 @@ def get_arguments():
     parser.add_argument(
         "-f",
         "--format",
-        help="""option '-p' or '-x' output format (datetime.strftime format, defaut='%%Y-{%%m}-%%d')""",
+        help="""option '-p' or '-x' output format (datetime.strftime format, defaut='%%Y-%%m-%%d')""",
         dest="format",
         default="%Y-%m-%d",
     )
@@ -898,48 +922,12 @@ def joke(sym):
         print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
 
-#def text_popup(head, body):
-#    """ Display a popup msg with tkinter
-#
-#    Parameters
-#    ----------
-#    head :
-#        str : window title
-#    body :
-#        str : message to Display
-#    """
-#
-#    import tkinter as tk
-#    import tkinter.scrolledtext as st
-#
-#    win = tk.Tk()
-#    win.title(head)
-#    text_area = st.ScrolledText(win, width=50, height=12, font=("Noto Sans", 10))
-#    text_area.grid(column=0, pady=10, padx=10)
-#    text_area.insert(tk.INSERT, body)
-#    text_area.configure(state="disabled")
-#    win.mainloop()
-#
-#def text_list_popup(head, lst):
-#
-#    import tkinter as tk
-#    from tkinter import Listbox
-#
-#    win = tk.Tk()
-#    win.title(head)
-#    l = Listbox(win)
-#    l.insert(1,*lst)
-#    l.pack()
-#
-#    win.bind('<Return>', lambda _:[set_theme_cache(l.get(l.curselection()[0])), win.destroy()])
-#
-#    win.mainloop()
-
 def set_theme_cache(selected):
     """Write theme name to cache file"""
 
     with open(THEME_CACHE, 'w') as f:
         f.write(selected)
+
 
 def rofi_popup(txt_head, txt_body):
     """Launch a rofi window
@@ -967,6 +955,7 @@ def rofi_popup(txt_head, txt_body):
     )
 
     return selection
+
 
 @open_n_reload_rofi
 def display_help(head_txt="help:"):
@@ -1000,6 +989,7 @@ close window to continue...
 """
 
     rofi_popup("Help", txt)
+
 
 # week days symbols : can be changed by locale
 def set_locale_n_week_day_names(arg_locale):
