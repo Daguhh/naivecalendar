@@ -121,22 +121,23 @@ Sym    Keys                     Action
  ..   theme       ..       ..   display theme selector
 ====  =====  =======  ========  ========================================
 
-In a script
-^^^^^^^^^^^
+Options
+^^^^^^^
 
-You can use the naivecalendar to pick up dates in a script, for this, see command line options:
+Some command line options are avaible and can be useful if you want to integrate the naivecalendar in a script or temporarily override parameters.
 
 .. code::
 
-    usage: naivecalendar.py [-h] [-p] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
-    
+    usage: naivecalendar [-h] [-p | -x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
+
     A simple popup calendar
-    
+
     optional arguments:
       -h, --help            show this help message and exit
       -p, --print           print date to stdout instead of opening a note
+      -x, --clipboard       copy date to clipboard
       -f FORMAT, --format FORMAT
-                            option '-p' output format (datetime.strftime format, defaut='%Y-{%m}-%d')
+                            option '-p' or '-x' output format (datetime.strftime format, defaut='%Y-%m-%d')
       -e EDITOR, --editor EDITOR
                             editor command to open notes
       -l LOCALE, --locale LOCALE
@@ -145,6 +146,7 @@ You can use the naivecalendar to pick up dates in a script, for this, see comman
       -t THEME, --theme THEME
                             set calendar theme, default=classic_dark (theme file name without extention)
       -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
+
     
 ---------------------------------------------------------------------------------
 
