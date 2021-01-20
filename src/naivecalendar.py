@@ -842,7 +842,10 @@ class Month:
 def get_arguments():
     """Parse command line arguments"""
 
-    parser = argparse.ArgumentParser(description="""A simple popup calendar""")
+    parser = argparse.ArgumentParser(
+        prog="naivecalendar",
+        description="A simple popup calendar"
+    )
 
     cmd_group = parser.add_mutually_exclusive_group()
 
