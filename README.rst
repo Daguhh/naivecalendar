@@ -128,12 +128,13 @@ Some command line options are avaible and can be useful if you want to integrate
 
 .. code::
 
-    usage: naivecalendar [-h] [-p | -x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
+    usage: naivecalendar [-h] [-v] [-p | -x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
 
     A simple popup calendar
 
     optional arguments:
       -h, --help            show this help message and exit
+      -v, --version         show program's version number and exit
       -p, --print           print date to stdout instead of opening a note
       -x, --clipboard       copy date to clipboard
       -f FORMAT, --format FORMAT

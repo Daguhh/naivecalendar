@@ -8,6 +8,7 @@ Cycle through month and create linked note to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
+__version__ = "0.3.4"
 
 import glob, os, sys, subprocess, shutil
 import re, argparse, configparser
@@ -847,6 +848,13 @@ def get_arguments():
         description="A simple popup calendar"
     )
 
+    parser.add_argument(
+        '-v',
+        '--version',
+        action='version',
+        version="%(prog)s " + __version__
+    )
+
     cmd_group = parser.add_mutually_exclusive_group()
 
     cmd_group.add_argument(
@@ -901,6 +909,7 @@ def get_arguments():
         help="""set calendar theme, default=classic_dark (theme file name without extention)""",
         dest="theme"
     )
+
     parser.add_argument(
         "-d",
         "--date",
@@ -908,7 +917,6 @@ def get_arguments():
         dest="date",
         default=False
     )
-
 
     args, unknown = parser.parse_known_args()
     unknown = unknown if len(unknown) == 0 else "".join(unknown).strip(' ')
