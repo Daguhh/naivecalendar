@@ -5,7 +5,7 @@ naivecalendar
 - rofi calendar popup
 
 .SH SYNOPSIS
-.B naivecalendar [-h] [-p] [-f 
+.B naivecalendar [-h] [-p] [-x] [-f 
 .I FORMAT
 .B ] [-e 
 .I EDITOR
@@ -52,8 +52,12 @@ show this help message and exit
 print date to stdout instead of opening a note
 
 .TP
+.B -x|--clipboard
+copy date to clipboard
+
+.TP
 .B -f|--format FORMAT
-option '-p' output format (datetime.strftime format, defaut='%Y-%m-%d')
+option '-p' or '-x' output format (datetime.strftime format, defaut='%Y-%m-%d')
 
 .TP
 .B -e|--editor EDITOR

@@ -1,3 +1,9 @@
+naivecalendar (0.3.4) UNRELEASED; urgency=medium
+
+  * Add copy-to-clipboard option
+
+ -- Daguhh <code.daguhh@zaclys.net>  Wed, 20 Jan 2021 00:23:47 +0100
+
 naivecalendar (0.3.3) UNRELEASED; urgency=medium
 
   * Remove tkinter dependencies (switch to full rofi popup)
