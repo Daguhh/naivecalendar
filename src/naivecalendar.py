@@ -159,7 +159,10 @@ def main():
 
     # get command line arguments and if exist : rofi output
     args, rofi_output = get_arguments()
-    set_locale_n_week_day_names(args.locale)
+
+    global SYM_WEEK_DAYS
+    SYM_WEEK_DAYS = set_locale_n_week_day_names(args.locale)
+
     is_first_loop = not bool(rofi_output)
     out = rofi_output
 
@@ -995,8 +998,6 @@ close window to continue...
 def set_locale_n_week_day_names(arg_locale):
     """ Set SYM_WEEK_DAYS constante given command line argument """
 
-    global SYM_WEEK_DAYS
-
     if arg_locale:
         locale.setlocale(locale.LC_ALL, arg_locale)
     else:
@@ -1010,11 +1011,11 @@ def set_locale_n_week_day_names(arg_locale):
 
         days_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
 
-        SYM_WEEK_DAYS = [DAY_FORMAT.format(
+        sym_week_days = [DAY_FORMAT.format(
             get_loc_day(day_num, DAY_ABBR_LENGHT)
         ) for day_num in days_order]
 
-        #return SYM_WEEK_DAYS
+        return sym_week_days
 
 if __name__ == "__main__":
     main()
