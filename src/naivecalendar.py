@@ -483,6 +483,7 @@ def get_month_notes_heads(date):
     note_lst = get_month_notes(date)
 
     heads = [get_note_head(n) for n in note_lst]
+    print(note_lst, file=sys.stderr)
     prompts = [n.split(".")[-2].split("/")[-1] for n in note_lst]
 
     return "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
