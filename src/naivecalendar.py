@@ -80,7 +80,7 @@ cfg = config['NOTES']
 #: notes path should contains at least %d and month (%b, %m...)  + year (%Y...) (strftime format)
 NOTES_PATHS = {n:pathlib.Path.home()/pathlib.Path(cfg[n]) for n in cfg}
 #: default date notes folder to display
-NOTES_DEFAULT = NOTES_DEFAULT if NOTES_DEFAULT != '' else next(NOTES_PATHS.keys.__iter__()) #cfg['DEFAULT'].lower()
+NOTES_DEFAULT = NOTES_DEFAULT if NOTES_DEFAULT != '' else next(NOTES_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
 
 ### Rofi/Calendar shape ###
 cfg = config['SHAPE']
@@ -116,13 +116,14 @@ SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM'])
 ### Shortcuts for popup windows ###
 cfg = config['SHORTCUTS']
 #: shortcut to display notes popup
-SYM_NOTES = to_list(cfg['SYM_NOTES'])
+SYM_SHOW_EVENTS = to_list(cfg['SYM_SHOW_EVENTS'])
+print(SYM_SHOW_EVENTS, file=sys.stderr)
 #: shortcut to display help popup
-SYM_HELP = to_list(cfg['SYM_HELP'])
+SYM_SHOW_HELP = to_list(cfg['SYM_SHOW_HELP'])
 #: shortcut to display theme chooser popup
-SYM_THEME = to_list(cfg['SYM_THEME'])
+SYM_SWITCH_THEME = to_list(cfg['SYM_SWITCH_THEME'])
 #: shortcut to display event chooser popup
-SYM_EVENT = to_list(cfg['SYM_EVENT'])
+SYM_SWITCH_EVENT = to_list(cfg['SYM_SWITCH_EVENT'])
 
 ### Today header display ###
 cfg = config['HEADER']
@@ -244,14 +245,16 @@ def process_event_date(out, d, args):
 def process_event_popup(out, d):
     """React when shortcut for popup is enter in rofi prompt"""
 
-    if out in SYM_NOTES:
+    if out in SYM_SHOW_EVENTS:
         show_notes(d.date)
-    elif out in SYM_HELP:
+    elif out in SYM_SHOW_HELP:
         display_help()
-    elif out in SYM_THEME:
+    elif out in SYM_SWITCH_THEME:
         ask_theme()
-    elif out in SYM_EVENT:
+    elif out in SYM_SWITCH_EVENT:
         ask_event_to_display()
+    elif out == "menu":
+        show_menu(d)
 
 
 def update_rofi(date, is_first_loop):
@@ -336,7 +339,7 @@ def get_calendar_from_date(date):
     cal = list(chain(*content))
 
     # Format calendar for rofi (column by column)
-    cal = list_transpose(cal)
+    cal = list_transpose(cal) # + ["theme", "help", "event", "switch"]
 
     # format data to be read by rofi (linebreak separated elements)
     cal = list2rofi(cal)
@@ -483,7 +486,6 @@ def get_month_notes_heads(date):
     note_lst = get_month_notes(date)
 
     heads = [get_note_head(n) for n in note_lst]
-    print(note_lst, file=sys.stderr)
     prompts = [pathlib.Path(n).stem for n in note_lst]
 
     return "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
@@ -582,10 +584,15 @@ def get_month_notes(date):
     """
 
     path = NOTES_PATHS[NOTES_DEFAULT]
+    print(path, file=sys.stderr)
     file_pattern = str(path).replace('%d', '*')
+    file_pattern = file_pattern.replace('%A', '*')
+    print(file_pattern, file=sys.stderr)
     #pattern = NOTES_DATE_FORMAT.replace('%d', '*')
     file_pattern = date.strftime(file_pattern) #f"{date.year}-{date.month}-"
+    print(file_pattern, file=sys.stderr)
     note_lst = glob.glob(file_pattern)
+    print(note_lst, file=sys.stderr)
 
     return note_lst
 
@@ -610,9 +617,9 @@ def get_month_notes_ind(date):
     # get note day number
     date_format = NOTES_PATHS[NOTES_DEFAULT].name
     pattern = re.sub('%d',r'([0-9]*)', date_format)
+    pattern = re.sub('%A',r'[a-zA-Z.]*', pattern)
     #pattern = re.sub('%.','[a-zA-Z0-9]*', pattern)
     pattern = date.strftime(pattern)
-    print(pattern , file=sys.stderr)
     days = [re.match(pattern, f.split('/')[-1]).group(1) for f in note_lst]
     # transform into rofi index
     ind = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
@@ -648,6 +655,12 @@ def show_notes(date):
     notes_heads = get_month_notes_heads(date)
     rofi_popup(NOTES_DEFAULT, notes_heads)
 
+@open_n_reload_rofi
+def show_menu(d):
+
+    menu = '\n'.join([to_list(config['SHORTCUTS'][s])[1] for s in config['SHORTCUTS']])
+    output = rofi_popup("menu", menu)
+    process_event_popup(output, d)
 
 @open_n_reload_rofi
 def open_note(day_sym, date, editor):
@@ -664,6 +677,7 @@ def open_note(day_sym, date, editor):
     )
     sdtout, sdterr = p.communicate()
 
+
 @open_n_reload_rofi
 def ask_event_to_display():
 
@@ -672,8 +686,8 @@ def ask_event_to_display():
 
     event = rofi_popup("select what to display", events)
 
-    print(f'{event=}', file=sys.stderr)
     set_event_cache(event)
+
 
 @open_n_reload_rofi
 def ask_theme():
