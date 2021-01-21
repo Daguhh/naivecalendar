@@ -107,6 +107,8 @@ SYM_NEXT_YEAR = to_list(cfg['SYM_NEXT_YEAR'])
 SYM_PREV_MONTH = to_list(cfg['SYM_PREV_MONTH'])
 #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_YEAR = to_list(cfg['SYM_PREV_YEAR'])
+#: 1st symbol is displayed, others are simply shortcuts
+SYM_MENU = to_list(cfg['SYM_MENU'])
 
 ### Day numbers symbols
 cfg = config['DAYS']
@@ -117,7 +119,6 @@ SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM'])
 cfg = config['SHORTCUTS']
 #: shortcut to display events popup
 SYM_SHOW_EVENTS = to_list(cfg['SYM_SHOW_EVENTS'])
-print(SYM_SHOW_EVENTS, file=sys.stderr)
 #: shortcut to display help popup
 SYM_SHOW_HELP = to_list(cfg['SYM_SHOW_HELP'])
 #: shortcut to display theme chooser popup
@@ -156,6 +157,7 @@ SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatt
 # create menu bar
 CAL_MENU = [" "] * NB_COL
 CAL_MENU[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
+CAL_MENU[-4] = SYM_MENU[0] if SYM_MENU[0] != '' else '_'
 CAL_MENU[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
 
 #############
@@ -253,7 +255,7 @@ def process_event_popup(out, d):
         ask_theme()
     elif out in SYM_SWITCH_EVENT:
         ask_event_to_display()
-    elif out == "menu":
+    elif out in SYM_MENU:
         show_menu(d)
 
 
@@ -668,7 +670,7 @@ def show_events(date):
 def show_menu(d):
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[1] for s in config['SHORTCUTS']])
-    output = rofi_popup("menu", menu)
+    output = rofi_popup("menu", menu + '\nback to calendar')
     process_event_popup(output, d)
 
 @open_n_reload_rofi
@@ -693,7 +695,7 @@ def ask_event_to_display():
     events = list(EVENTS_PATHS.keys())
     events = list2rofi(events)
 
-    event = rofi_popup("select what to display", events)
+    event = rofi_popup(f"select what to display (actual = {EVENTS_DEFAULT})", events)
 
     set_event_cache(event)
 
@@ -1041,25 +1043,26 @@ def display_help(head_txt="help:"):
  - Hit bottom arrows to cycle through months.
  - Hit a day to create a linked event.
 (A day with attached event will appear yellow.)
- - Notes are stored in {HOME}/.naivecalendar_events/
-(For now you've to manually delete it)
+ - Create multiple event type and with between them
 
 There's somme shortcut too, type it in rofi prompt :
 
+     help : display this help
  nn or -- : go to previous year
    n or - : go to previous month
    p or + : go to next month
  pp or ++ : go to next year
-   events : display events of the month (first line)
-     help : display this help
+    event : display events of the month (first line)
+   switch : switch events folder to display
     theme : show theme selector
+     menu : display a selection menu (skip shortcuts)
 
 There's some command line option too, dislay it with :
     ./naivecalendar -h
 
 That's all :
 
-close window to continue...
+press enter to continue...
 """
 
     rofi_popup("Help", txt)
