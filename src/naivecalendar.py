@@ -2,7 +2,7 @@
 """
 A simple calendar made with rofi and python3.
 
-Cycle through month and create linked note to days.
+Cycle through month and create linked event to days.
 """
 
 __author__ = "Daguhh"
@@ -46,9 +46,9 @@ except FileNotFoundError: #  default if not initialized
 
 try:
     with open(EVENT_CACHE, 'r') as event_cache:
-        NOTES_DEFAULT = event_cache.read()
+        EVENTS_DEFAULT = event_cache.read()
 except FileNotFoundError:
-    NOTES_DEFAULT = ''
+    EVENTS_DEFAULT = ''
 
 ############################
 ### Load user parameters ###
@@ -76,11 +76,11 @@ FIRST_DAY_WEEK = int(cfg["FIRST_DAY_WEEK"])
 SYM_WEEK_DAYS = to_list(cfg["SYM_WEEK_DAYS"])
 
 ### Notes conf ###
-cfg = config['NOTES']
-#: notes path should contains at least %d and month (%b, %m...)  + year (%Y...) (strftime format)
-NOTES_PATHS = {n:pathlib.Path.home()/pathlib.Path(cfg[n]) for n in cfg}
-#: default date notes folder to display
-NOTES_DEFAULT = NOTES_DEFAULT if NOTES_DEFAULT != '' else next(NOTES_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
+cfg = config['EVENTS']
+#: events path should contains at least %d and month (%b, %m...)  + year (%Y...) (strftime format)
+EVENTS_PATHS = {n:pathlib.Path.home()/pathlib.Path(cfg[n]) for n in cfg}
+#: default date events folder to display
+EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
 
 ### Rofi/Calendar shape ###
 cfg = config['SHAPE']
@@ -115,7 +115,7 @@ SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM'])
 
 ### Shortcuts for popup windows ###
 cfg = config['SHORTCUTS']
-#: shortcut to display notes popup
+#: shortcut to display events popup
 SYM_SHOW_EVENTS = to_list(cfg['SYM_SHOW_EVENTS'])
 print(SYM_SHOW_EVENTS, file=sys.stderr)
 #: shortcut to display help popup
@@ -150,7 +150,7 @@ TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])
 # __1 __2 ...
 DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}'
 # absolute path
-#NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
+#EVENTS_PATH = f"{HOME}/{EVENTS_RELATIVE_PATH}"
 #: symbols for day numbers
 SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted]
 # create menu bar
@@ -165,7 +165,7 @@ CAL_MENU[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
 def main():
     """Print calendar to stdout and react to rofi output"""
 
-    # create note path n test rofi intall
+    # create event path n test rofi intall
     first_time_init()
 
     # get command line arguments and if exist : rofi output
@@ -235,7 +235,7 @@ def process_event_date(out, d, args):
         elif args.clipboard:
             send2clipboard(out, d.date, args.format)
         else:
-            open_note(out, d.date, args.editor)
+            open_event(out, d.date, args.editor)
     elif out == "" or out in SYM_WEEK_DAYS:
         joke(out)
 
@@ -246,7 +246,7 @@ def process_event_popup(out, d):
     """React when shortcut for popup is enter in rofi prompt"""
 
     if out in SYM_SHOW_EVENTS:
-        show_notes(d.date)
+        show_events(d.date)
     elif out in SYM_SHOW_HELP:
         display_help()
     elif out in SYM_SWITCH_THEME:
@@ -275,14 +275,14 @@ def update_rofi(date, is_first_loop):
     # generate new datas
     cal = get_calendar_from_date(date)
     date_prompt = date.strftime(PROMT_DATE_FORMAT).title()
-    notes_inds = get_month_notes_ind(date)
+    events_inds = get_month_events_ind(date)
     today_ind = cal2rofi_ind(date.day, date.month, date.year)
     week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
     control_sym_row =get_row_rofi_inds(ROW_CONTROL_MENU)
 
     # send datas to stdout
     print(f"\0prompt\x1f{date_prompt}\n")
-    print(f"\0urgent\x1f{notes_inds}\n")
+    print(f"\0urgent\x1f{events_inds}\n")
     if is_first_loop:
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
@@ -468,7 +468,7 @@ def rofi2list(datas):
     return datas.split("\n")
 
 
-def get_month_notes_heads(date):
+def get_month_events_heads(date):
     """
     Return a list of file's first line of a specific month
 
@@ -480,24 +480,24 @@ def get_month_notes_heads(date):
     Returns
     -------
     str
-        A rofi formatted list of month's notes first line
+        A rofi formatted list of month's events first line
     """
 
-    note_lst = get_month_notes(date)
+    event_lst = get_month_events(date)
 
-    heads = [get_note_head(n) for n in note_lst]
-    prompts = [pathlib.Path(n).stem for n in note_lst]
+    heads = [get_event_head(n) for n in event_lst]
+    prompts = [pathlib.Path(n).stem for n in event_lst]
 
     return "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
 
 
-def get_note_head(note_path):
+def get_event_head(event_path):
     """
     Return first line of a text file
 
     Parameters
     ----------
-    note_path : str
+    event_path : str
         A text file path
 
     Returns
@@ -506,7 +506,7 @@ def get_note_head(note_path):
         First line of the text file
     """
 
-    with open(note_path, "r") as f:
+    with open(event_path, "r") as f:
         head = f.read().split("\n")[0]
     return head
 
@@ -568,9 +568,9 @@ def cal2rofi_ind(day, month, year):
     return ind_c
 
 
-def get_month_notes(date):
+def get_month_events(date):
     """
-    Return notes files paths that are attached to date's month
+    Return events files paths that are attached to date's month
 
     Parameters
     ----------
@@ -583,22 +583,28 @@ def get_month_notes(date):
         list of files that belong to date.month
     """
 
-    path = NOTES_PATHS[NOTES_DEFAULT]
-    print(path, file=sys.stderr)
-    file_pattern = re.sub('%-{0,1}[dwaA]', '*', str(path))
-    print(file_pattern, file=sys.stderr)
-    #pattern = NOTES_DATE_FORMAT.replace('%d', '*')
+    # folder of the actual watched events
+    path = EVENTS_PATHS[EVENTS_DEFAULT]
+
+    # make all elements that change during a month (d, h, m, s) match a regex
+    # "%a-%d-%b-%m-%Y" --> "[a-zA-Z.]*-[0-9]*-%b-%m-%Y"
+    file_pattern = re.sub('%-{0,1}[dwjhHIMSfzZ]', '[0-9]*', str(path))
+    file_pattern = re.sub('%[aAp]', '[a-zA-Z.]*', file_pattern)
+
+    # format all element that identify the month (year, month)
+    # "[a-zA-Z.]*-[0-9]*-%b-%m-%Y" --> "[a-zA-Z.]*-[0-9]*-Jan.-01-2021"
     file_pattern = date.strftime(file_pattern) #f"{date.year}-{date.month}-"
-    print(file_pattern, file=sys.stderr)
-    note_lst = glob.glob(file_pattern)
-    print(note_lst, file=sys.stderr)
 
-    return note_lst
+    # return all elements that belong to current month (match previous regex)
+    path = pathlib.Path(file_pattern)
+    event_lst = list(pathlib.Path(path.parent).glob(path.name))
+
+    return event_lst
 
 
-def get_month_notes_ind(date):
+def get_month_events_ind(date):
     """
-    Return rofi-formatted index of days with attached note
+    Return rofi-formatted index of days with attached event
 
     Parameters
     ----------
@@ -612,18 +618,18 @@ def get_month_notes_ind(date):
     """
 
     # get file list
-    note_lst = get_month_notes(date)
-    # get note day number
-    date_format = NOTES_PATHS[NOTES_DEFAULT].name
+    event_lst = get_month_events(date)
+    # get event day number
+    date_format = EVENTS_PATHS[EVENTS_DEFAULT].name
     # make capture group for day number (%d)
     pattern = re.sub('%d',r'([0-9]*)', date_format)
     # create pattern for %-d, %w, %a, %A
-    pattern = re.sub('%(-d|w)',r'[0-9]*', pattern)
-    pattern = re.sub('%[aA]',r'[a-zA-Z.]*', pattern)
+    pattern = re.sub('%-{0,1}[dwjhHIMSfzZ]',r'[0-9]*', pattern)
+    pattern = re.sub('%[aAp]',r'[a-zA-Z.]*', pattern)
     # replace other (month and year) with real date
     pattern = date.strftime(pattern)
-    # match the day (%d) capture group for each note in note_lst
-    days = [re.match(pattern, f.split('/')[-1]).group(1) for f in note_lst]
+    # match the day (%d) capture group for each event in event_lst
+    days = [re.match(pattern, f.name).group(1) for f in event_lst]
     # transform into rofi index
     inds = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
     # format into rofi command
@@ -652,11 +658,11 @@ def open_n_reload_rofi(func):
 
 
 @open_n_reload_rofi
-def show_notes(date):
-    """open rofi popup with notes list of selected month"""
+def show_events(date):
+    """open rofi popup with events list of selected month"""
 
-    notes_heads = get_month_notes_heads(date)
-    rofi_popup(NOTES_DEFAULT, notes_heads)
+    events_heads = get_month_events_heads(date)
+    rofi_popup(EVENTS_DEFAULT, events_heads)
 
 @open_n_reload_rofi
 def show_menu(d):
@@ -666,15 +672,15 @@ def show_menu(d):
     process_event_popup(output, d)
 
 @open_n_reload_rofi
-def open_note(day_sym, date, editor):
-    """open note for the selected date"""
+def open_event(day_sym, date, editor):
+    """open event for the selected date"""
 
     day_ind = SYM_DAYS_NUM_unformatted.index(day_sym) + 1
 
-    date_format = str(NOTES_PATHS[NOTES_DEFAULT])
-    note_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
-    #note_path = S_PATH}/{note_name}.txt"
-    cmd = f"touch {note_path} & {editor} {note_path}"
+    date_format = str(EVENTS_PATHS[EVENTS_DEFAULT])
+    event_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
+    #event_path = S_PATH}/{event_name}.txt"
+    cmd = f"touch {event_path} & {editor} {event_path}"
     p = subprocess.Popen(
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
@@ -684,7 +690,7 @@ def open_note(day_sym, date, editor):
 @open_n_reload_rofi
 def ask_event_to_display():
 
-    events = list(NOTES_PATHS.keys())
+    events = list(EVENTS_PATHS.keys())
     events = list2rofi(events)
 
     event = rofi_popup("select what to display", events)
@@ -747,9 +753,9 @@ def first_time_init():
     if not os.path.exists(THEME_USER_PATH):
         os.makedirs(THEME_USER_PATH)
 
-    for notes_path in NOTES_PATHS.values():
-        if not os.path.exists(notes_path.parent):
-            os.makedirs(notes_path.parent)
+    for events_path in EVENTS_PATHS.values():
+        if not os.path.exists(events_path.parent):
+            os.makedirs(events_path.parent)
 
     if not os.path.exists(CACHE_PATH):
         os.mkdir(CACHE_PATH)
@@ -907,7 +913,7 @@ def get_arguments():
     cmd_group.add_argument(
         "-p",
         "--print",
-        help="print date to stdout instead of opening a note",
+        help="print date to stdout instead of opening a event",
         action="store_true",
     )
 
@@ -929,7 +935,7 @@ def get_arguments():
     parser.add_argument(
         "-e",
         "--editor",
-        help="""editor command to open notes""",
+        help="""editor command to open events""",
         dest="editor",
         default="xdg-open",
     )
@@ -1033,18 +1039,18 @@ def display_help(head_txt="help:"):
 
  - Use mouse or keyboard to interact with the calendar.
  - Hit bottom arrows to cycle through months.
- - Hit a day to create a linked note.
-(A day with attached note will appear yellow.)
- - Notes are stored in {HOME}/.naivecalendar_notes/
+ - Hit a day to create a linked event.
+(A day with attached event will appear yellow.)
+ - Notes are stored in {HOME}/.naivecalendar_events/
 (For now you've to manually delete it)
 
 There's somme shortcut too, type it in rofi prompt :
 
-       -- : go to previous year
+ nn or -- : go to previous year
    n or - : go to previous month
    p or + : go to next month
  pp or ++ : go to next year
-    notes : display notes of the month (first line)
+   events : display events of the month (first line)
      help : display this help
     theme : show theme selector
 
