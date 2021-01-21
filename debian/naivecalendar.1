@@ -24,22 +24,23 @@ it can be used as an interactive calendar or a simple popup to pickup date
 
 .RS
 .nf
-- Use mouse or keyboard to interact with the calendar.
-- Hit bottom arrows to cycle through months.
-- Hit a day to create a linked note.
-(A day with attached note will appear yellow.)
-- Notes are stored in {HOME}/.naivecalendar_notes/
-(For now you've to manually delete it)
+ - Use mouse or keyboard to interact with the calendar.
+ - Hit bottom arrows to cycle through months.
+ - Hit a day to create a linked event.
+(A day with attached event will appear yellow.)
+ - Create multiple event type and with between them
 
-There's somme shortcut to be entered in rofi prompt :
+There's somme shortcut too, type it in rofi prompt :
 
-       -- : go to previous year
+     help : display this help
+ nn or -- : go to previous year
    n or - : go to previous month
    p or + : go to next month
  pp or ++ : go to next year
-    notes : display notes of the month (first line)
-     help : display this help
+    event : display events of the month (first line)
+   switch : switch events folder to display
     theme : show theme selector
+     menu : display a selection menu (skip shortcuts)
 
 .SH OPTIONS
 
