@@ -23,6 +23,7 @@ Features
 * Cycle through calendar months by months, years by years.
 * Use locale or force any language
 * Create notes linked to days. *Days with notes will appear colored*.
+* Create multiple notes types (i.e. folders) and witch between them
 * Customize themes, content, symbols, shortcuts with text files
 * Change theme on the fly
 * Integrate it with your scripts and make them more interactive: open on a particular date, request a date. 
@@ -94,12 +95,11 @@ Basic
 
 Simply execute the script, then:
 
-- Use mouse or keyboard to interact with the calendar.
-- Hit bottom arrows to cycle through months.
-- Hit a day to create a linked note.
-  (A day with attached note will appear yellow.)
-- Notes are stored in {HOME}/.naivecalendar_notes/
-  (For now you've to manually delete it)
+ - Use mouse or keyboard to interact with the calendar.
+ - Hit bottom arrows to cycle through months.
+ - Hit a day to create a linked event.
+(A day with attached event will appear yellow.)
+ - Create multiple event type and with between them
 
 Shortcuts
 ^^^^^^^^^
@@ -119,6 +119,7 @@ Sym    Keys                     Action
  ..   notes       ..       ..   display notes of the month (first line)
  ..    help       ..       ..   display this help
  ..   theme       ..       ..   display theme selector
+  ☰    menu       mm       ..   display menu 
 ====  =====  =======  ========  ========================================
 
 Options
@@ -195,6 +196,7 @@ day notes path                     ~/.naivecalendar_notes/**<user date format>.t
 remember date throught loops       ~/.cache/naivecalendar/**date_cache.ini**
 pass date to bash when -p option   ~/.cache/naivecalendar/**pretty_print_cache.txt**
 remember theme after quitting      ~/.cache/naivecalendar/**theme_cache.txt**
+remember event type                ~/.cache/naivecalendar/**event_cache.txt**
 ================================   =================================================
 
 ---------------------------------------------------------------------------------
