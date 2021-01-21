@@ -10,7 +10,7 @@ __license__ = "MIT-0"
 __status__ = "Dev"
 __version__ = "0.3.4"
 
-import glob, os, sys, subprocess, shutil
+import glob, os, sys, subprocess, shutil, pathlib
 import re, argparse, configparser
 import datetime, calendar, locale
 from itertools import chain
@@ -26,6 +26,7 @@ CACHE_PATH = f"{HOME}/.cache/naivecalendar"
 DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
 PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
 THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
+EVENT_CACHE = f"{CACHE_PATH}/event_cache.txt"
 THEME_USER_PATH = f"{HOME}/.config/naivecalendar/themes"
 THEME_PATHS = [THEME_USER_PATH, f"{DIRNAME}/themes"]
 
@@ -42,6 +43,12 @@ try: # cache file
 except FileNotFoundError: #  default if not initialized
     theme = "classic_dark"
     THEME_CONFIG_FILE = f"{THEME_PATHS[-1]}/{theme}.cfg"
+
+try:
+    with open(EVENT_CACHE, 'r') as event_cache:
+        NOTES_DEFAULT = event_cache.read()
+except FileNotFoundError:
+    NOTES_DEFAULT = ''
 
 ############################
 ### Load user parameters ###
@@ -70,10 +77,10 @@ SYM_WEEK_DAYS = to_list(cfg["SYM_WEEK_DAYS"])
 
 ### Notes conf ###
 cfg = config['NOTES']
-#: path to save notes (retative to $HOME)
-NOTES_RELATIVE_PATH = cfg["NOTES_RELATIVE_PATH"]
-#: strftime format, contains at least %d and month (%b, %m...)  + year (%Y...)
-NOTES_DATE_FORMAT = cfg["NOTES_DATE_FORMAT"]
+#: notes path should contains at least %d and month (%b, %m...)  + year (%Y...) (strftime format)
+NOTES_PATHS = {n:pathlib.Path.home()/pathlib.Path(cfg[n]) for n in cfg}
+#: default date notes folder to display
+NOTES_DEFAULT = NOTES_DEFAULT if NOTES_DEFAULT != '' else next(NOTES_PATHS.keys.__iter__()) #cfg['DEFAULT'].lower()
 
 ### Rofi/Calendar shape ###
 cfg = config['SHAPE']
@@ -114,6 +121,8 @@ SYM_NOTES = to_list(cfg['SYM_NOTES'])
 SYM_HELP = to_list(cfg['SYM_HELP'])
 #: shortcut to display theme chooser popup
 SYM_THEME = to_list(cfg['SYM_THEME'])
+#: shortcut to display event chooser popup
+SYM_EVENT = to_list(cfg['SYM_EVENT'])
 
 ### Today header display ###
 cfg = config['HEADER']
@@ -140,7 +149,7 @@ TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])
 # __1 __2 ...
 DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}'
 # absolute path
-NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
+#NOTES_PATH = f"{HOME}/{NOTES_RELATIVE_PATH}"
 #: symbols for day numbers
 SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted]
 # create menu bar
@@ -241,6 +250,8 @@ def process_event_popup(out, d):
         display_help()
     elif out in SYM_THEME:
         ask_theme()
+    elif out in SYM_EVENT:
+        ask_event_to_display()
 
 
 def update_rofi(date, is_first_loop):
@@ -569,9 +580,11 @@ def get_month_notes(date):
         list of files that belong to date.month
     """
 
-    pattern = NOTES_DATE_FORMAT.replace('%d', '*')
-    file_prefix = date.strftime(pattern) #f"{date.year}-{date.month}-"
-    note_lst = glob.glob(f"{NOTES_PATH}/{file_prefix}*")
+    path = NOTES_PATHS[NOTES_DEFAULT]
+    file_pattern = str(path).replace('%d', '*')
+    #pattern = NOTES_DATE_FORMAT.replace('%d', '*')
+    file_pattern = date.strftime(file_pattern) #f"{date.year}-{date.month}-"
+    note_lst = glob.glob(file_pattern)
 
     return note_lst
 
@@ -594,8 +607,11 @@ def get_month_notes_ind(date):
     # get file list
     note_lst = get_month_notes(date)
     # get note day number
-    pattern = re.sub('%d',r'([0-9]*)', NOTES_DATE_FORMAT)
-    pattern = re.sub('%.','[a-zA-Z0-9]*', pattern)
+    date_format = NOTES_PATHS[NOTES_DEFAULT].name
+    pattern = re.sub('%d',r'([0-9]*)', date_format)
+    #pattern = re.sub('%.','[a-zA-Z0-9]*', pattern)
+    pattern = date.strftime(pattern)
+    print(pattern , file=sys.stderr)
     days = [re.match(pattern, f.split('/')[-1]).group(1) for f in note_lst]
     # transform into rofi index
     ind = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
@@ -638,14 +654,25 @@ def open_note(day_sym, date, editor):
 
     day_ind = SYM_DAYS_NUM_unformatted.index(day_sym) + 1
 
-    note_name = datetime.date(date.year, date.month, day_ind).strftime(NOTES_DATE_FORMAT)
-    note_path = f"{NOTES_PATH}/{note_name}.txt"
+    date_format = str(NOTES_PATHS[NOTES_DEFAULT])
+    note_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
+    #note_path = S_PATH}/{note_name}.txt"
     cmd = f"touch {note_path} & {editor} {note_path}"
     p = subprocess.Popen(
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     sdtout, sdterr = p.communicate()
 
+@open_n_reload_rofi
+def ask_event_to_display():
+
+    events = list(NOTES_PATHS.keys())
+    events = list2rofi(events)
+
+    event = rofi_popup("select what to display", events)
+
+    print(f'{event=}', file=sys.stderr)
+    set_event_cache(event)
 
 @open_n_reload_rofi
 def ask_theme():
@@ -701,9 +728,10 @@ def first_time_init():
 
     if not os.path.exists(THEME_USER_PATH):
         os.makedirs(THEME_USER_PATH)
-        if not os.path.exists(NOTES_PATH):
-            os.mkdir(NOTES_PATH)
-        display_help(head_txt="Welcome to naivecalendar")
+
+    for notes_path in NOTES_PATHS.values():
+        if not os.path.exists(notes_path.parent):
+            os.makedirs(notes_path.parent)
 
     if not os.path.exists(CACHE_PATH):
         os.mkdir(CACHE_PATH)
@@ -712,6 +740,7 @@ def first_time_init():
         date_buff["buffer"] = {"year": date.year, "month": date.month}
         with open(DATE_CACHE, 'w') as date_cache:
             date_buff.write(date_cache)
+        display_help(head_txt="Welcome to naivecalendar")
 
 
 class Date:
@@ -940,6 +969,13 @@ def set_theme_cache(selected):
     """Write theme name to cache file"""
 
     with open(THEME_CACHE, 'w') as f:
+        f.write(selected)
+
+
+def set_event_cache(selected):
+    """Write theme name to cache file"""
+
+    with open(EVENT_CACHE, 'w') as f:
         f.write(selected)
 
 
