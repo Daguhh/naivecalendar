@@ -484,7 +484,7 @@ def get_month_notes_heads(date):
 
     heads = [get_note_head(n) for n in note_lst]
     print(note_lst, file=sys.stderr)
-    prompts = [n.split(".")[-2].split("/")[-1] for n in note_lst]
+    prompts = [pathlib.Path(n).stem for n in note_lst]
 
     return "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
 
@@ -646,7 +646,7 @@ def show_notes(date):
     """open rofi popup with notes list of selected month"""
 
     notes_heads = get_month_notes_heads(date)
-    rofi_popup("Notes", notes_heads)
+    rofi_popup(NOTES_DEFAULT, notes_heads)
 
 
 @open_n_reload_rofi
