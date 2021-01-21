@@ -585,8 +585,7 @@ def get_month_notes(date):
 
     path = NOTES_PATHS[NOTES_DEFAULT]
     print(path, file=sys.stderr)
-    file_pattern = str(path).replace('%d', '*')
-    file_pattern = file_pattern.replace('%A', '*')
+    file_pattern = re.sub('%-{0,1}[dwaA]', '*', str(path))
     print(file_pattern, file=sys.stderr)
     #pattern = NOTES_DATE_FORMAT.replace('%d', '*')
     file_pattern = date.strftime(file_pattern) #f"{date.year}-{date.month}-"
@@ -616,17 +615,21 @@ def get_month_notes_ind(date):
     note_lst = get_month_notes(date)
     # get note day number
     date_format = NOTES_PATHS[NOTES_DEFAULT].name
+    # make capture group for day number (%d)
     pattern = re.sub('%d',r'([0-9]*)', date_format)
-    pattern = re.sub('%A',r'[a-zA-Z.]*', pattern)
-    #pattern = re.sub('%.','[a-zA-Z0-9]*', pattern)
+    # create pattern for %-d, %w, %a, %A
+    pattern = re.sub('%(-d|w)',r'[0-9]*', pattern)
+    pattern = re.sub('%[aA]',r'[a-zA-Z.]*', pattern)
+    # replace other (month and year) with real date
     pattern = date.strftime(pattern)
+    # match the day (%d) capture group for each note in note_lst
     days = [re.match(pattern, f.split('/')[-1]).group(1) for f in note_lst]
     # transform into rofi index
-    ind = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
+    inds = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
     # format into rofi command
-    ind = ",".join([str(i) for i in ind])
+    inds = ",".join([str(i) for i in inds])
 
-    return ind
+    return inds
 
 
 def open_n_reload_rofi(func):
