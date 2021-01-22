@@ -1,11 +1,22 @@
-======
 Themes
 ======
 
-thèmes :
+Some themes are avaible for example,
+As rofi window size can change along themes, you will sometime have to adjust avaible user parameters in naivecalendar.py (week day name length in header for example)
+
+Themes files are `.rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ files and reside in *naivecalendar/themes/* folder.
+
+To apply theme :
+
+- set command line optioh **-t** or **--theme** with file name (without extention) as argument.
+- overwrite default.rasi file
+
+Inspirations:
+
  - `nordtheme <https://www.nordtheme.com/>`_
  - `polybar-themes <https://github.com/adi1090x/polybar-themes>`_
  - own interpretarion
+
 
 Classic dark & light
 --------------------
@@ -17,6 +28,10 @@ Classic dark & light : compact
 
 |classic dark compact| |classic light compact|
 
+Classic dark & light : extended
+-------------------------------
+
+|classic dark extended| |classic light extended|
 
 Nord : Round light & Square dark 
 --------------------------------
@@ -34,6 +49,12 @@ Nord : Round light & Square dark
     :height: 180px
 
 .. |classic light compact| image:: ../../docs/screenshots/classic_light_compact.png
+    :height: 180px
+
+.. |classic dark extended| image:: ../../docs/screenshots/classic_dark_extended.png
+    :height: 180px
+
+.. |classic light extended| image:: ../../docs/screenshots/classic_light_extended.png
     :height: 180px
 
 .. |round light nord| image:: ../../docs/screenshots/round_light_nord.png

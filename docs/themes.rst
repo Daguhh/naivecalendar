@@ -11,6 +11,13 @@ To apply theme :
 - set command line optioh **-t** or **--theme** with file name (without extention) as argument.
 - overwrite default.rasi file
 
+Inspirations:
+
+ - `nordtheme <https://www.nordtheme.com/>`_
+ - `polybar-themes <https://github.com/adi1090x/polybar-themes>`_
+ - own interpretarion
+
+
 Classic dark & light
 --------------------
 
