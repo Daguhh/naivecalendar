@@ -1,6 +1,6 @@
 naivecalendar (0.4.0) UNRELEASED; urgency=medium
 
-  * Add new row (defaut set for shortcuts)
+  * Add new row (default set for shortcuts)
   * Correct crash when config and cache file conflict
   * Update and add new themes
 
