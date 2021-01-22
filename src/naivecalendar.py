@@ -91,7 +91,7 @@ def set_list(default, section, key, row):
 def to_int(section, key):
     val = section[key]
     if val == '':
-        val = -1
+        val = EMPTY
     else:
         try:
             val = int(val)
