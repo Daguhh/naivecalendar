@@ -97,14 +97,14 @@ Simply execute the script, then:
 
  - Use mouse or keyboard to interact with the calendar.
  - Hit bottom arrows to cycle through months.
- - Hit a day to create a linked event.
-(A day with attached event will appear yellow.)
+ - Hit a day to create a linked event. (A day with attached event will appear yellow.)
  - Create multiple event type and with between them
 
 Shortcuts
 ^^^^^^^^^
 
-Shortcuts have to be entered in the rofi command prompt.
+Shortcuts have to be entered in the rofi command prompt. 
+Those are default shortcuts, you can modify them in <theme>.cfg files.
 *Sym* is the symbol displayed, you can type either *Sym* or *Keys* to execute an action
 
 ====  =====  =======  ========  ========================================
@@ -166,7 +166,7 @@ You can edit parameters :
 
    adjusting content that can induce row number variation may require editing calendar shape too
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/naivecalendar/themes/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes* 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/naivecalendar/themes/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes*. If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
 
 ---------------------------------------------------------------------------------
 
