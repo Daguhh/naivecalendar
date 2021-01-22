@@ -17,6 +17,10 @@ from itertools import chain
 from functools import wraps
 import time
 
+
+# Global var :
+EMPTY = -1
+
 ######################
 ### Path constants ###
 ######################
@@ -29,6 +33,7 @@ THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
 EVENT_CACHE = f"{CACHE_PATH}/event_cache.txt"
 THEME_USER_PATH = f"{HOME}/.config/naivecalendar/themes"
 THEME_PATHS = [THEME_USER_PATH, f"{DIRNAME}/themes"]
+
 
 #######################################
 ### load a theme configuration file ###
@@ -44,60 +49,92 @@ except FileNotFoundError: #  default if not initialized
     theme = "classic_dark"
     THEME_CONFIG_FILE = f"{THEME_PATHS[-1]}/{theme}.cfg"
 
+########################
+### Load config file ###
+########################
+config = configparser.ConfigParser(interpolation=None)
+config.read(THEME_CONFIG_FILE)
+
+###########################
+### Get last event type ###
+###########################
 try:
     with open(EVENT_CACHE, 'r') as event_cache:
         EVENTS_DEFAULT = event_cache.read()
+        config[EVENTS_DEFAULT]
 except FileNotFoundError:
+    EVENTS_DEFAULT = ''
+except KeyError:
     EVENTS_DEFAULT = ''
 
 ############################
 ### Load user parameters ###
 ############################
+
+# Some Functions
+################
+# Functions to parse list and int from configparser
 def to_list(cfg_list):
     """convert string with comma separated elements into python list"""
     return [word.strip() for word in cfg_list.split(',')]
 
-config = configparser.ConfigParser(interpolation=None)
-config.read(THEME_CONFIG_FILE)
+def set_list(default, section, key, row):
+    vals = section[key]
+    if row == EMPTY: # don't display row
+        return []
+    elif vals == '': # use default vals
+        return list(default)
+    else: # parse config values
+        return to_list(vals)
 
-### set Locate ###
+def to_int(section, key):
+    val = section[key]
+    if val == '':
+        val = -1
+    else:
+        try:
+            val = int(val)
+        except ValueError as e:
+            print(40*'*'+f"\nwarning : wrong value '{val}' for '{key}'.\nShould be an interger or an empty value.\n"+40*'*', file=sys.stderr)
+            raise e
+    return val
+
+
+# configure  locate
+###################
 cfg = config['LOCALE']
 #: keep empty to get system locale,
 #: use 'locale -a' on your system to list locales
 USER_LOCALE = cfg["USER_LOCALE"]
 
-### Week parameters ###
+# Day names abbreviations
+#########################
 cfg = config['DAY NAMES']
 #: day name lenght
 DAY_ABBR_LENGHT = int(cfg["DAY_ABBR_LENGHT"])
 #: 0 = sunday, 1 = monday...
 FIRST_DAY_WEEK = int(cfg["FIRST_DAY_WEEK"])
-#: day names list, if empty, locale names will be set
-SYM_WEEK_DAYS = to_list(cfg["SYM_WEEK_DAYS"])
 
-### Notes conf ###
+# Day events configuration
+##########################
 cfg = config['EVENTS']
 #: events path should contains at least %d and month (%b, %m...)  + year (%Y...) (strftime format)
 EVENTS_PATHS = {n:pathlib.Path.home()/pathlib.Path(cfg[n]) for n in cfg}
 #: default date events folder to display
 EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
 
-### Rofi/Calendar shape ###
+# Rofi/Calendar shape
+#####################
 cfg = config['SHAPE']
 #: 7 days for a week
 NB_COL = 7
 #: number of "complete" weeks, a month can extend up to 6 weeks
 NB_WEEK = 6
 #: 1 day header + 6 weeks + 1 control menu
-NB_ROW = 8
-#: row number where to display day symbols
-ROW_WEEK_SYM = int(cfg['ROW_WEEK_SYM'])
-#: row number where to display calendar first line
-ROW_CAL_START = int(cfg['ROW_CAL_START'])
-#: row number where to display buttons
-ROW_CONTROL_MENU = int(cfg['ROW_CONTROL_MENU'])
+NB_ROW = int(cfg['NB_ROW'])
 
-### Calendar symbols and shortcuts ###
+# Calendar symbols and shortcuts
+################################
 cfg = config['CONTROL']
 #: 1st symbol is displayed, others are simply shortcuts
 SYM_NEXT_MONTH = to_list(cfg['SYM_NEXT_MONTH'])
@@ -107,15 +144,9 @@ SYM_NEXT_YEAR = to_list(cfg['SYM_NEXT_YEAR'])
 SYM_PREV_MONTH = to_list(cfg['SYM_PREV_MONTH'])
 #: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_YEAR = to_list(cfg['SYM_PREV_YEAR'])
-#: 1st symbol is displayed, others are simply shortcuts
-SYM_MENU = to_list(cfg['SYM_MENU'])
 
-### Day numbers symbols
-cfg = config['DAYS']
-# symbols for day numbers
-SYM_DAYS_NUM_unformatted = to_list(cfg['SYM_DAYS_NUM'])
-
-### Shortcuts for popup windows ###
+# Shortcuts for popup windows
+#############################
 cfg = config['SHORTCUTS']
 #: shortcut to display events popup
 SYM_SHOW_EVENTS = to_list(cfg['SYM_SHOW_EVENTS'])
@@ -125,8 +156,11 @@ SYM_SHOW_HELP = to_list(cfg['SYM_SHOW_HELP'])
 SYM_SWITCH_THEME = to_list(cfg['SYM_SWITCH_THEME'])
 #: shortcut to display event chooser popup
 SYM_SWITCH_EVENT = to_list(cfg['SYM_SWITCH_EVENT'])
+#: 1st symbol is displayed, others are simply shortcuts
+SYM_SHOW_MENU = to_list(cfg['SYM_SHOW_MENU'])
 
-### Today header display ###
+# Today header display
+######################
 cfg = config['HEADER']
 #: date format in rofi prompt
 PROMT_DATE_FORMAT = cfg['PROMT_DATE_FORMAT']
@@ -141,6 +175,32 @@ TODAY_HEAD_NAME_SIZE = cfg['TODAY_HEAD_NAME_SIZE']
 #: Vertical position of day name in header. See pango markup language spec
 TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])
 
+# Calendar content and organisation
+###################################
+cfg = config['CONTENT']
+#: row number where to display day symbols
+ROW_WEEK_SYM = to_int(cfg, 'ROW_WEEK_SYM')
+#: symbols for week day names
+SYMS_WEEK_DAYS = to_list(cfg["SYMS_WEEK_DAYS"]) if not ROW_WEEK_SYM == EMPTY else []
+
+#: row number where to display calendar first line
+ROW_CAL_START = to_int(cfg, 'ROW_CAL_START')
+# symbols for day numbers
+default = (str(x) for x in range(1,32))
+SYMS_DAYS_NUM_unformatted = set_list(default, cfg, 'SYMS_DAYS_NUM', ROW_CAL_START)
+
+#: row number where to display buttons
+ROW_CONTROL_MENU = to_int(cfg, 'ROW_CONTROL_MENU')
+#: symbols for control menu row
+default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, '_', '_', '_', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
+SYMS_CONTROL_MENU = set_list(default, cfg, 'SYMS_CONTROL_MENU', ROW_CONTROL_MENU)
+
+#: row number where to display shortcuts buttons
+ROW_SHORTCUTS = to_int(cfg, 'ROW_SHORTCUTS')
+#: symbols to display in shortcuts row
+default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_SWITCH_EVENT, '_', '_', SYM_SHOW_MENU))
+SYMS_SHORTCUTS = set_list(default, cfg, 'SYMS_SHORTCUTS', ROW_SHORTCUTS)
+
 ############################################
 ### Configure paramters given users ones ###
 ############################################
@@ -153,12 +213,7 @@ DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}'
 # absolute path
 #EVENTS_PATH = f"{HOME}/{EVENTS_RELATIVE_PATH}"
 #: symbols for day numbers
-SYM_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYM_DAYS_NUM_unformatted]
-# create menu bar
-CAL_MENU = [" "] * NB_COL
-CAL_MENU[:2] = [SYM_PREV_YEAR[0], SYM_PREV_MONTH[0]]
-CAL_MENU[-4] = SYM_MENU[0] if SYM_MENU[0] != '' else '_'
-CAL_MENU[-2:] = [SYM_NEXT_MONTH[0], SYM_NEXT_YEAR[0]]
+SYMS_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYMS_DAYS_NUM_unformatted]
 
 #############
 ###Script ###
@@ -173,8 +228,8 @@ def main():
     # get command line arguments and if exist : rofi output
     args, rofi_output = get_arguments()
 
-    global SYM_WEEK_DAYS
-    SYM_WEEK_DAYS = set_locale_n_week_day_names(args.locale)
+    global SYMS_WEEK_DAYS
+    SYMS_WEEK_DAYS = set_locale_n_week_day_names(args.locale)
 
     is_first_loop = not bool(rofi_output)
     out = rofi_output
@@ -231,14 +286,14 @@ def process_event_date(out, d, args):
         d.month += 1
     elif out in SYM_NEXT_YEAR:
         d.year += 1
-    elif out in SYM_DAYS_NUM_unformatted:
+    elif out in SYMS_DAYS_NUM_unformatted:
         if args.print:
             print_selection(out, d.date, args.format)
         elif args.clipboard:
             send2clipboard(out, d.date, args.format)
         else:
             open_event(out, d.date, args.editor)
-    elif out == "" or out in SYM_WEEK_DAYS:
+    elif out == "" or out in SYMS_WEEK_DAYS:
         joke(out)
 
     return d
@@ -255,7 +310,7 @@ def process_event_popup(out, d):
         ask_theme()
     elif out in SYM_SWITCH_EVENT:
         ask_event_to_display()
-    elif out in SYM_MENU:
+    elif out in SYM_SHOW_MENU:
         show_menu(d)
 
 
@@ -274,26 +329,33 @@ def update_rofi(date, is_first_loop):
 
     """
 
-    # generate new datas
-    cal = get_calendar_from_date(date)
     date_prompt = date.strftime(PROMT_DATE_FORMAT).title()
-    events_inds = get_month_events_ind(date)
-    today_ind = cal2rofi_ind(date.day, date.month, date.year)
-    week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
-    control_sym_row =get_row_rofi_inds(ROW_CONTROL_MENU)
-
-    # send datas to stdout
     print(f"\0prompt\x1f{date_prompt}\n")
+
+    events_inds = get_month_events_ind(date)
     print(f"\0urgent\x1f{events_inds}\n")
+
     if is_first_loop:
+        today_ind = cal2rofi_ind(date.day, date.month, date.year)
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
             day_numb = f"""<span rise="{TODAY_HEAD_NUMB_RISE}" size="{TODAY_HEAD_NUMB_SIZE}">{date.strftime('%d')}</span>"""
             day_name = f"""<span rise="{TODAY_HEAD_NAME_RISE}" size="{TODAY_HEAD_NAME_SIZE}">{date.strftime('%A')}</span>"""
             print(f"\0message\x1f{day_numb} {day_name}\n")
 
-    print(f"\0active\x1f{week_sym_row}\n")
-    print(f"\0active\x1f{control_sym_row}\n")
+    if not ROW_WEEK_SYM == EMPTY:
+        week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
+        print(f"\0active\x1f{week_sym_row}\n")
+
+    if not ROW_CONTROL_MENU == EMPTY:
+        control_sym_row =get_row_rofi_inds(ROW_CONTROL_MENU)
+        print(f"\0active\x1f{control_sym_row}\n")
+
+    if not ROW_SHORTCUTS == EMPTY:
+        shortcut_sym_row = get_row_rofi_inds(ROW_SHORTCUTS)
+        print(f"\0active\x1f{shortcut_sym_row}\n")
+
+    cal = get_calendar_from_date(date)
     print(cal)
 
 
@@ -330,11 +392,11 @@ def get_calendar_from_date(date):
     # fill with day numbers
     ind_first_day = (start_day - (FIRST_DAY_WEEK - 1)) % 7
     ind_last_day = ind_first_day + month_length
-    cal[ind_first_day : ind_last_day] = SYM_DAYS_NUM[:month_length]
+    cal[ind_first_day : ind_last_day] = SYMS_DAYS_NUM[:month_length]
 
     # join calendar parts given user order
-    index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_CONTROL_MENU)
-    content = [SYM_WEEK_DAYS, cal, CAL_MENU]
+    index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_CONTROL_MENU, ROW_SHORTCUTS)
+    content = [SYMS_WEEK_DAYS, cal, SYMS_CONTROL_MENU, SYMS_SHORTCUTS]
     index, content = (list(x) for x in zip(*sorted(zip(index, content))))
 
     # chain calendar elements
@@ -669,8 +731,8 @@ def show_events(date):
 @open_n_reload_rofi
 def show_menu(d):
 
-    menu = '\n'.join([to_list(config['SHORTCUTS'][s])[1] for s in config['SHORTCUTS']])
-    output = rofi_popup("menu", menu + '\nback to calendar')
+    menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
+    output = rofi_popup("menu", menu + '\n back to calendar')
     time.sleep(0.1)
     process_event_popup(output, d)
 
@@ -678,7 +740,7 @@ def show_menu(d):
 def open_event(day_sym, date, editor):
     """open event for the selected date"""
 
-    day_ind = SYM_DAYS_NUM_unformatted.index(day_sym) + 1
+    day_ind = SYMS_DAYS_NUM_unformatted.index(day_sym) + 1
 
     date_format = str(EVENTS_PATHS[EVENTS_DEFAULT])
     event_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
@@ -988,7 +1050,7 @@ def joke(sym):
             "Vous glissez entre les mois, vous perdez la notion du temps.",
             file=sys.stderr,
         )
-    elif sym in SYM_WEEK_DAYS:
+    elif sym in SYMS_WEEK_DAYS:
         print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
 
@@ -1071,14 +1133,14 @@ press enter to continue...
 
 # week days symbols : can be changed by locale
 def set_locale_n_week_day_names(arg_locale):
-    """ Set SYM_WEEK_DAYS constante given command line argument """
+    """ Set SYMS_WEEK_DAYS constante given command line argument """
 
     if arg_locale:
         locale.setlocale(locale.LC_ALL, arg_locale)
     else:
         locale.setlocale(locale.LC_ALL, USER_LOCALE)
 
-    if not SYM_WEEK_DAYS or len(SYM_WEEK_DAYS) == 1:
+    if SYMS_WEEK_DAYS == ['']:
 
         def get_loc_day(day_num, lenght):
             """return locale day names truncated at lenght and titlized"""
@@ -1091,6 +1153,8 @@ def set_locale_n_week_day_names(arg_locale):
         ) for day_num in days_order]
 
         return sym_week_days
+    else:
+        return SYMS_WEEK_DAYS
 
 if __name__ == "__main__":
     main()
