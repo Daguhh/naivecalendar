@@ -76,14 +76,15 @@ except KeyError:
 # Functions to parse list and int from configparser
 def to_list(cfg_list):
     """convert string with comma separated elements into python list"""
-    return [word.strip() for word in cfg_list.split(',')]
+    # align all elements to right
+    return [DAY_FORMAT.format(word.strip()) for word in cfg_list.split(',')]
 
 def set_list(default, section, key, row):
     vals = section[key]
     if row == EMPTY: # don't display row
         return []
     elif vals == '': # use default vals
-        return list(default)
+        return [DAY_FORMAT.format(s) for s in default]
     else: # parse config values
         return to_list(vals)
 
@@ -112,6 +113,11 @@ USER_LOCALE = cfg["USER_LOCALE"]
 cfg = config['DAY NAMES']
 #: day name lenght
 DAY_ABBR_LENGHT = int(cfg["DAY_ABBR_LENGHT"])
+# format to align all signs to right given size of day names
+# example (_ represents spaces):
+# Mon Thu ...
+# __1 __2 ...
+DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}'
 #: 0 = sunday, 1 = monday...
 FIRST_DAY_WEEK = int(cfg["FIRST_DAY_WEEK"])
 
@@ -187,7 +193,7 @@ SYMS_WEEK_DAYS = to_list(cfg["SYMS_WEEK_DAYS"]) if not ROW_WEEK_SYM == EMPTY els
 ROW_CAL_START = to_int(cfg, 'ROW_CAL_START')
 # symbols for day numbers
 default = (str(x) for x in range(1,32))
-SYMS_DAYS_NUM_unformatted = set_list(default, cfg, 'SYMS_DAYS_NUM', ROW_CAL_START)
+SYMS_DAYS_NUM= set_list(default, cfg, 'SYMS_DAYS_NUM', ROW_CAL_START)
 
 #: row number where to display buttons
 ROW_CONTROL_MENU = to_int(cfg, 'ROW_CONTROL_MENU')
@@ -201,19 +207,6 @@ ROW_SHORTCUTS = to_int(cfg, 'ROW_SHORTCUTS')
 default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_SWITCH_EVENT, '_', '_', SYM_SHOW_MENU))
 SYMS_SHORTCUTS = set_list(default, cfg, 'SYMS_SHORTCUTS', ROW_SHORTCUTS)
 
-############################################
-### Configure paramters given users ones ###
-############################################
-
-# format to align all signs to right given size of day names
-# example (_ represents spaces):
-# Mon Thu ...
-# __1 __2 ...
-DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}'
-# absolute path
-#EVENTS_PATH = f"{HOME}/{EVENTS_RELATIVE_PATH}"
-#: symbols for day numbers
-SYMS_DAYS_NUM = [DAY_FORMAT.format(day_sym) for day_sym in SYMS_DAYS_NUM_unformatted]
 
 #############
 ###Script ###
@@ -232,7 +225,10 @@ def main():
     SYMS_WEEK_DAYS = set_locale_n_week_day_names(args.locale)
 
     is_first_loop = not bool(rofi_output)
-    out = rofi_output
+    if isinstance(rofi_output, str):
+        out = DAY_FORMAT.format(rofi_output) # rofi strip blank character so reformat
+    else:
+        out = rofi_output
 
     # get date given context
     d = get_date(is_first_loop, args.is_force_read_cache, args.date)
@@ -286,7 +282,7 @@ def process_event_date(out, d, args):
         d.month += 1
     elif out in SYM_NEXT_YEAR:
         d.year += 1
-    elif out in SYMS_DAYS_NUM_unformatted:
+    elif out in SYMS_DAYS_NUM:
         if args.print:
             print_selection(out, d.date, args.format)
         elif args.clipboard:
@@ -740,7 +736,7 @@ def show_menu(d):
 def open_event(day_sym, date, editor):
     """open event for the selected date"""
 
-    day_ind = SYMS_DAYS_NUM_unformatted.index(day_sym) + 1
+    day_ind = SYMS_DAYS_NUM.index(day_sym) + 1
 
     date_format = str(EVENTS_PATHS[EVENTS_DEFAULT])
     event_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
@@ -1135,26 +1131,26 @@ press enter to continue...
 def set_locale_n_week_day_names(arg_locale):
     """ Set SYMS_WEEK_DAYS constante given command line argument """
 
-    if arg_locale:
+    if not SYMS_WEEK_DAYS == ['']: # overwrited by user in config file
+        syms = [DAY_FORMAT.format(s) for s in SYMS_WEEK_DAYS] # just align right
+        return syms
+
+    elif arg_locale: # locale overwrited by user
         locale.setlocale(locale.LC_ALL, arg_locale)
-    else:
+    else: # system locale
         locale.setlocale(locale.LC_ALL, USER_LOCALE)
 
-    if SYMS_WEEK_DAYS == ['']:
+    def get_loc_day(day_num, lenght):
+        """return locale day names truncated at lenght and titlized"""
+        return locale.nl_langinfo(locale.DAY_1 + day_num)[:lenght].title()
 
-        def get_loc_day(day_num, lenght):
-            """return locale day names truncated at lenght and titlized"""
-            return locale.nl_langinfo(locale.DAY_1 + day_num)[:lenght].title()
+    days_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
 
-        days_order = chain(range(FIRST_DAY_WEEK, 7), range(0, FIRST_DAY_WEEK))
+    sym_week_days = [DAY_FORMAT.format(
+        get_loc_day(day_num, DAY_ABBR_LENGHT)
+    ) for day_num in days_order]
 
-        sym_week_days = [DAY_FORMAT.format(
-            get_loc_day(day_num, DAY_ABBR_LENGHT)
-        ) for day_num in days_order]
-
-        return sym_week_days
-    else:
-        return SYMS_WEEK_DAYS
+    return sym_week_days
 
 if __name__ == "__main__":
     main()
