@@ -1131,7 +1131,7 @@ press enter to continue...
 def set_locale_n_week_day_names(arg_locale):
     """ Set SYMS_WEEK_DAYS constante given command line argument """
 
-    if not SYMS_WEEK_DAYS == ['']: # overwrited by user in config file
+    if not SYMS_WEEK_DAYS == [DAY_FORMAT.format('')]: # overwrited by user in config file
         syms = [DAY_FORMAT.format(s) for s in SYMS_WEEK_DAYS] # just align right
         return syms
 
