@@ -671,6 +671,7 @@ def show_menu(d):
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[1] for s in config['SHORTCUTS']])
     output = rofi_popup("menu", menu + '\nback to calendar')
+    time.sleep(0.1)
     process_event_popup(output, d)
 
 @open_n_reload_rofi
