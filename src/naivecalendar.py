@@ -8,7 +8,7 @@ Cycle through month and create linked event to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
-__version__ = "0.3.5"
+__version__ = "0.4.0"
 
 import glob, os, sys, subprocess, shutil, pathlib
 import re, argparse, configparser

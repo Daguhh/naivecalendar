@@ -21,6 +21,10 @@ Classic dark & light : compact
 
 |classic dark compact| |classic light compact|
 
+Classic dark & light : extended
+-------------------------------
+
+|classic dark extended| |classic light extended|
 
 Nord : Round light & Square dark 
 --------------------------------
@@ -38,6 +42,12 @@ Nord : Round light & Square dark
     :height: 180px
 
 .. |classic light compact| image:: ./screenshots/classic_light_compact.png
+    :height: 180px
+
+.. |classic dark extended| image:: ./screenshots/classic_dark_extended.png
+    :height: 180px
+
+.. |classic light extended| image:: ./screenshots/classic_light_extended.png
     :height: 180px
 
 .. |round light nord| image:: ./screenshots/round_light_nord.png

@@ -1,5 +1,13 @@
 naivecalendar (0.3.5) UNRELEASED; urgency=medium
 
+  * Add new row (defaut set for shortcuts)
+  * Correct crash when config and cache file conflict
+  * Update and add new themes
+
+ -- Daguhh <code.daguhh@zaclys.net>  Fri, 22 Jan 2021 00:24:24 +0100
+
+naivecalendar (0.3.5) UNRELEASED; urgency=medium
+
   * Add multiple events folder (replace notes)
   * Add a menu button
   * Better symbols support for event files names
