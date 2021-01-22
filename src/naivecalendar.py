@@ -289,7 +289,7 @@ def process_event_date(out, d, args):
             send2clipboard(out, d.date, args.format)
         else:
             open_event(out, d.date, args.editor)
-    elif out == "" or out in SYMS_WEEK_DAYS:
+    else:
         joke(out)
 
     return d
@@ -1041,7 +1041,7 @@ def get_arguments():
 def joke(sym):
     """Just display stupid jokes in french"""
 
-    if sym == "":
+    if sym == DAY_FORMAT.format(""):
         print(
             "Vous glissez entre les mois, vous perdez la notion du temps.",
             file=sys.stderr,
