@@ -711,7 +711,7 @@ def open_n_reload_rofi(func):
     def wrapper(*args, **kwargs):
 
         subprocess.Popen(["pkill", "-9", "rofi"])
-        time.sleep(0.1)
+        time.sleep(0.3)
         out = func(*args)
         cmd = f"{script_path}/naivecalendar.sh -c"
         os.system(cmd)
@@ -733,7 +733,7 @@ def show_menu(d):
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
     output = rofi_popup("menu", menu + '\n back to calendar')
-    time.sleep(0.1)
+    time.sleep(0.3)
     process_event_popup(output, d)
 
 @open_n_reload_rofi
