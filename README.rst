@@ -166,7 +166,7 @@ You can edit parameters :
 
    adjusting content that can induce row number variation may require editing calendar shape too
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/naivecalendar/themes/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes*. If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes*. If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
 
 ---------------------------------------------------------------------------------
 
