@@ -38,6 +38,30 @@ Nord : Round light & Square dark
 
 |round light nord| |square dark nord|
 
+Miscellaneous
+-------------
+
+
+Classic dark variant
+^^^^^^^^^^^^^^^^^^^^
+
+|classic_dark_variant| 
+
+Material darker
+^^^^^^^^^^^^^^^
+
+|material_darker|
+
+Paper-float
+^^^^^^^^^^^
+
+|paper-float| 
+
+Retro blue : Compact
+^^^^^^^^^^^^^^^^^^^^
+
+|retro_blue_compact|
+
 
 .. |classic dark| image:: ./screenshots/classic_dark.png
     :height: 180px
@@ -62,3 +86,16 @@ Nord : Round light & Square dark
 
 .. |square dark nord| image:: ./screenshots/square_dark_nord.png
     :height: 180px
+
+.. |classic_dark_variant| image::  ./screenshots/classic_dark_variant.png
+    :height: 180px
+
+.. |material_darker| image::  ./screenshots/material_darker.png
+    :height: 180px
+
+.. |paper-float| image::  ./screenshots/paper-float.png
+    :height: 180px
+
+.. |retro_blue_compact| image::  ./screenshots/retro_blue_compact.png
+    :height: 180px
+
