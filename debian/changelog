@@ -1,3 +1,9 @@
+naivecalendar (0.5.1) UNRELEASED; urgency=medium
+
+  * Better help message (show user config shortcuts)
+
+ -- Daguhh <code.daguhh@zaclys.net>  Sat, 23 Jan 2021 18:27:44 +0100
+
 naivecalendar (0.5.0) UNRELEASED; urgency=medium
 
   * More configurable date header

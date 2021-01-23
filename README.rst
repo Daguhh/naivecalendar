@@ -107,20 +107,21 @@ Shortcuts have to be entered in the rofi command prompt.
 Those are default shortcuts, you can modify them in <theme>.cfg files.
 *Sym* is the symbol displayed, you can type either *Sym* or *Keys* to execute an action
 
-====  =====  =======  ========  ========================================
-Sym    Keys                     Action
-----  ------------------------  ----------------------------------------
-  ..     ..       ..        ..  ..
-====  =====  =======  ========  ========================================
- ◀◀      <<       pp       --   go to previous year
-  ◀       <        p      `-`   go to previous month
-  ▶       >        n      `+`   go to next month
- ▶▶      >>       nn       ++   go to next year
- ..   notes       ..       ..   display notes of the month (first line)
- ..    help       ..       ..   display this help
- ..   theme       ..       ..   display theme selector
-  ☰    menu       mm       ..   display menu 
-====  =====  =======  ========  ========================================
+====  ======  =======  ========  ========================================
+Sym     Keys                     Action
+----  -------------------------  ----------------------------------------
+  ..      ..       ..        ..  ..
+====  ======  =======  ========  ========================================
+ ◀◀       <<       pp       --   go to previous year
+  ◀        <        p      `-`   go to previous month
+  ▶        >        n      `+`   go to next month
+ ▶▶       >>       nn       ++   go to next year
+      event       ee       ..   display events of the month (first line)
+     switch       ss       ..   switch event type (open another folder)
+       help       hh       ..   display this help
+      theme       tt       ..   display theme selector
+  ☰     menu       mm       ..   display menu 
+====  ======  =======  ========  ========================================
 
 Options
 ^^^^^^^
@@ -200,6 +201,19 @@ remember event type                ~/.cache/naivecalendar/**event_cache.txt**
 ================================   =================================================
 
 ---------------------------------------------------------------------------------
+
+Build debian package
+--------------------
+
+.. code::
+
+    sudo apt install devscripts
+    cd naivecalendar-x.y.z/
+    debuild -us -uc
+
+.. note::
+
+   You can personnalize your themes before building, all themes folder content will be included in the package
 
 Build the doc
 -------------
