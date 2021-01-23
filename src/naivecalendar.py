@@ -172,14 +172,12 @@ cfg = config['HEADER']
 PROMT_DATE_FORMAT = cfg['PROMT_DATE_FORMAT']
 #: toogle day num and name header display
 IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
-#: Size of day number in the header. See pango markup language spec
-TODAY_HEAD_NUMB_SIZE = cfg['TODAY_HEAD_NUMB_SIZE']
-#: Vertical position of day number in header. See pango markup language spec
-TODAY_HEAD_NUMB_RISE = int(cfg['TODAY_HEAD_NUMB_RISE'])
-#: Size of day name in the header. See pango markup language spec
-TODAY_HEAD_NAME_SIZE = cfg['TODAY_HEAD_NAME_SIZE']
-#: Vertical position of day name in header. See pango markup language spec
-TODAY_HEAD_NAME_RISE = int(cfg['TODAY_HEAD_NAME_RISE'])
+#: text to dislay in head message
+TODAY_HEAD_MSG_TXT = [w.strip() for w in cfg['TODAY_HEAD_MSG_TXT'].split(',')]
+#: size of each element in head message
+TODAY_HEAD_MSG_SIZES = [w.strip() for w in cfg['TODAY_HEAD_MSG_SIZES'].split(',')]
+#: rise of each element in head message
+TODAY_HEAD_MSG_RISES = [int(r) for r in cfg['TODAY_HEAD_MSG_RISES'].split(',')]
 
 # Calendar content and organisation
 ###################################
@@ -335,9 +333,16 @@ def update_rofi(date, is_first_loop):
         today_ind = cal2rofi_ind(date.day, date.month, date.year)
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
-            day_numb = f"""<span rise="{TODAY_HEAD_NUMB_RISE}" size="{TODAY_HEAD_NUMB_SIZE}">{date.strftime('%d')}</span>"""
-            day_name = f"""<span rise="{TODAY_HEAD_NAME_RISE}" size="{TODAY_HEAD_NAME_SIZE}">{date.strftime('%A')}</span>"""
-            print(f"\0message\x1f{day_numb} {day_name}\n")
+            msg = ''
+            vals = zip(
+                TODAY_HEAD_MSG_TXT,
+                TODAY_HEAD_MSG_SIZES,
+                TODAY_HEAD_MSG_RISES
+            )
+            for txt, size, rise in vals :
+                msg += f"""<span rise="{rise}" size="{size}">{date.strftime(txt)}</span>""" + ' '
+            print(f"\0message\x1f{msg}\n")
+
 
     if not ROW_WEEK_SYM == EMPTY:
         week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
