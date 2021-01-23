@@ -1069,7 +1069,7 @@ def set_event_cache(selected):
         f.write(selected)
 
 
-def rofi_popup(txt_head, txt_body):
+def rofi_popup(txt_head, txt_body, nb_lines = 15):
     """Launch a rofi window
 
     Parameters
@@ -1088,7 +1088,7 @@ def rofi_popup(txt_head, txt_body):
     cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
     selection = (
         subprocess.check_output(
-            f'rofi -dmenu -p "{txt_head}"', stdin=cmd.stdout, shell=True
+            f'rofi -dmenu -p "{txt_head}" -lines {nb_lines}', stdin=cmd.stdout, shell=True
         )
         .decode("utf-8")
         .replace("\n", "")
@@ -1101,6 +1101,7 @@ def rofi_popup(txt_head, txt_body):
 def display_help(head_txt="help:"):
     """Show a rofi popup with help message"""
 
+
     txt = f"""This calendar is interactive. Here some tips:
 
  - Use mouse or keyboard to interact with the calendar.
@@ -1110,26 +1111,41 @@ def display_help(head_txt="help:"):
  - Create multiple event type and with between them
 
 There's somme shortcut too, type it in rofi prompt :
+    """
 
-     help : display this help
- nn or -- : go to previous year
-   n or - : go to previous month
-   p or + : go to next month
- pp or ++ : go to next year
-    event : display events of the month (first line)
-   switch : switch events folder to display
-    theme : show theme selector
-     menu : display a selection menu (skip shortcuts)
+    txt += '\n{:>20} : display this help'.format(','.join(SYM_SHOW_HELP[:-1]))
+    txt += '\n{:>20} : go to previous year'.format(','.join(SYM_PREV_YEAR))
+    txt += '\n{:>20} : go to previous month'.format(','.join(SYM_PREV_MONTH))
+    txt += '\n{:>20} : go to next month'.format(','.join(SYM_NEXT_MONTH))
+    txt += '\n{:>20} : go to next year'.format(','.join(SYM_NEXT_YEAR))
+    txt += '\n{:>20} : display events of the month (first line)'.format(','.join(SYM_SHOW_EVENTS[:-1]))
+    txt += '\n{:>20} : switch events folder to display'.format(','.join(SYM_SWITCH_EVENT[:-1]))
+    txt += '\n{:>20} : show theme selector'.format(','.join(SYM_SWITCH_THEME[:-1]))
+    txt += '\n{:>20} : display a selection menu (skip shortcuts)'.format(','.join(SYM_SHOW_MENU[:-1]))
 
-There's some command line option too, dislay it with :
-    ./naivecalendar -h
+    txt += f"""\n
+There's some command line option too :
+
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -p, --print           print date to stdout instead of opening a event
+  -x, --clipboard       copy date to clipboard
+  -f FORMAT, --format FORMAT
+                        option '-p' or '-x' output format (datetime.strftime format, defaut='%Y-%m-%d')
+  -e EDITOR, --editor EDITOR
+                        editor command to open events
+  -l LOCALE, --locale LOCALE
+                        force system locale, for example '-l es_ES.utf8'
+  -c, --read-cache      force calendar to read old date from cache
+  -t THEME, --theme THEME
+                        set calendar theme, default=classic_dark (theme file name without extention)
+  -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
 
 That's all :
-
 press enter to continue...
 """
 
-    rofi_popup("Help", txt)
+    rofi_popup("Help", txt, nb_lines=20)
 
 
 # week days symbols : can be changed by locale
