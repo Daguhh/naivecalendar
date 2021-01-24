@@ -44,7 +44,7 @@ fi
 # launch rofi
 rofi -show calendar \
     -modi "calendar:$cmd" \
-    -theme $THEME \
+    -theme-str '@theme "'$THEME'"' \
     -hide-scrollbar true \
     -x-offset 0 \
     -y-offset 55 \

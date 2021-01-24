@@ -773,7 +773,7 @@ def ask_theme():
     themes = list2rofi(themes)
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    theme = rofi_popup("select theme", themes)
+    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue")
     set_theme_cache(theme)
 
 def print_selection(day, date, f):
@@ -1069,7 +1069,7 @@ def set_event_cache(selected):
         f.write(selected)
 
 
-def rofi_popup(txt_head, txt_body, nb_lines = 15):
+def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper"):
     """Launch a rofi window
 
     Parameters
@@ -1088,7 +1088,7 @@ def rofi_popup(txt_head, txt_body, nb_lines = 15):
     cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
     selection = (
         subprocess.check_output(
-            f'rofi -dmenu -p "{txt_head}" -lines {nb_lines}', stdin=cmd.stdout, shell=True
+            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
         )
         .decode("utf-8")
         .replace("\n", "")
