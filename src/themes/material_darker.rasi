@@ -96,7 +96,8 @@ button selected {
 }
 
 #listview {
-    fixed-height: 0;
+    fixed-height: true;
+    dynamic: false;
     border:       2px 0px 0px ;
     border-color: @background;
     background-color:   @background;
