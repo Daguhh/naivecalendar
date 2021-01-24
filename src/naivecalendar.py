@@ -773,7 +773,7 @@ def ask_theme():
 
     themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS]))
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
-    themes = list2rofi(themes)
+    themes = list2rofi(set(themes))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
     theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue")
