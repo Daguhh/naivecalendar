@@ -61,10 +61,13 @@ config.read(THEME_CONFIG_FILE)
 try:
     with open(EVENT_CACHE, 'r') as event_cache:
         EVENTS_DEFAULT = event_cache.read()
-        config[EVENTS_DEFAULT]
+    try :
+        config['EVENTS'][EVENTS_DEFAULT]
+    except KeyError:
+        print(f'no event "{EVENTS_DEFAULT}" found', file=sys.stderr)
+        EVENTS_DEFAULT = ''
 except FileNotFoundError:
-    EVENTS_DEFAULT = ''
-except KeyError:
+    print(f'no event file "{EVENT_CACHE}" found', file=sys.stderr)
     EVENTS_DEFAULT = ''
 
 ############################
