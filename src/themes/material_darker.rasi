@@ -47,7 +47,7 @@
 }
 
 mainbox {
-	children: [mode-switcher, message, inputbar, listview];
+	children: [message, inputbar, listview];
 	spacing: 10px;
 	/*margin: 20%;*/
 	padding: 30px 0;
@@ -97,7 +97,6 @@ button selected {
 
 #listview {
     fixed-height: true;
-    dynamic: false;
     border:       2px 0px 0px ;
     border-color: @background;
     background-color:   @background;

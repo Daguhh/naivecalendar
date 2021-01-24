@@ -52,7 +52,7 @@
     text-color:             @foreground;
 }
 #mainbox {
-	children: [mode-switcher, message, inputbar, listview];
+	children: [message, inputbar, listview];
     border:  0;
     padding: 0;
     background-color:   @background;

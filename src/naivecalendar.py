@@ -176,7 +176,7 @@ PROMT_DATE_FORMAT = cfg['PROMT_DATE_FORMAT']
 #: toogle day num and name header display
 IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
 #: text to dislay in head message
-TODAY_HEAD_MSG_TXT = [w.strip() for w in cfg['TODAY_HEAD_MSG_TXT'].split(',')]
+TODAY_HEAD_MSG_TXT = [w for w in cfg['TODAY_HEAD_MSG_TXT'].split(',')]
 #: size of each element in head message
 TODAY_HEAD_MSG_SIZES = [w.strip() for w in cfg['TODAY_HEAD_MSG_SIZES'].split(',')]
 #: rise of each element in head message
@@ -343,7 +343,7 @@ def update_rofi(date, is_first_loop):
                 TODAY_HEAD_MSG_RISES
             )
             for txt, size, rise in vals :
-                msg += f"""<span rise="{rise}" size="{size}">{date.strftime(txt)}</span>""" + ' '
+                msg += f"""<span rise="{rise}" size="{size}">{date.strftime(txt)}</span>"""
             print(f"\0message\x1f{msg}\n")
 
 
