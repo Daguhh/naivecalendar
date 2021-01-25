@@ -89,8 +89,11 @@ def set_list(default, section, key, row):
         return []
     elif vals == '': # use default vals
         return [DAY_FORMAT.format(s) for s in default]
+    elif key == 'SYMS_DAYS_NUM':
+        to_list(vals)
     else: # parse config values
-        return to_list(vals)
+        #return to_list(vals)
+        return [CONTROL_MENU_ID[x.strip()] if x.strip() in CONTROL_MENU_ID.keys() else ' ' for x in to_list(vals)]
 
 def to_int(section, key):
     val = section[key]
@@ -197,10 +200,24 @@ ROW_CAL_START = to_int(cfg, 'ROW_CAL_START')
 default = (str(x) for x in range(1,32))
 SYMS_DAYS_NUM= set_list(default, cfg, 'SYMS_DAYS_NUM', ROW_CAL_START)
 
+
+CONTROL_MENU_ID = {
+    'p' : SYM_PREV_MONTH[0],
+    'pp': SYM_PREV_YEAR[0],
+    'n': SYM_NEXT_MONTH[0],
+    'nn' : SYM_NEXT_YEAR[0],
+    'h' : SYM_SHOW_HELP[0],
+    't' : SYM_SWITCH_THEME[0],
+    'e' : SYM_SHOW_EVENTS[0],
+    's' : SYM_SWITCH_EVENT[0],
+    'm' : SYM_SHOW_MENU[0],
+}
+
+
 #: row number where to display buttons
 ROW_CONTROL_MENU = to_int(cfg, 'ROW_CONTROL_MENU')
 #: symbols for control menu row
-default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, ' ', ' ', ' ', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
+default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, ' ', SYM_SHOW_MENU, ' ', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
 SYMS_CONTROL_MENU = set_list(default, cfg, 'SYMS_CONTROL_MENU', ROW_CONTROL_MENU)
 
 #: row number where to display shortcuts buttons
