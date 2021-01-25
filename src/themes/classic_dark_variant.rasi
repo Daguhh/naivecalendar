@@ -158,7 +158,7 @@
     background-color:   @background;
 }
 #inputbar {
-    padding : 0 70;
+    padding : 0 0 0 80;
     children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
 }
 #textbox-prompt-colon {
