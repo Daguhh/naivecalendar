@@ -1,3 +1,6 @@
 naivecalendar /usr/bin/ 
-src/* /usr/share/naivecalendar/
+tools/naivecalendar-update-all-themes /usr/bin/
+src/naivecalendar.sh /usr/share/naivecalendar/
+src/naivecalendar.py /usr/share/naivecalendar/
+src/themes /usr/share/naivecalendar/
 debian/naivecalendar.1 /usr/share/man/man1/

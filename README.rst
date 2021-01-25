@@ -155,6 +155,14 @@ Some command line options are avaible and can be useful if you want to integrate
                             set calendar theme, default=classic_dark (theme file name without extention)
       -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
 
+Tools
+^^^^^
+
+naivecalendar come with a command to update all your themes at once, see :
+
+.. code:: bash
+
+    naivecalendar-update-all-themes -h
     
 ---------------------------------------------------------------------------------
 

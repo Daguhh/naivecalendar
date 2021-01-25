@@ -32,9 +32,10 @@ SYM_SHOW_MENU"""
 
 help_msg () {
     echo """
-usage: naivecalendar-update-all-themes.sh [-h] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
+usage: naivecalendar-update-all-themes [-h] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
 
 Give a new value to a calendar parameter for all themes. /!\ Save your themes before use!
+(Launch in the theme directory)
 
 optional arguments:
   -h, --help              show this help message and exit
