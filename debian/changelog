@@ -1,8 +1,10 @@
-naivecalendar (0.5.2) UNRELEASED; urgency=medium
+naivecalendar (0.5.3) UNRELEASED; urgency=medium
 
-  * Calendar themes don't load user themes anymore (-theme-str cmd option)
+  * Remove unconsistent mode-switcher
+  * Updates themes
+  * Add missing optional dependencies
 
- -- Daguhh <code.daguhh@zaclys.net>  Sun, 24 Jan 2021 22:04:08 +0100
+ -- Daguhh <code.daguhh@zaclys.net>  Mon, 25 Jan 2021 01:45:00 +0100
 
 naivecalendar (0.5.2) UNRELEASED; urgency=medium
 
