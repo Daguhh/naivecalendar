@@ -80,7 +80,7 @@ except FileNotFoundError:
 def to_list(cfg_list):
     """convert string with comma separated elements into python list"""
     # align all elements to right
-    return [DAY_FORMAT.format(word.strip()) for word in cfg_list.split(',')]
+    return [DAY_FORMAT.format(word.lstrip()) for word in cfg_list.split(',')]
 
 def set_list(default, section, key, row):
     vals = section[key]

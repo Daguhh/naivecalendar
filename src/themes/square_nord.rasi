@@ -42,7 +42,7 @@
     lines:                  8;
     line-padding:           10;
     padding:                6px;
-    width:                  330px;
+    width:                  335px;
     x-offset:               -3%;
     y-offset:               4%;
     location:               2;

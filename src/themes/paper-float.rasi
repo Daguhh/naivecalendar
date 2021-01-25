@@ -20,7 +20,7 @@
     hide-scrollbar:         true;
     line-padding:           10;
     padding:                10px;
-    width:                  310px;
+    width:                  330;
     x-offset:               -3%;
     y-offset:               4%;
     transparency: "screenshot";
@@ -56,7 +56,7 @@
 }
 #element {
     border: 0;
-    padding: 2px;
+    padding: 5px 0px 5px;
     highlight: bold ;
 }
 #element normal.normal {

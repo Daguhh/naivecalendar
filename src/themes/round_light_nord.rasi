@@ -79,22 +79,20 @@
     lines:        8;
 }
 #element {
-    padding: 12px 8px 8px;
+    padding: 10px 4px 10px 6px;
+    border-radius:    30;
 }
 #element.normal.normal {
     background-color: @background-normal;
     text-color:       @foreground-normal;
-    border-radius:    30;
 }
 #element.alternate.normal {
     background-color: @background-normal;
     text-color:       @foreground-normal;
-    border-radius:    30;
 }
 #element.normal.urgent {
     background-color: @background-urgent;
     text-color:       @foreground-urgent;
-    border-radius:    30;
 }
 #element.normal.active {
     background-color: @background-active;
@@ -103,25 +101,24 @@
 #element.selected.normal {
     background-color: @background-select;
     text-color:       @foreground-select;
-    border-radius:    30;
 }
 #element.selected.urgent {
     background-color: @background-select;
     text-color:       @foreground-select;
-    border-radius:    30;
 }
 #element.selected.active {
     background-color: @background-select;
     text-color:       @foreground-select;
+    border-radius:    0;
 }
 #element.alternate.urgent {
     background-color: @background-urgent;
     text-color:       @foreground-urgent;
-    border-radius:    30;
 }
 #element.alternate.active {
     background-color: @background-active;
     text-color:       @foreground-active;
+    border-radius:    0;
 }
 #mode-switcher {
     border:       0px 0px 0px ;
