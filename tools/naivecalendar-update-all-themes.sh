@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+# Update a naivecalendar theme parameter in all themes, use carefully!
+
+PARAM_LIST="""
+USER_LOCALE
+PROMT_DATE_FORMAT
+IS_TODAY_HEAD_MSG
+TODAY_HEAD_MSG_TXT
+TODAY_HEAD_MSG_SIZES
+TODAY_HEAD_MSG_RISES
+DAY_ABBR_LENGHT
+FIRST_DAY_WEEK
+SYM_NEXT_MONTH
+SYM_NEXT_YEAR
+SYM_PREV_MONTH
+SYM_PREV_YEAR
+NB_ROW
+ROW_WEEK_SYM
+ROW_CAL_START
+ROW_CONTROL_MENU
+ROW_SHORTCUTS
+SYMS_WEEK_DAYS
+SYMS_DAYS_NUM
+SYMS_CONTROL_MENU
+SYMS_SHORTCUTS
+SYM_SHOW_HELP
+SYM_SWITCH_THEME
+SYM_SHOW_EVENTS
+SYM_SWITCH_EVENT
+SYM_SHOW_MENU"""
+
+help_msg () {
+    echo """
+usage: naivecalendar-update-all-themes.sh [-h] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
+
+Give a new value to a calendar parameter for all themes. /!\ Save your themes before use!
+
+optional arguments:
+  -h, --help              show this help message and exit
+  -s, --simulate          don't change files and print to stdout
+  -L, --list-parameters   show all parameters names
+  -p, --parameter         parameter to change in all config files
+  -v, --value             new value to set
+"""
+}
+
+list_param () {
+    printf "naivecalendar theme parameters: \n\n"
+    printf "%-25s  %-25s  %-25s  %-25s\n"$PARAM_LIST
+}
+
+
+# Save parameters
+option="$@"
+
+# Loop over named parameters
+while [ $# -gt 0 ] ; do
+    key="$1"
+    case $key in
+        -h|--help)
+            help_msg 
+            exit 0
+            ;;
+        -p|--parameter)
+            PARAM="$2"
+            ;;
+        -s|--simulate)
+            ;;
+        -v|--value)
+            VALUE="$2"
+            ;;
+        -L|--list-parameters)
+            list_param
+            exit 0
+            ;;
+        *)
+          printf "**************************\n"
+          printf " Wrong argument : $1\n"
+          printf "**************************\n"
+          exit 1
+    esac
+    shift # past argument
+    shift # past value
+done
+
+# Test parameters validity
+if [ -z "$PARAM" ]
+  then
+    printf "***********************************************\n"
+    echo "Please give a parameter to set, see -L option"
+    printf "***********************************************\n"
+    exit 0
+fi
+
+if echo $PARAM_LIST | grep -w $PARAM > /dev/null; then
+    printf "setting parameter $PARAM "
+else
+    printf "*********************************************************\n"
+    printf "$PARAM in not in the parameter list, see -L option \n"
+    printf "*********************************************************\n"
+    exit 0
+fi
+
+if [ -z "$VALUE" ]
+  then
+    printf "\n***********************************************\n"
+    printf "Please give a value for $PARAM \n"
+    printf "***********************************************\n"
+    exit 0
+else
+    printf "to $VALUE \n"
+fi
+
+
+
+# Replace the parameter value or just print to stdout if simulate
+if [[ " ${option[@]} " =~ " -s " ]] || [[ " ${option[@]} " =~ " --simulate " ]] ; then
+    for f in *.cfg; do
+        sed -r 's/('$PARAM' =).*/\1 '$VALUE'/g' $f
+    done
+    printf "remove '-s|--simulate' to apply changes\n"
+else
+    i=0
+    for f in *.cfg; do
+        sed -i -r 's/('$PARAM' =).*/\1 '$VALUE'/g' $f
+        i=$(($i+1))
+    done
+    printf "$i files updated\nBye!\n"
+fi
+
