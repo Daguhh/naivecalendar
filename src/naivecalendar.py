@@ -258,6 +258,8 @@ def main():
     # save  date
     d.write_cache()
     # react to rofi output (read cache file to reload rofi)
+
+    #if out in chain(SYM_SHOW_EVENTS, SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SWITCH_EVENT, SYM_SHOW_MENU):
     process_event_popup(out, d)
 
 
@@ -726,6 +728,9 @@ def get_month_events_ind(date):
 
     return inds
 
+# Count recursive call from open_n_reload_rofi
+# and prevent relaunching rofi if its already planned
+ROFI_RELAUNCH_COUNT = 0
 
 def open_n_reload_rofi(func):
     """ decorator to open and reload the rofi script at the same date"""
@@ -735,12 +740,19 @@ def open_n_reload_rofi(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
 
+        global ROFI_RELAUNCH_COUNT
+
+        ROFI_RELAUNCH_COUNT += 1
         subprocess.Popen(["pkill", "-9", "rofi"])
         time.sleep(ROFI_RELOAD_TEMPO)
+
         out = func(*args)
-        cmd = f"{script_path}/naivecalendar.sh -c"
-        os.system(cmd)
-        time.sleep(ROFI_RELOAD_TEMPO)
+
+        ROFI_RELAUNCH_COUNT -= 1
+        if ROFI_RELAUNCH_COUNT == 0:
+            cmd = f"{script_path}/naivecalendar.sh -c"
+            os.system(cmd)
+            time.sleep(ROFI_RELOAD_TEMPO)
 
         return out
 
