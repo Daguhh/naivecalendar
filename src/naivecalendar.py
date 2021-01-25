@@ -199,13 +199,13 @@ SYMS_DAYS_NUM= set_list(default, cfg, 'SYMS_DAYS_NUM', ROW_CAL_START)
 #: row number where to display buttons
 ROW_CONTROL_MENU = to_int(cfg, 'ROW_CONTROL_MENU')
 #: symbols for control menu row
-default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, '_', '_', '_', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
+default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, ' ', ' ', ' ', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
 SYMS_CONTROL_MENU = set_list(default, cfg, 'SYMS_CONTROL_MENU', ROW_CONTROL_MENU)
 
 #: row number where to display shortcuts buttons
 ROW_SHORTCUTS = to_int(cfg, 'ROW_SHORTCUTS')
 #: symbols to display in shortcuts row
-default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_SWITCH_EVENT, '_', '_', SYM_SHOW_MENU))
+default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_SWITCH_EVENT, ' ', ' ', SYM_SHOW_MENU))
 SYMS_SHORTCUTS = set_list(default, cfg, 'SYMS_SHORTCUTS', ROW_SHORTCUTS)
 
 
@@ -343,7 +343,10 @@ def update_rofi(date, is_first_loop):
                 TODAY_HEAD_MSG_RISES
             )
             for txt, size, rise in vals :
-                msg += f"""<span rise="{rise}" size="{size}">{date.strftime(txt)}</span>"""
+                if '<br>' in txt: # return to line
+                    msg += '\r'
+                else:
+                    msg += f"""<span rise="{rise}" size="{size}">{date.strftime(txt)}</span>"""
             print(f"\0message\x1f{msg}\n")
 
 
