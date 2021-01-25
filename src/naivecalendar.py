@@ -65,10 +65,10 @@ try:
     try :
         config['EVENTS'][EVENTS_DEFAULT]
     except KeyError:
-        print(f'no event "{EVENTS_DEFAULT}" found', file=sys.stderr)
+        #print(f'no event "{EVENTS_DEFAULT}" found', file=sys.stderr)
         EVENTS_DEFAULT = ''
 except FileNotFoundError:
-    print(f'no event file "{EVENT_CACHE}" found', file=sys.stderr)
+    #print(f'no event file "{EVENT_CACHE}" found', file=sys.stderr)
     EVENTS_DEFAULT = ''
 
 ############################
@@ -752,7 +752,7 @@ def open_n_reload_rofi(func):
         if ROFI_RELAUNCH_COUNT == 0:
             cmd = f"{script_path}/naivecalendar.sh -c"
             os.system(cmd)
-            time.sleep(ROFI_RELOAD_TEMPO)
+        time.sleep(ROFI_RELOAD_TEMPO)
 
         return out
 

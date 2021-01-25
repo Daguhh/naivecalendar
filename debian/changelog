@@ -5,6 +5,7 @@ naivecalendar (0.6.0) UNRELEASED; urgency=medium
   * Add script to update all theme at once
   * Prevent crash when wrong theme name is given
   * Rewrite menu and shortcut bar construction (prevent unconsitent config)
+  * Prevent recursive accumulation of rofi calls
 
  -- Daguhh <code.daguhh@zaclys.net>  Mon, 25 Jan 2021 18:13:10 +0100
 
