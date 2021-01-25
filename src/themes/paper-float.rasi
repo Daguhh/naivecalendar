@@ -56,7 +56,7 @@
 }
 #element {
     border: 0;
-    padding: 5px 0px 5px;
+    padding: 5px 0px 5px -1px;
     highlight: bold ;
 }
 #element normal.normal {
