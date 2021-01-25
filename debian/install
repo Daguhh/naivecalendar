@@ -4,3 +4,4 @@ src/naivecalendar.sh /usr/share/naivecalendar/
 src/naivecalendar.py /usr/share/naivecalendar/
 src/themes /usr/share/naivecalendar/
 debian/naivecalendar.1 /usr/share/man/man1/
+debian/naivecalendar-update-all-themes.1 /usr/share/man/man1/
