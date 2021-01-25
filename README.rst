@@ -100,10 +100,10 @@ Basic
 
 Simply execute the script, then:
 
- - Use mouse or keyboard to interact with the calendar.
- - Hit bottom arrows to cycle through months.
- - Hit a day to create a linked event. (A day with attached event will appear yellow.)
- - Create multiple event type and with between them
+- Use mouse or keyboard to interact with the calendar.
+- Hit bottom arrows to cycle through months.
+- Hit a day to create a linked event. (A day with attached event will appear yellow.)
+- Create multiple event type and with between them
 
 Shortcuts
 ^^^^^^^^^
