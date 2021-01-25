@@ -799,7 +799,10 @@ def ask_theme():
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
     theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue", nb_lines=7, width=-60)
-    set_theme_cache(theme)
+    if theme in themes:
+        set_theme_cache(theme)
+    else :
+        print("this is not a valid theme", file=sys.stderr)
 
 def print_selection(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
