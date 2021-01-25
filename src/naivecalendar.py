@@ -80,7 +80,7 @@ except FileNotFoundError:
 def to_list(cfg_list):
     """convert string with comma separated elements into python list"""
     # align all elements to right
-    return [DAY_FORMAT.format(word.lstrip()) for word in cfg_list.split(',')]
+    return [DAY_FORMAT.format(word.strip()) for word in cfg_list.split(',')]
 
 def set_list(default, section, key, row):
     vals = section[key]
@@ -773,7 +773,7 @@ def ask_theme():
 
     themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS]))
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
-    themes = list2rofi(set(themes))
+    themes = list2rofi(sorted(set(themes)))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
     theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue")
