@@ -20,6 +20,7 @@ import time
 
 # Global var :
 EMPTY = -1
+ROFI_RELOAD_TEMPO = 0.2
 
 ######################
 ### Path constants ###
@@ -718,10 +719,11 @@ def open_n_reload_rofi(func):
     def wrapper(*args, **kwargs):
 
         subprocess.Popen(["pkill", "-9", "rofi"])
-        time.sleep(0.3)
+        time.sleep(ROFI_RELOAD_TEMPO)
         out = func(*args)
         cmd = f"{script_path}/naivecalendar.sh -c"
         os.system(cmd)
+        time.sleep(ROFI_RELOAD_TEMPO)
 
         return out
 
@@ -739,8 +741,8 @@ def show_events(date):
 def show_menu(d):
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
-    output = rofi_popup("menu", menu + '\n back to calendar')
-    time.sleep(0.3)
+    output = rofi_popup("menu", menu + '\n back to calendar', nb_lines=6, width=-30)
+    time.sleep(ROFI_RELOAD_TEMPO)
     process_event_popup(output, d)
 
 @open_n_reload_rofi
@@ -757,7 +759,7 @@ def open_event(day_sym, date, editor):
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     sdtout, sdterr = p.communicate()
-
+0
 
 @open_n_reload_rofi
 def ask_event_to_display():
@@ -779,7 +781,7 @@ def ask_theme():
     themes = list2rofi(sorted(set(themes)))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue")
+    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue", nb_lines=7, width=-60)
     set_theme_cache(theme)
 
 def print_selection(day, date, f):
@@ -1075,7 +1077,7 @@ def set_event_cache(selected):
         f.write(selected)
 
 
-def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper"):
+def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper", width=50):
     """Launch a rofi window
 
     Parameters
@@ -1094,7 +1096,7 @@ def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper"):
     cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
     selection = (
         subprocess.check_output(
-            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
+            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -width {width} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
         )
         .decode("utf-8")
         .replace("\n", "")
