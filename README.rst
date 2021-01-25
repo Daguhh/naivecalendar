@@ -48,6 +48,11 @@ Recommends
 
 * xclip (copy to clipboard option)
 
+Suggests
+^^^^^^^^
+
+* fontawesome (for icons)
+
 Install
 -------
 
