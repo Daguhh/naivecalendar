@@ -38,11 +38,13 @@ Give a new value to a calendar parameter for all themes. /!\ Save your themes be
 (Launch in the theme directory)
 
 optional arguments:
-  -h, --help              show this help message and exit
-  -s, --simulate          don't change files and print to stdout
-  -L, --list-parameters   show all parameters names
-  -p, --parameter         parameter to change in all config files
-  -v, --value             new value to set
+  -h, --help                    show this help message and exit
+  -s, --simulate                don't change files and print to stdout
+  -L, --list-parameters         show all parameters names
+  -p PARAMETER, --parameter PARAMETER
+                                parameter to change in all config files
+  -v NEW_VALUE, --value  NEW_VALUE
+                                new value to set
 """
 }
 
@@ -65,11 +67,13 @@ while [ $# -gt 0 ] ; do
             ;;
         -p|--parameter)
             PARAM="$2"
+            shift # past argument
             ;;
         -s|--simulate)
             ;;
         -v|--value)
             VALUE="$2"
+            shift # past argument
             ;;
         -L|--list-parameters)
             list_param
@@ -81,7 +85,6 @@ while [ $# -gt 0 ] ; do
           printf "**************************\n"
           exit 1
     esac
-    shift # past argument
     shift # past value
 done
 

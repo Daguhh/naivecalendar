@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+
+help_msg () {
+    echo """
+usage: naivecalendar-add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
+
+Add a new event entry in all themes files. 
+/!\ If one file already get this event, nothing will be set, 
+to force for all, use -o|--override flag
+(Launch in the theme directory)
+/i\ Saving your themes files before using this is a good practice!
+
+optional arguments:
+  -h, --help              show this help message and exit
+  -n EVENT_NAME, --new EVENT_NAME    
+                          name of the new event 
+  -v NEW_VALUE, --value NEW_VALUE            
+                          value of the new event (see any config file for format)
+  -o, --override          override value if event already exist
+  -d EVENT_NAME, --delete EVENT_NAME
+                          delete event from all themes files
+"""
+}
+
+option="$@"
+
+# prevent ambiguous usage
+if [[ " ${option[@]} " =~ " -n " ]] || [[ " ${option[@]} " =~ " --name " ]] ; then
+    if [[ " ${option[@]} " =~ " -d " ]] || [[ " ${option[@]} " =~ " --delete " ]] ; then
+        printf "You can't set -n|--new and -d|--delete at the same time\n"
+    fi
+fi
+
+# get named parameters
+while [ $# -gt 0 ] ; do
+    key="$1"
+    case $key in
+        -h|--help)
+            help_msg 
+            exit 0
+            ;;
+        -n|--new)
+            NEW_EVENT="$2"
+            shift # past argument
+            ;;
+        -v|--value)
+            NEW_VALUE="$2"
+            shift # past argument
+            ;;
+        -o|--override)
+            ;;
+        -d|--delete)
+            NEW_EVENT="$2"
+            shift # past argument
+            ;;
+        *)
+          printf "**************************\n"
+          printf " Wrong argument : $1\n"
+          printf "**************************\n"
+          exit 1
+    esac
+    shift # past value
+done
+
+# delete line that contain NEW_EVENT
+if  [[ " ${option[@]} " =~ " -d " ]] || [[ " ${option[@]} " =~ " --delete " ]]  ; then
+
+    i=0
+    for f in *.cfg; do
+        if cat  $f | grep -w ^$NEW_EVENT > /dev/null ; then
+            i=$(($i+1))
+            sed -i '/^'$NEW_EVENT' /d' $f
+        fi
+    done
+
+    printf " $NEW_EVENT was deleted in $i files\n"
+    exit 0
+
+fi
+
+# Quit if value already exist (without overirde option)
+if ! ( [[ " ${option[@]} " =~ " -o " ]] || [[ " ${option[@]} " =~ " --override " ]] ) ; then
+
+    for f in *.cfg; do
+        if cat $f | grep -w ^$NEW_EVENT > /dev/null ; then
+            printf "*************************************************************\n"
+            printf "$NEW_EVENT already exist in $f file\n"
+            printf "quitting, please use -o|--override to force the new value\n"
+            printf "*************************************************************\n"
+            exit 0
+        fi 
+    done
+
+fi
+
+
+# Add or overide new event and its value
+for f in *.cfg; do
+
+    # If already exist, override value
+    if cat  $f | grep -w ^$NEW_EVENT > /dev/null ; then
+        sed -i -r 's/('$NEW_EVENT' =).*/\1 '$NEW_VALUE'/g' $f
+    # else create new entry after first paragraph of [EVENTS] section 
+    else 
+        #awk '/\[EVENTS\]/{print;print "$NEW_EVENT = $NEW_VALUE";next}1' RS="\n\n" ORS="\n\n" $f
+        awk '/^\[EVENTS\]/{print;print "'$NEW_EVENT' = '$NEW_VALUE'";next}1' RS="\n\n" ORS="\n\n" $f > tmp && mv tmp $f
+
+    fi
+done
+
+echo "done, Bye!"
+
