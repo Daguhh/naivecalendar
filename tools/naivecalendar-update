@@ -34,8 +34,9 @@ help_msg () {
     echo """
 usage: naivecalendar-update-all-themes [-h] [-s] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
 
-Give a new value to a calendar parameter for all themes. /!\ Save your themes before use!
-(Launch in the theme directory)
+Give a new value to a calendar parameter for all themes in ~/.config/naivecalendar/themes/
+
+/!\ Saving your themes before use is a good practice
 
 optional arguments:
   -h, --help                    show this help message and exit
@@ -121,14 +122,14 @@ echo "================================"
 
 # Replace the parameter value or just print to stdout if simulate
 if [[ " ${option[@]} " =~ " -s " ]] || [[ " ${option[@]} " =~ " --simulate " ]] ; then
-    for f in *.cfg; do
+    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
         expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
         sed  -r "$expr" $f
     done
     printf "remove '-s|--simulate' to apply changes\n"
 else
     i=0
-    for f in *.cfg; do
+    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
         expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
         sed -i -r "$expr" $f
         i=$(($i+1))

@@ -28,31 +28,85 @@ SYM_SHOW_EVENTS
 SYM_SWITCH_EVENT
 SYM_SHOW_MENU"""
 
+submodules_options="update add-event"
+
 update_options="--help --simulate --list-parameters --parameter --value "
 
 add_event_options="--help --new --value --override --delete"
 
+contains () { 
+    local list="$1[@]"
+    printf "\n__ $list __\n"
+    local pattern=$2
+    local is_in=false
+    for element in "${list[@]}"; do
+        if [[ $element == "$pattern" ]]; then
+            is_in=true
+            break
+        fi
+    done
+    test_in=$is_in
+}
+
+
 _myscript_tab_complete () {
-    local cur prev opts
+    local cur prev prevs opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-   # words="-f -h --etc"
+    prevs="${COMP_WORDS[@]}"
 
-    submodules="update add-event"
-    update_opt='abc def ghi'
+    strip_prev=${prev##*(-)}
+
+    is_update=false
+    for element in ${prevs[@]}; do
+        if [[ "$element" == "update" ]]; then
+            is_update=true
+        fi
+    done
+
+    is_add_event=false
+    for element in ${prevs[@]}; do
+        if [[ "$element" == "add-event" ]]; then
+            is_add_event=true
+        fi
+    done
 
     if [[ $prev == "naivecalendar" ]] ; then
-        options=$submodules
+        options=$submodules_options
 
-    elif [[ $prev == "update" ]] ; then
-        options=$update_options #_get_update_opt
 
-    elif [[ $prev == "add-event" ]] ; then
-        options=$add_event_options #_get_update_opt
+    elif [[ "$is_update" == "true" ]] ; then
 
-    elif [[ $prev == "-p" || $prev == "--parameter" ]] ; then
-        options=$parameter_options #_get_update_opt
+        if [[ $prev == "update" ]] ; then
+            options=$update_options #_get_update_opt
+
+        elif [[ "$prev" == "-p" || $prev == "--parameter" ]] ; then
+            options=$parameter_options #_get_update_opt
+
+        # remove already liseed elements #if already listed
+        else
+            options=$update_options
+            for element in ${prevs%%*(-)}; do
+                if [[ "$prev" == "-v" || $prev == "--value" ]] ; then
+                    options=' '
+                else
+                    options=$(echo $options | sed -e 's/'$element'\b *//')
+                fi
+            done
+        fi
+
+    elif [[ "$is_add_event" == "true" ]] ; then
+
+        if [[ "$prev" == "add-event" ]] ; then
+            options=$add_event_options #_get_update_opt
+        
+        else
+            options=$add_event_options
+            for element in ${prevs%%*(-)}; do
+                options=$(echo $options | sed -e 's/'$element'\b *//')
+            done
+        fi
 
     else
         options=""
@@ -63,3 +117,9 @@ _myscript_tab_complete () {
     return 0
 }
 complete -F _myscript_tab_complete naivecalendar
+
+
+
+
+
+

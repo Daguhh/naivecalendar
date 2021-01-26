@@ -5,10 +5,10 @@ help_msg () {
     echo """
 usage: naivecalendar-add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
 
-Add a new event entry in all themes files. 
+Add a new event entry in all themes files in ~/.config/naivecalendar/themes
 /!\ If one file already get this event, nothing will be set, 
 to force for all, use -o|--override flag
-(Launch in the theme directory)
+
 /i\ Saving your themes files before using this is a good practice!
 
 optional arguments:
@@ -67,7 +67,7 @@ done
 if  [[ " ${option[@]} " =~ " -d " ]] || [[ " ${option[@]} " =~ " --delete " ]]  ; then
 
     i=0
-    for f in *.cfg; do
+    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
         if cat  $f | grep -w ^$NEW_EVENT > /dev/null ; then
             i=$(($i+1))
             sed -i '/^'$NEW_EVENT' /d' $f
@@ -82,7 +82,7 @@ fi
 # Quit if value already exist (without overirde option)
 if ! ( [[ " ${option[@]} " =~ " -o " ]] || [[ " ${option[@]} " =~ " --override " ]] ) ; then
 
-    for f in *.cfg; do
+    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
         if cat $f | grep -w ^$NEW_EVENT > /dev/null ; then
             printf "*************************************************************\n"
             printf "$NEW_EVENT already exist in $f file\n"
@@ -96,7 +96,7 @@ fi
 
 
 # Add or overide new event and its value
-for f in *.cfg; do
+for f in $HOME/.config/naivecalendar/themes/*.cfg; do
 
     # If already exist, override value
     if cat  $f | grep -w ^$NEW_EVENT > /dev/null ; then
