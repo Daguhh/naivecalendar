@@ -1,0 +1,46 @@
+.TH NAIVECALENDAR 1 "January 6, 2021"
+
+.SH NAME
+naivecalendar-update
+- script to update all naivecalendar theme at once
+
+
+.SH SYNOPSIS
+.B naivecalendar-update-all-themes [-h] [-o] [-n|-d
+.I EVENT_NAME
+.B ] [-v 
+.I NEW_VALUE
+.B ] 
+
+.SH DESCRIPTION
+.B naivecalendar-add-event
+is a bash script to create, override, delete an event definition for all naivecalendar themes at once
+
+/!\\ If one file already get this event, nothing will be set, to force for all use -o|--override flag
+
+/!\\ Save your themes before use!
+
+Go to the theme directory and launch
+
+.SH OPTIONS
+
+.TP
+.B -h|--help 
+show this help message and exit
+
+.TP
+.B -n|--new NEW_EVENT
+name of the new event
+
+.TP
+.B -v|--value NEW_VALUE
+string value of the new event (see any config file for format spec)
+
+.TP
+.B -o|--override         
+override value if event already exist
+
+.TP
+.B -d|--delete             
+delete event from all themes files
+

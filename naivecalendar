@@ -1,3 +1,23 @@
 #!/usr/bin/env bash
 
-/usr/share/naivecalendar/naivecalendar.sh "$@"
+
+if [[ $1 =~ ^(update|add-event)$ ]]; then
+
+    action=$1
+    shift # skip subcommand
+
+    if [[ $action == "update" ]]; then
+        #/usr/share/naivecalendar/naivecalendar-update-all-themes "$@"
+
+        /usr/share/naivecalendar/tools/naivecalendar-update-all-themes "$@"
+
+    elif [[ $action == "add-event" ]]; then
+        /usr/share/naivecalendar/tools/naivecalendar-add-event "$@"
+
+    fi
+
+else 
+    echo "$@"
+    /usr/share/naivecalendar/naivecalendar.sh "$@"
+
+fi

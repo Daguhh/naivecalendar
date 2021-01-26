@@ -1,5 +1,11 @@
 naivecalendar (0.6.0) UNRELEASED; urgency=medium
 
+  * Prevent recursive accumulation of rofi calls
+
+ -- Daguhh <code.daguhh@zaclys.net>  Mon, 25 Jan 2021 18:13:10 +0100
+
+naivecalendar (0.6.0) UNRELEASED; urgency=medium
+
   * Remove unconsistent mode-switcher
   * Add missing optional dependencies
   * Add script to update all theme at once

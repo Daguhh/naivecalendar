@@ -8,7 +8,7 @@ Cycle through month and create linked event to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
-__version__ = "0.6.0"
+__version__ = "0.6.1"
 
 import glob, os, sys, subprocess, shutil, pathlib
 import re, argparse, configparser
@@ -1004,7 +1004,12 @@ def get_arguments():
 
     parser = argparse.ArgumentParser(
         prog="naivecalendar",
-        description="A simple popup calendar"
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description='''A simple popup calendar
+
+subcommands :
+    naivecalendar update [-h] [-s] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
+    naivecalendar add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE]'''
     )
 
     parser.add_argument(
