@@ -132,6 +132,7 @@ Options
 ^^^^^^^
 
 Some command line options are avaible and can be useful if you want to integrate the naivecalendar in a script or temporarily override parameters.
+Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually.
 
 .. code::
 
@@ -139,21 +140,26 @@ Some command line options are avaible and can be useful if you want to integrate
 
     A simple popup calendar
 
+    subcommands:
+        naivecalendar update [-h] [-s] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
+        naivecalendar add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE]
+
     optional arguments:
       -h, --help            show this help message and exit
       -v, --version         show program's version number and exit
-      -p, --print           print date to stdout instead of opening a note
+      -p, --print           print date to stdout instead of opening a event
       -x, --clipboard       copy date to clipboard
       -f FORMAT, --format FORMAT
                             option '-p' or '-x' output format (datetime.strftime format, defaut='%Y-%m-%d')
       -e EDITOR, --editor EDITOR
-                            editor command to open notes
+                            editor command to open events
       -l LOCALE, --locale LOCALE
                             force system locale, for example '-l es_ES.utf8'
       -c, --read-cache      force calendar to read old date from cache
       -t THEME, --theme THEME
                             set calendar theme, default=classic_dark (theme file name without extention)
       -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
+
 
 Tools
 ^^^^^
