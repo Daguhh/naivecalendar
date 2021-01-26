@@ -1,8 +1,10 @@
-naivecalendar (0.6.0) UNRELEASED; urgency=medium
+naivecalendar (0.6.1) UNRELEASED; urgency=medium
 
-  * Prevent recursive accumulation of rofi calls
+  * Move update-all-theme to update subcommand
+  * Add add-theme subcommand
+  * add manpages and completion
 
- -- Daguhh <code.daguhh@zaclys.net>  Mon, 25 Jan 2021 18:13:10 +0100
+ -- Daguhh <code.daguhh@zaclys.net>  Tue, 26 Jan 2021 15:03:28 +0100
 
 naivecalendar (0.6.0) UNRELEASED; urgency=medium
 

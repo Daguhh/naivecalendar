@@ -1,10 +1,10 @@
 naivecalendar /usr/bin/ 
-tools/naivecalendar-update-all-themes /usr/share/naivecalendar/tools
-tools/naivecalendar-add-event /usr/share/naivecalendar/tools
+tools/naivecalendar-update /usr/share/naivecalendar/tools/
+tools/naivecalendar-add-event /usr/share/naivecalendar/tools/
 src/naivecalendar.sh /usr/share/naivecalendar/
 src/naivecalendar.py /usr/share/naivecalendar/
 src/themes /usr/share/naivecalendar/
 debian/naivecalendar.1 /usr/share/man/man1/
 debian/naivecalendar-update.1 /usr/share/man/man1/
-debian/naivecalendar-add-theme.1 /usr/share/man/man1/
-debian/naivecalendar_completion.bash /etc/bash_completion.d/
+debian/naivecalendar-add-event.1 /usr/share/man/man1/
+debian/naivecalendar_completion /usr/share/bash-completion/completions/

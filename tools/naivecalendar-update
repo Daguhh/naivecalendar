@@ -117,17 +117,20 @@ else
 fi
 
 
+echo "================================"
 
 # Replace the parameter value or just print to stdout if simulate
 if [[ " ${option[@]} " =~ " -s " ]] || [[ " ${option[@]} " =~ " --simulate " ]] ; then
     for f in *.cfg; do
-        sed -r 's/('$PARAM' =).*/\1 '$VALUE'/g' $f
+        expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
+        sed  -r "$expr" $f
     done
     printf "remove '-s|--simulate' to apply changes\n"
 else
     i=0
     for f in *.cfg; do
-        sed -i -r 's/('$PARAM' =).*/\1 '$VALUE'/g' $f
+        expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
+        sed -i -r "$expr" $f
         i=$(($i+1))
     done
     printf "$i files updated\nBye!\n"

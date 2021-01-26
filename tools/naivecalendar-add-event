@@ -100,7 +100,8 @@ for f in *.cfg; do
 
     # If already exist, override value
     if cat  $f | grep -w ^$NEW_EVENT > /dev/null ; then
-        sed -i -r 's/('$NEW_EVENT' =).*/\1 '$NEW_VALUE'/g' $f
+        expr="s/("$NEW_EVENT" =).*/\1 "${NEW_VALUE//\//\\/}"/g" # escape slash
+        sed -i -r "$expr" $f
     # else create new entry after first paragraph of [EVENTS] section 
     else 
         #awk '/\[EVENTS\]/{print;print "$NEW_EVENT = $NEW_VALUE";next}1' RS="\n\n" ORS="\n\n" $f

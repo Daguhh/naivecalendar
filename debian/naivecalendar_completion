@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+#complete -W "update add-event" naivecalendar
+
+parameter_options="""
+USER_LOCALE
+PROMT_DATE_FORMAT
+IS_TODAY_HEAD_MSG
+TODAY_HEAD_MSG_TXT
+TODAY_HEAD_MSG_SIZES
+TODAY_HEAD_MSG_RISES
+DAY_ABBR_LENGHT
+FIRST_DAY_WEEK
+SYM_NEXT_MONTH
+SYM_NEXT_YEAR
+SYM_PREV_MONTH
+SYM_PREV_YEAR
+NB_ROW
+ROW_WEEK_SYM
+ROW_CAL_START
+ROW_CONTROL_MENU
+ROW_SHORTCUTS
+SYMS_WEEK_DAYS
+SYMS_DAYS_NUM
+SYMS_CONTROL_MENU
+SYMS_SHORTCUTS
+SYM_SHOW_HELP
+SYM_SWITCH_THEME
+SYM_SHOW_EVENTS
+SYM_SWITCH_EVENT
+SYM_SHOW_MENU"""
+
+update_options="--help --simulate --list-parameters --parameter --value "
+
+add_event_options="--help --new --value --override --delete"
+
+_myscript_tab_complete () {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+   # words="-f -h --etc"
+
+    submodules="update add-event"
+    update_opt='abc def ghi'
+
+    if [[ $prev == "naivecalendar" ]] ; then
+        options=$submodules
+
+    elif [[ $prev == "update" ]] ; then
+        options=$update_options #_get_update_opt
+
+    elif [[ $prev == "add-event" ]] ; then
+        options=$add_event_options #_get_update_opt
+
+    elif [[ $prev == "-p" || $prev == "--parameter" ]] ; then
+        options=$parameter_options #_get_update_opt
+
+    else
+        options=""
+
+    fi
+
+    COMPREPLY=( $(compgen -W "${options}" -- ${cur}) )
+    return 0
+}
+complete -F _myscript_tab_complete naivecalendar

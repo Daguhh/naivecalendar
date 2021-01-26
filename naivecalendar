@@ -9,7 +9,7 @@ if [[ $1 =~ ^(update|add-event)$ ]]; then
     if [[ $action == "update" ]]; then
         #/usr/share/naivecalendar/naivecalendar-update-all-themes "$@"
 
-        /usr/share/naivecalendar/tools/naivecalendar-update-all-themes "$@"
+        /usr/share/naivecalendar/tools/naivecalendar-update "$@"
 
     elif [[ $action == "add-event" ]]; then
         /usr/share/naivecalendar/tools/naivecalendar-add-event "$@"
@@ -17,7 +17,7 @@ if [[ $1 =~ ^(update|add-event)$ ]]; then
     fi
 
 else 
-    echo "$@"
+
     /usr/share/naivecalendar/naivecalendar.sh "$@"
 
 fi
