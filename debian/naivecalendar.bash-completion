@@ -30,7 +30,7 @@ SYM_SHOW_MENU"""
 
 submodules_options="update add-event"
 
-naivecalendar_options="--help --version --print --clipboard --format --editor --locale --read-cache --theme"
+naivecalendar_options="--help --version --print --clipboard --format --editor --locale --read-cache --theme --date"
 
 update_options="--help --simulate --list-parameters --parameter --value "
 
@@ -40,6 +40,8 @@ add_event_options="--help --new --value --override --delete"
 theme_list="$(ls /usr/share/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
 theme_list_user="$(ls $HOME/.config/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
 theme_list="$theme_list $theme_list_user"
+
+locales_list=$(locale -a)
 
 _myscript_tab_complete () {
     local cur prev prevs opts
@@ -65,6 +67,7 @@ _myscript_tab_complete () {
     done
 
 
+    # show subcommand or calendar command if '--' manually typed
     if [[ $prev == "naivecalendar" ]] ; then
 
         if [[ "$cur" =~ "--" ]]; then
@@ -78,15 +81,18 @@ _myscript_tab_complete () {
             options=$submodules_options
         fi
 
+    # update subcommands
     elif [[ "$is_update" == "true" ]] ; then
 
+        # show all
         if [[ $prev == "update" ]] ; then
             options=$update_options #_get_update_opt
 
+        # show config parameters avaibles after -p|--parameter option
         elif [[ "$prev" == "-p" || $prev == "--parameter" ]] ; then
             options=$parameter_options #_get_update_opt
 
-        # remove already liseed elements #if already listed
+        # show all but remove already listed elements #if already listed
         else
             options=$update_options
             for element in ${prevs%%*(-)}; do
@@ -98,11 +104,14 @@ _myscript_tab_complete () {
             done
         fi
 
+    # add-event subcommand
     elif [[ "$is_add_event" == "true" ]] ; then
 
+        # show all
         if [[ "$prev" == "add-event" ]] ; then
             options=$add_event_options #_get_update_opt
         
+        # show all but remove already listed options
         else
             options=$add_event_options
             for element in ${prevs%%*(-)}; do
@@ -110,11 +119,22 @@ _myscript_tab_complete () {
             done
         fi
 
-    #elif [[ "$cur" == "--" ]]; then
+    # list naivecalendar main options
     else
 
+        # show examples when option require a value
         if [[ "$prev" == "-t" || $prev == "--theme" ]] ; then
             options=$theme_list #_get_update_opt
+        elif [[ "$prev" == "-f" || $prev == "--format" ]] ; then
+            options="'%Y-%m-%d'" #_get_update_opt
+        elif [[ "$prev" == "-d" || $prev == "--date" ]] ; then
+            options="01-2021" #_get_update_opt
+        elif [[ "$prev" == "-l" || $prev == "--locale" ]] ; then
+            options=$locales_list #_get_update_opt
+        elif [[ "$prev" == "-e" || $prev == "--editor" ]] ; then
+            options="xdg-open" #_get_update_opt
+
+        # list all but remove already listed options
         else
             options=$naivecalendar_options
             for element in ${prevs%%*(-)}; do
