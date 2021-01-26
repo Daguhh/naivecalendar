@@ -30,6 +30,8 @@ SYM_SHOW_MENU"""
 
 submodules_options="update add-event"
 
+naivecalendar_options="--help --version --print --clipboard --format --editor --locale --read-cache --theme"
+
 update_options="--help --simulate --list-parameters --parameter --value "
 
 add_event_options="--help --new --value --override --delete"
@@ -48,6 +50,9 @@ contains () {
     test_in=$is_in
 }
 
+theme_list="$(ls /usr/share/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
+theme_list_user="$(ls $HOME/.config/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
+theme_list="$theme_list $theme_list_user"
 
 _myscript_tab_complete () {
     local cur prev prevs opts
@@ -72,9 +77,19 @@ _myscript_tab_complete () {
         fi
     done
 
-    if [[ $prev == "naivecalendar" ]] ; then
-        options=$submodules_options
 
+    if [[ $prev == "naivecalendar" ]] ; then
+
+        if [[ "$cur" =~ "--" ]]; then
+
+            options=$naivecalendar_options
+            for element in ${prevs%%*(-)}; do
+                options=$(echo $options | sed -e 's/'$element'\b *//')
+            done
+
+        else
+            options=$submodules_options
+        fi
 
     elif [[ "$is_update" == "true" ]] ; then
 
@@ -108,8 +123,13 @@ _myscript_tab_complete () {
             done
         fi
 
+    #elif [[ "$cur" == "--" ]]; then
     else
-        options=""
+
+        options=$naivecalendar_options
+        for element in ${prevs%%*(-)}; do
+            options=$(echo $options | sed -e 's/'$element'\b *//')
+        done
 
     fi
 
