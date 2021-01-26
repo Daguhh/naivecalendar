@@ -36,19 +36,6 @@ update_options="--help --simulate --list-parameters --parameter --value "
 
 add_event_options="--help --new --value --override --delete"
 
-contains () { 
-    local list="$1[@]"
-    printf "\n__ $list __\n"
-    local pattern=$2
-    local is_in=false
-    for element in "${list[@]}"; do
-        if [[ $element == "$pattern" ]]; then
-            is_in=true
-            break
-        fi
-    done
-    test_in=$is_in
-}
 
 theme_list="$(ls /usr/share/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
 theme_list_user="$(ls $HOME/.config/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
@@ -126,10 +113,14 @@ _myscript_tab_complete () {
     #elif [[ "$cur" == "--" ]]; then
     else
 
-        options=$naivecalendar_options
-        for element in ${prevs%%*(-)}; do
-            options=$(echo $options | sed -e 's/'$element'\b *//')
-        done
+        if [[ "$prev" == "-t" || $prev == "--theme" ]] ; then
+            options=$theme_list #_get_update_opt
+        else
+            options=$naivecalendar_options
+            for element in ${prevs%%*(-)}; do
+                options=$(echo $options | sed -e 's/'$element'\b *//')
+            done
+        fi
 
     fi
 
