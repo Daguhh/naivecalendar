@@ -7,4 +7,3 @@ src/themes /usr/share/naivecalendar/
 debian/naivecalendar.1 /usr/share/man/man1/
 debian/naivecalendar-update.1 /usr/share/man/man1/
 debian/naivecalendar-add-event.1 /usr/share/man/man1/
-debian/naivecalendar_completion /usr/share/bash-completion/completions/

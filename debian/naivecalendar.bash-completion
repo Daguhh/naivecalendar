@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-#complete -W "update add-event" naivecalendar
+# naivecalendar completion
 
 parameter_options="""
 USER_LOCALE
