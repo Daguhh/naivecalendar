@@ -2,6 +2,8 @@
 NaïveCalendar
 =============
 
+|readme_fr| |git_badge| |doc sphinx| |deb package|
+
     **naïf, naïve n. adj**.
 
     `1.` *LITTERAIRE* Qui est naturel, sans artifice, spontané. Art naïf, art populaire, folklorique. —  Un peintre naïf.
@@ -13,22 +15,49 @@ NaïveCalendar
 
 Un popup calendrier avec rofi_ et python3_ :
 
-* Parcourez le calendrier de mois en mois
-* Créez et éditez des notes liés à chaque date du calendrier. *Une date possédant une note apparait colorée*
-
 |classic dark| |square dark nord| |round_light nord| |classic light compact| 
 
+Fonctionnalités
+---------------
 
-.. _dependancies:
+* Parcourez le calendrier de mois en mois
+* Support de la langue locale ou forcer une langue
+* Créez et éditez des notes liés à chaque date du calendrier. *Une date possédant une note apparait colorée*
+* Créez plusieurs types de notes (c-à-d plusieurs dossier), créez des évenements récurrents, basculez entre elles.
+* Personnalisez les thèmes, contenus, symboles, raccourcis avec de simples fichiers textes
+* Changez de thème à la volée
+* Intrégrez le à vos scripts et rendez les iinteracifs : ouvrir à une date particulière, demander une date, copier une date dans le presse papier.
+
+.. _contents:
+
+-----------------------------------------------------------------------------
+
+.. _installation:
 
 Dépendances
 -----------
 
-* python3_
+Requirements
+^^^^^^^^^^^^
+
+* python3_ (stdlib)
 * rofi_
 
+Recommends
+^^^^^^^^^^
+
+* xclip (copy to clipboard option)
+
+Suggests
+^^^^^^^^
+
+* fontawesome (for icons)
+
 Installation
-^^^^^^^^^^^^
+------------
+
+Manuelle
+^^^^^^^^
 
 Le naivecalendar utilise deux fichiers:
 
@@ -45,6 +74,23 @@ Copiez simplement les fichiers dans le même dossier (en respectant l'arborescec
 finallement, lancez avec::
 
     ./naivecalendar.sh 
+
+Paquet (debian)
+^^^^^^^^^^^^^^^^
+
+.. code:: bash
+
+    apt install ./naivecalendar_x.y.z_all.deb
+
+Lancez avec:
+
+.. code:: bash
+
+    naivecalendar
+
+---------------------------------------------------------------------------------
+
+.. _usage:
 
 Utilisation
 -----------
@@ -65,30 +111,59 @@ Raccourcis
 ^^^^^^^^^^
 
 Les raccourcis sont à entrer dans l'invite de commande rofi.
-*Sym* est le symbole affiché à l'écran. *Sym*, *Touche* et *Alt-Key* peuvent être utilisés pour executer une action.
+*Sym* est le symbole affiché à l'écran. *Sym* et *Keys* peuvent être utilisés pour executer une action.
 
-====  =====  =======  ========  ========================================
-Sym    Keys                     Action
-----  ------------------------  ----------------------------------------
-  ..     ..       ..        ..  ..
-====  =====  =======  ========  ========================================
- ◀◀      <<       pp       --   année précédente
-  ◀       <        p      `-`   mois précédent
-  ▶       >        n      `+`   mois suivant
- ▶▶      >>       nn       ++   année suivante
- ..   notes       ..       ..   montrer les notes du mois courant
- ..    help       ..       ..   afficher l'aide
- ..   theme       ..       ..   changer de theme
-====  =====  =======  ========  ========================================
+====  =======  =======  ========  ========================================
+Sym     Keys                      Action
+----  --------------------------  ----------------------------------------
+  ..     ..       ..        ..    ..
+====  =======  =======  ========  ========================================
+ ◀◀        <<       pp       --   année précédente
+  ◀         <        p      `-`   mois précédent
+  ▶         >        n      `+`   mois suivant
+ ▶▶        >>       nn       ++   année suivante
+       event       ee       ..   montre les évenements du mois courant
+      switch       ss       ..   change le type d'evénement affiché
+        help       hh       ..   montre l'aide
+       theme       tt       ..   montre le selecteur de thème
+  ☰      menu       mm       ..   montre le menu
+====  =======  =======  ========  ========================================
 
-Dans un script
-^^^^^^^^^^^^^^
+Options
+^^^^^^^
 
-Vous pouvez utiliser le naivecalendar dans un script pour demander interactivement une date. Plus d'informations sur l'utilisation en ligne de commande:
+Des options sont disponibles en ligne de commande et peuvent être utiles lors de l'integration dans un script ou pour écraser temporairement certains paramètres. 
+Les sous-commandes **update** et **add-event** peuvent vous permettre d'éditeren une fois un paramètre sur tous les thèmes de l'utilisateur.
 
-.. code:: bash
+.. code::
 
-   ./naivecalendar.sh -h
+    usage: naivecalendar [-h] [-v] [-p | -x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
+
+    A simple popup calendar
+
+    subcommands:
+        update      Update a calendar parameter for all user themes at once
+        add-event   Add, modify, delete event in all user themes config at once
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -v, --version         show program's version number and exit
+      -p, --print           print date to stdout instead of opening a event
+      -x, --clipboard       copy date to clipboard
+      -f FORMAT, --format FORMAT
+                            option '-p' or '-x' output format (datetime.strftime format, defaut='%Y-%m-%d')
+      -e EDITOR, --editor EDITOR
+                            editor command to open events
+      -l LOCALE, --locale LOCALE
+                            force system locale, for example '-l es_ES.utf8'
+      -c, --read-cache      force calendar to read old date from cache
+      -t THEME, --theme THEME
+                            set calendar theme, default=classic_dark (theme file name without extention)
+      -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
+
+-----------------------------------------------------------------------------
+
+.. _customize:
 
 Personnalisation
 ^^^^^^^^^^^^^^^^
@@ -97,7 +172,6 @@ Editer les paramètres dans les fichiers suivant:
 
 - contenu du calendrier : ./*themes*/**<theme>.cfg**
 - apparence du calendrier : ./*themes*/**<theme>.rasi** 
-
 
 .. warning::
 
@@ -108,24 +182,51 @@ Themes
 
 Des `themes sont disponibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/naivecalendar/themes/themes.rst>`_, vous pouvez les appliquer en tapant *theme* dans l'init de rofi ou les charger temporairement en précisnat l'arugment *--theme*. Vous pouvez créer vos propres fichiers de thème (`rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_), placez les dans le dossier *./themes/* 
 
+-----------------------------------------------------------------------------
+
 Files
 -----
 
-Voici un brêve description des fichiers demandés/générés par le calendrier
+Voici une brêve description des fichiers demandés/générés par le calendrier
 
-=================================   ==============================================
-Fonction                            Fichier
-=================================   ==============================================
-commande rofi                       ./naivecalendar.sh
-script appellé par rofi             ./naivecalendar.py
-fichiers de thème rofi              ./themes/\*.rasi
-configuration du contenu            ./themes/\*.cfg 
-chemin d'enregistrement des notes   ~/.naivecalendar_notes/
-dossier des fichiers de cache       ~/.cache/naivecalendar/
-sauvegarde la date                  ~/.cache/naivecalendar/date_cache.ini
-sauve la date avec l'option -p      ~/.cache/naivecalendar/pretty_print_cache.txt
-sauvegarde le theme choisi          ~/.cache/naivecalendar/theme_cache.txt
-=================================   ==============================================
+================================   =================================================
+Fonction                           Fichier
+================================   =================================================
+..
+------------------------------------------------------------------------------------
+commande rofi                      /usr/share/naivecalendar/**naivecalendar.sh**
+script appellé par rofi            /usr/share/naivecalendar/**naivecalendar.py**
+fichiers de thèmes rofi            /usr/share/naivecalendar/**themes/\*.rasi**
+configuration du contenu           /usr/share/naivecalendar/**themes/\*.cfg**
+--------------------------------   -------------------------------------------------
+..
+------------------------------------------------------------------------------------
+thèmes de l'utilisateur            ~/.config/naivecalendar/**themes/\*.rasi**
+conf du contenu de l'utilisateur   ~/.config/naivecalendar/**themes/\*.cfg**
+--------------------------------   -------------------------------------------------
+..
+------------------------------------------------------------------------------------
+dossier des evenements             ~/.naivecalendar_notes/**<user date format>.txt**
+fichier cache : date               ~/.cache/naivecalendar/**date_cache.ini**
+date au format -f|-format          ~/.cache/naivecalendar/**pretty_print_cache.txt**
+sauvegarde le thème                ~/.cache/naivecalendar/**theme_cache.txt**
+sauvegarder le type d'évenement    ~/.cache/naivecalendar/**event_cache.txt**
+================================   =================================================
+
+---------------------------------------------------------------------------------
+
+Construction du paquet debian
+-----------------------------
+
+.. code::
+
+    sudo apt install devscripts
+    cd naivecalendar-x.y.z/
+    debuild -us -uc
+
+.. note::
+
+   Personnalisez vos thèmes avant construction, l'intrégralité du dossier "themes" sera inclut dans votre paquet.
 
 Documentation
 -------------
@@ -139,18 +240,17 @@ Construisez la documentation
    make html
 
 
+.. _start-link:
+
 .. _LeRobert: https://dictionnaire.lerobert.com/definition/naif
 .. _rofi: https://github.com/davatorium/rofi
 .. _python3: https://www.python.org/
 
-.. |python_stable_badge| image:: https://img.shields.io/badge/Download-py-yellow?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD8AAABACAYAAACtK6/LAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAIaAAACGgBnhpl4wAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAk+SURBVGiBzVtrjBXlGX7e2bNclrIN1xbBIBXUSJAIlBhawXqjgNZ0KVSwRW0Il7aQQCiyNsZNDFXrgg2mF0ivhLaE1d6kgqCwoOwWCmIUiy0VFhcopFCg4C6wZ96nP2bOOXPmzMyZc+Zb7JucfLMz38w8z3t7vjlnVtBJ9uXvvdanrZK3ieJmUodA+RkAg0l2I/lJkD1IdiF4jqSCPAfwvNo8CuFR2Gyxqe92v9L+ly31sz7qDIxi8mL312/va0Nng3iQ5EiQoPvJ24Z/P6LmtZO6XtNc3vTcgx+YxGuM/P3122crUO9GNZAM4SMXtI3QY5egfHzXczOeN4W5wsRFpqxonE9gNcluYYRQjDhyzoFnv2deCsKJ146bWtXa9NJrJnAnjvykVTv7WR3aAtUq5oC2g9hLaBXJW0FagZkQWALRZeI4U2fsrp+1Pil2K+kFpMOu8RIX8IhtceTm2nvGv1o7cYxl8y6SbUGEihIPmAMSUNQPXbCq68dPXnlrHlDo4q1L7z2UOb75iUmNoK7IS+0AQnnbnhIIcc7AXqme9ybFnpi8kgO8QCs6Un/1z6GF3RGNLJfaBXXvbHp2OdcDALXGJcWePPJg9xwJwLbsof45amOYp+fBu+3yCSbqzwRvxkA/nRR7YvJQSI4QYQufmVT3SnXm8B11m64TclknKEAqKfTEF1D4gCpvS6dw4O6nNm4k0R1M15CsDiIUVPd5JRBZJpoUenLyLn0/uGtBzIeHTDxC8RXAhCUmTxYQLypVgaldjgIktOQ1X55UIW4mBNW9oaw3kPbEDwA0iCjUBSQg1NEjQJ1lpEIAEgKBLQrYAAQ1ICaWpgDOAf1/qPlXv/vFP5d77ucfW389yYllKYABiyQ/eeX2MVRMgNo3CNFLAUDVU28KVTcNoYA6Eae7DQBKBUA4gzrtUQFSodRbQISWSZQCuDcFTy55AIKHCsBTO0DrJES340z1FhledyUW+SnPbZsCkeW0OVLcGtOY9VxMqvIVAGUrQI4kbgI4rZCFAEKAXIze5/7B4wsflYGrmrwz8hretA0bKu6r3/FjiGyE58uIzpCqRAoQywgn3RSg3gDRrWz99h2h5NuP9f8FofOumlSVpQAlEM//VEHs3/DYt/oUkJ9Sv2MOlV83CtR3rcJ52dLNNPH8rh+gAMV5ewijYBwAXK7NIz/th9s/IeBTiATKkoF653nn5OZFl0nGedkT4kTbT9j/Uc7joYeqs+Tb2uVRgv2jgaIkoMWlKn7GFE33LDm7cETB2ANdK2uy5ElONQk0jlSFK0DhvBBrcwbtEZDewVHPRt++DwCsaSubugv4OVNATStARJK3Ohv2NaEkw5wCnQAAqYu8PFLIlFGpijuvWGONMEvxuhv5se4KCoEj6ZLOG/vy8MzBKSvNUSoGgHozJua8UMcVb+0H9g84uZut3xwK6ohI8qFOwWiL0FHJgGZaYXY6PNNz27l0zd8f0lgjTKFYjLo6hYXakKaGwOaXN6ZHpQgMSwYU4Y7zpH+Ug/2NNcIolKX7V8/dytZ5Y0F9uKyogwB0RIrUPhmW5QA1rQChJjhF5cK3fzJvA1vmDIDwJZAVAfWcP4Y7oX9KiL5qSKp882yQp0heYsa5njkZB6lTf2ERvwCiheCmbqmO3+7+0cL/snXuMAheBnVQrn4jyIc7pU9KwV6mpArgeRCrRfnioA+7vNXQMN2OyuFSjEce6YbH5taCrAXZM15Ti3RC3xTISyC7JJYq4JeXbXxn34qZpwGAR5f1wguLBkGtLqXR7PAwtnsDOgjE7YA+ALJ3TqsTRN0Zq1JKngVZnelmZUgVCS5penbmSrLOwtLFXwNlAdDxWcCSeN8S0gMK4aDLkrRQ8mdTIP8DcLBTp8hkOTw8ne0cTP/+p5uenbmSR5f1wqkLLwJyZ2mRLilVTTrldEogp5QZ4sFSFZEJe5uq/v4EWxd1R2V6C4AxpfE2EsEynaJnLFV9u5hUwe+QbF/AMtTVKSqtpwGWQDwLIH+M+oSv08s952AKwP4QqQqLNtzkb2n+/oxtPL1nINKYH5932Q0qZqbEPAf2Diut6bc8UhXe2X0KAHITIES6YiqAGB09c2M7eoxalsZaxsaMvqU7rcYnv/QByLOlPqyQesTlNDo+8QTpbfac9+WmXScsiJDE1qDUzqW/i9+rAGr92yX2qWjenUywnJqnrgMy3+QIGwokLU/qChVAnV/lAQl7o+sqNbVSHQookFqbJX/hxKk/EjwGhNR6kAJo1MqVHy/BgnNsZMMqsklG7GzNkt+3Zm4HlI8befqKBGuqqfnGYk3Ua7Yuz2xmF587ltesI7ne39kRpgCB0S4GthOiHnmuHyfXyC1NzQXkAWG6nd+g8PdF1/ak49WgaF91gmHnFARoGy5dXuTdkffY0fz89PY3uxz8ihAPK/i3UAUAc9y1RLBXp6l57QwET6Jr9WQZs6/Ne6DwV9q6On0TWAtg7dgla4dYkMFK9nOzA1CFALAscd+3sz3ZoPHGTGSo6wD+KevJbBP1jALADtivvr9deNk3alXbYPEE3hv0jkxvCOzOkb/P76mfdQTAkag5SPIgIvquDNnQEH39zjMDr6XYpUXdG31yNv9Zc48TRrfBasaB7tzMuy7Zzp1dgLwuw3c+kwS6AfIBUY8f/WGADot8EEHI9aEnk0JPTl7VfQMiwgmd8Wxu4N8kjLyEWP7jZznOiVhglWjJ38MLlZvEkvYrUG8HOR6014ZodyIz0/C8DSpp9B0V+LXc3PiI5y5v8MC4SkBmJMbrMQOR50eJFyX+c2z+rOA2gp/69lxMitxEtz9srKll9d9OF9xHkM7LerLI+qO4GXjfXv9gvOY14KVC/z7qy0mhG/m/Oh6evhnkRDMd37kkBCsgFWsgKkjrHIgszuIVbJDhu76aFLcZ8i01A5DGGwCvL1/K4nZyOYjK1Hi5sfF0UtwGGh4g1/3uX7CvTAC12dDjZ8iNuAOSutMEccAQeQCQGzcex7Hz46FcAOrx2DUfzz4EOAfvDbxLhjcmXtZmMZu6kNfIaRV4//xkgLMBvRtkVRlpfhGCV0D9OYY3bxVBbE/FtU4h7zXuHV2Jqp6jQY6D8+bUQAj6gbgGQE+InAdxAcJWEIcg8g7UbsbprnvkC42FkmfQ/gcCnNd5owBw1wAAAABJRU5ErkJggg==&style=plastic
-    :target: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar/naivecalendar.py?inline=false
-
-.. |python_dev_badge| image:: https://img.shields.io/badge/Download-sh-grey?logo=data:image/png;base64,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&style=plastic
-    :target: https://framagit.org/Daguhh/naivecalendar/-/raw/master/naivecalendar/naivecalendar.sh?inline=false
-
-.. |git_badge| image:: https://img.shields.io/badge/Source-git-red?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABpFBMVEUAAADwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDP////R9jl6AAAAinRSTlMAAANVzvz5wEICYOrfTGHt4k1d7vBn7wUUAWLCOdM49fFAPzdctQ2B+DYLqXlL91Qk41PkgjDo1QRu8qwd/souDPtRfK7SM2ONdpDQMhmI9lbpB5PeQc2zCSm8pKe/ssPGNUXmThghwVm7SAoWT8Va89HU+ozhdEblt2wg4F8rnmX9Stu5h6jn3MffBpBlAAAAAWJLR0SL8m9H4AAAAAd0SU1FB+QLGg4tBCSsxiIAAAJwSURBVFjDpdTpXxJBGMDxfQjQVVHMEqkszeToULqMNCq7bwLJisouKkoty+47O6znr24ZZnFgd2efnZ2XOL/vx515djXNeUFgXTAUbmsH0JQW6B2daKyuiJoAencPshXtVRHWejVB7FWE5t67ALC+D9GHANC9Af0JgY39ygLEBuLgQwB90+YtoC6w8x/cqizw+1MWGvfPhb5tQyEvgjA/TIgNbx/ZMRomC03zVxPYSCSSKaLQMr+D6fpW2LmL9hSt84+7+U7YM0YRLH1onO+DzF7CXVh6DO1rAPvdb9PaIx4wH+HghOs82PV4KMOB7OFJF8G2R5w6wu/BTXDoMXf0GED8uPFuygWnHnH6hDGNJ0dALjj3DAicOn1GKkj6OjCFQZkg602gLsTOnjt/4WKoVdA7nPsGgMFLUF+Xr+RFIQLa1QISAPY/sAcuzogbSte0WSQBeP0Gn6qbUXFHWZsmArd0DhRHxR15LUUEZswXQ78t7khpd4jAXJEDibvijntae4kGTNznX7gHQ8KGhxUNIlESgHOPDAHg8RPh753VuPFTb5QE5J4+G5hfWHwu9i/itVGUCCKAuPSy7VXe0kuFZqBlmb1MkAFrvURYXnQExN5RmHy9YLw/1TeuvYMQfptlh/zuvWtvL3xI8ENOuve2wkdz/NP97r2NsFwxb+nTZ0JvFXJfTOBrgdJbhW9Zfgbff5B6i9Czwr66kJkl9hbh5/i88TlPl8m9RVj69Tv5Z9VDL383Kb1coPQygdY7C9TeSaD39oKX3k7w1luFgse+Jqx0+enZh6jkpxcFtZ4Jf2v9alWtrwnD5bHwv4ou6/8Djb7EGx2gqrEAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMTEtMjZUMTM6NDU6MDQrMDE6MDADclLHAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTExLTI2VDEzOjQ1OjA0KzAxOjAwci/qewAAAABJRU5ErkJggg==&style=plastic
+.. |git_badge| image:: https://img.shields.io/badge/Source-git-red?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABpFBMVEUAAADwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDPwUDP////R9jl6AAAAinRSTlMAAANVzvz5wEICYOrfTGHt4k1d7vBn7wUUAWLCOdM49fFAPzdctQ2B+DYLqXlL91Qk41PkgjDo1QRu8qwd/souDPtRfK7SM2ONdpDQMhmI9lbpB5PeQc2zCSm8pKe/ssPGNUXmThghwVm7SAoWT8Va89HU+ozhdEblt2wg4F8rnmX9Stu5h6jn3MffBpBlAAAAAWJLR0SL8m9H4AAAAAd0SU1FB+QLGg4tBCSsxiIAAAJwSURBVFjDpdTpXxJBGMDxfQjQVVHMEqkszeToULqMNCq7bwLJisouKkoty+47O6znr24ZZnFgd2efnZ2XOL/vx515djXNeUFgXTAUbmsH0JQW6B2daKyuiJoAencPshXtVRHWejVB7FWE5t67ALC+D9GHANC9Af0JgY39ygLEBuLgQwB90+YtoC6w8x/cqizw+1MWGvfPhb5tQyEvgjA/TIgNbx/ZMRomC03zVxPYSCSSKaLQMr+D6fpW2LmL9hSt84+7+U7YM0YRLH1onO+DzF7CXVh6DO1rAPvdb9PaIx4wH+HghOs82PV4KMOB7OFJF8G2R5w6wu/BTXDoMXf0GED8uPFuygWnHnH6hDGNJ0dALjj3DAicOn1GKkj6OjCFQZkg602gLsTOnjt/4WKoVdA7nPsGgMFLUF+Xr+RFIQLa1QISAPY/sAcuzogbSte0WSQBeP0Gn6qbUXFHWZsmArd0DhRHxR15LUUEZswXQ78t7khpd4jAXJEDibvijntae4kGTNznX7gHQ8KGhxUNIlESgHOPDAHg8RPh753VuPFTb5QE5J4+G5hfWHwu9i/itVGUCCKAuPSy7VXe0kuFZqBlmb1MkAFrvURYXnQExN5RmHy9YLw/1TeuvYMQfptlh/zuvWtvL3xI8ENOuve2wkdz/NP97r2NsFwxb+nTZ0JvFXJfTOBrgdJbhW9Zfgbff5B6i9Czwr66kJkl9hbh5/i88TlPl8m9RVj69Tv5Z9VDL383Kb1coPQygdY7C9TeSaD39oKX3k7w1luFgse+Jqx0+enZh6jkpxcFtZ4Jf2v9alWtrwnD5bHwv4ou6/8Djb7EGx2gqrEAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMTEtMjZUMTM6NDU6MDQrMDE6MDADclLHAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTExLTI2VDEzOjQ1OjA0KzAxOjAwci/qewAAAABJRU5ErkJggg==&style=flat-square
     :target: https://framagit.org/Daguhh/naivecalendar
+
+.. |readme_fr| image:: https://img.shields.io/badge/Readme-fr-blue?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAgBAMAAACm+uYvAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAG1BMVEUAHpYAHJUfOqPf4/L////85ObwP0/tIjTuJDb4vwGgAAAAAWJLR0QEj2jZUQAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB+QMCxQNM0KhjcMAAAAbSURBVCjPY2CAACETFzBwTe+AAIZRiVGJUQkAzmzIQZyPCzQAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMTItMTFUMjA6MTI6NTIrMDA6MDDP69WKAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTEyLTExVDIwOjEyOjUyKzAwOjAwvrZtNgAAAABJRU5ErkJggg==&style=flat-square
+   :target: https://framagit.org/Daguhh/naivecalendar/-/blob/master/README_fr.rst
 
 .. |classic dark| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_dark.png
     :height: 130 px
@@ -163,3 +263,9 @@ Construisez la documentation
 
 .. |classic light compact| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_light_compact.png
     :height: 130 px
+
+.. |doc sphinx| image:: https://framagit.org/Daguhh/naivecalendar/badges/master/pipeline.svg?key_text=Sphinx+doc&key_width=70
+    :target: http://daguhh.frama.io/naivecalendar
+
+.. |deb package| image:: https://img.shields.io/badge/deb\ package-0.6.1-blue?logo=data:image/png;base64,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&style=flat-square
+    :target: https://framagit.org/Daguhh/naivecalendar/uploads/d1fa830bdc2a9c34d9f04499c439646a/naivecalendar_0.6.1_all.deb

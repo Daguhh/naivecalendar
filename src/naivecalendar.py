@@ -28,8 +28,8 @@ def get_arguments():
         description='''A simple popup calendar
 
 subcommands:
-    naivecalendar update [-h] [-s] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
-    naivecalendar add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE]'''
+    update      Update a calendar parameter for all user themes at once
+    add-event   Add, modify, delete event in all user themes config at once'''
     )
 
     parser.add_argument(

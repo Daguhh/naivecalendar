@@ -46,7 +46,7 @@ optional arguments:
                                 parameter to change in all config files
   -v NEW_VALUE, --value  NEW_VALUE
                                 new value to set
-  -f REGEX, --filter REGEX      if set, only edit themes names that match REGEX
+  -f REGEX, --filter REGEX      if set, only edit themes with names that match REGEX
 """
 }
 

@@ -3,7 +3,7 @@
 
 help_msg () {
     echo """
-usage: naivecalendar-add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
+usage: naivecalendar add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
 
 Add a new event entry in all themes files in ~/.config/naivecalendar/themes
 /!\ If one file already get this event, nothing will be set, 

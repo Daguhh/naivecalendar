@@ -23,12 +23,12 @@ Features
 * Cycle through calendar months by months, years by years.
 * Use locale or force any language
 * Create notes linked to days. *Days with notes will appear colored*.
-* Create multiple notes types (i.e. folders) and witch between them
+* Create multiple notes types (i.e. folders) and switch between them
 * Customize themes, content, symbols, shortcuts with text files
 * Change theme on the fly
 * Integrate it with your scripts and make them more interactive: open on a particular date, request a date. 
 
-.. contents:: 
+.. _contents:
 
 ---------------------------------------------------------------------------------
 
@@ -141,8 +141,8 @@ Subcommands **update** and **add-event** could be useful to update all theme con
     A simple popup calendar
 
     subcommands:
-        naivecalendar update [-h] [-s] [-L] [-f FILE] [-p PARAMETER] [-v NEW_VALUE]
-        naivecalendar add-event [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE]
+        update      Update a calendar parameter for all user themes at once
+        add-event   Add, modify, delete event in all user themes config at once
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -161,15 +161,6 @@ Subcommands **update** and **add-event** could be useful to update all theme con
       -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
 
 
-Tools
-^^^^^
-
-naivecalendar come with a command to update all your themes at once, see :
-
-.. code:: bash
-
-    naivecalendar-update-all-themes -h
-    
 ---------------------------------------------------------------------------------
 
 .. _customize:
