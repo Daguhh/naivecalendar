@@ -18,27 +18,46 @@ fi
 # load theme file
 THEME_CACHE_FILE="$HOME/.cache/naivecalendar/theme_cache.txt"
 THEME_USER_PATH="$HOME/.config/naivecalendar/themes"
-if test -f "$THEME_CACHE_FILE"; then
-    THEME="$THEME_USER_PATH/$(cat $THEME_CACHE_FILE).rasi"
-    if ! test -f "$THEME"; then
-        THEME="${BASH_SOURCE%/*}/themes/$(cat $THEME_CACHE_FILE).rasi"
-    fi
-else
-    THEME="${BASH_SOURCE%/*}/themes/classic_dark.rasi"
-fi
-
+THEME_SOURCE_PATH="${BASH_SOURCE%/*}/themes"
 if [[ " ${param[@]} " =~ " -t " ]] || [[ " ${param[@]} " =~ " --theme " ]] ; then
     while [[ $# -gt 0 ]] ; do
         key="$1"
         case $key in
             -t|--theme)
-            THEME="$2"
+            OPT_THEME="$2"
             shift # past argument
             shift # past value
             ;;
         esac
     done
-    THEME="${BASH_SOURCE%/*}/themes/$THEME.rasi"
+    THEME="$THEME_USER_PATH/$OPT_THEME).rasi"
+    if ! test -f "$THEME"; then
+        THEME="$THEME_SOURCE_PATH/$OPT_THEME.rasi"
+    fi
+    if ! test -f "$THEME"; then
+        echo "theme '$OPT_THEME' doesn't exist"
+        exit 0
+    fi
+
+elif test -f "$THEME_CACHE_FILE"; then
+    # look in user path, then in source path
+    THEME="$THEME_USER_PATH/$(cat $THEME_CACHE_FILE).rasi"
+    if ! test -f "$THEME"; then
+        THEME="$THEME_SOURCE_PATH/$(cat $THEME_CACHE_FILE).rasi"
+    fi
+    if ! test -f "$THEME"; then
+        echo "*************************************************************************"
+        echo "* '$(cat $THEME_CACHE_FILE)' theme doesn't exist anymore, "     
+        echo "*    - please remove $THEME_CACHE_FILE    "
+        echo "* or                                                                    *" 
+        echo "*    - force a theme with -t|--theme argument,                          *"
+        echo "*      then switch again to an existing theme to override cache file    *"
+        echo "*************************************************************************"
+        exit 0
+    fi
+    printf "%-25s  %-25s  %-25s  %-25s\n"$PARAM_LIST
+
+
 fi
 
 # launch rofi
