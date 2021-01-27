@@ -32,7 +32,7 @@ SYM_SHOW_MENU"""
 
 help_msg () {
     echo """
-usage: naivecalendar update [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE]
+usage: naivecalendar update [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE] [-f REGEX]
 
 Give a new value to a calendar parameter for all themes in ~/.config/naivecalendar/themes/
 
@@ -46,6 +46,7 @@ optional arguments:
                                 parameter to change in all config files
   -v NEW_VALUE, --value  NEW_VALUE
                                 new value to set
+  -f REGEX, --filter REGEX      if set, only edit themes names that match REGEX
 """
 }
 
@@ -75,6 +76,10 @@ while [ $# -gt 0 ] ; do
         -v|--value)
             VALUE="$2"
             shift # past argument
+            ;;
+        -f|--filter)
+            FILTER="$2"
+            shift
             ;;
         -L|--list-parameters)
             list_param
@@ -117,23 +122,33 @@ else
     printf "to $VALUE \n"
 fi
 
+if [ -z "$FILTER" ]
+  then
+    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -e "cfg")
+else
+    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -e "$FILTER" | grep -e ".*\.cfg")
+fi
 
-echo "================================"
 
 # Replace the parameter value or just print to stdout if simulate
 if [[ " ${option[@]} " =~ " -s " ]] || [[ " ${option[@]} " =~ " --simulate " ]] ; then
-    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
+    for f in $FILES; do
         expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
-        sed  -r "$expr" $f
+        sed  -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
     done
+    printf "Simulation for: \n    "
+    echo $FILES | sed -e 's/\.cfg//g'
     printf "remove '-s|--simulate' to apply changes\n"
 else
     i=0
-    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
+    for f in $FILES; do
         expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
-        sed -i -r "$expr" $f
+        sed -i -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
         i=$(($i+1))
     done
-    printf "$i files updated\nBye!\n"
+    printf "$i files updated :\n    "
+    echo $FILES | sed -e 's/\.cfg//g'
+    printf "Bye!\n"
+    #printf "These themes files have been updated \n"$(echo $FILES | sed -e 's/\.cfg//g' )"\n"
 fi
 
