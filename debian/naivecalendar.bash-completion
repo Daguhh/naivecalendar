@@ -114,6 +114,11 @@ _myscript_tab_complete () {
         if [[ "$prev" == "add-event" ]] ; then
             options=$add_event_options #_get_update_opt
         
+        elif [[ "$prev" == "-v" || $prev == "--value" ]] ; then
+            options=" " #_get_update_opt
+
+        elif [[ "$prev" == "-n" || $prev == "--new" ]] ; then
+            options=" " #_get_update_opt
         # show all but remove already listed options
         else
             options=$add_event_options
