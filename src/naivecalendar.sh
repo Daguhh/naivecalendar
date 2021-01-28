@@ -25,9 +25,9 @@ if [[ " ${param[@]} " =~ " -t " ]] || [[ " ${param[@]} " =~ " --theme " ]] ; the
         case $key in
             -t|--theme)
             OPT_THEME="$2"
+            shift # past argument
             ;;
         esac
-        shift # past argument
         shift # past value
     done
     THEME="$THEME_USER_PATH/$OPT_THEME).rasi"
