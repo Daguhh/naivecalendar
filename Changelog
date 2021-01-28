@@ -1,0 +1,106 @@
+v0.6.2 : Maturity?
+
+    Minor:
+        Improve Completion
+        Update Readmes
+
+    Bugs:
+        infinite loop with --theme option
+
+v0.6.1 : Scripts & Completion
+
+    Major:
+        add completion
+    Minor:
+        impprove scripts
+    Bugs:
+        script now handle special character as space and slash
+
+v0.6.0 : Recursion
+
+    Major:
+        Remove unconsistent mode-switcher
+        Add script to update all theme at once
+        Rewrite menu and shortcut bar construction (prevent unconsitent config)
+    Minor:
+        Add missing optional dependencies
+        Prevent recursive accumulation of rofi calls
+    Bugs:
+        Prevent crash when wrong theme name is given
+
+v0.5.2 : Themes Conflicts
+
+    Major:
+        Now override all theme.rasi files, naivecalendat should appear the same on all configs
+
+v0.5.1 : Help & Readme
+
+    Minor:
+        Better help msg
+        Update Readme
+
+v0.5.0 : Better header and themes
+
+    Major :
+        More configurable header (break old config)
+    Minor :
+        New themes
+
+V0.4.1 : Alignment
+
+    Minor:
+        Align all symbols/character to right
+
+v0.4.0 : Menu & Shortcuts
+
+    Major:
+        Add a new bar that can be used for shortcuts and menu
+        Reformat cfg files : breaking changes
+    Minor:
+        Update and add themes variant
+        Document config files
+    Bugs:
+        augment sleep time before relaunch rofi to prevent "lose focus click"
+        prevent crash when conflict between old cache file and new config
+
+v0.3.5 : Multiple Events
+
+    Major:
+        Add multiple events folder (replace notes)
+        Add a menu button
+        Better symbols support for event files names
+    Minor:
+        Update doc / man / readme
+    Bugs:
+        support name with point for notes (now events)
+
+v0.3.4 : Hello Copy-to-clipboard
+
+    Major:
+        add copy-to-clipboard (-x|--clipboard) option
+        add version message (-v|--version)
+    Minor:
+        docstring, manual and message update
+        more explicit global var assignement
+
+v0.3.3 : Byebye tkinter
+
+    Major:
+        remove tkinter dependancies (rofi popup only)
+    Minor:
+        document undocumented functions
+
+v0.3.2 : The unamed version
+
+    Major :
+        add "open at date" option
+    Minor :
+        correct numpy docstrings
+    Bugs :
+        missing dep in deb
+        non-recursive config folder creation⎋
+
+v0.3.1 : Debpackage
+
+    Major:
+        Create debian package
