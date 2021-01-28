@@ -32,7 +32,7 @@ SYM_SHOW_MENU"""
 
 help_msg () {
     echo """
-usage: naivecalendar update [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE] [-f REGEX]
+usage: naivecalendar update [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE] [-f REGEX] [-e EDITOR]
 
 Give a new value to a calendar parameter for all themes in ~/.config/naivecalendar/themes/
 
