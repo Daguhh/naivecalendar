@@ -32,8 +32,8 @@ submodules_options="update add-event"
 
 naivecalendar_options="--help --version --print --clipboard --format --editor --locale --read-cache --theme --date"
 
-update_options="--help --simulate --list-parameters --parameter --value --filter --all-parameters"
-update_param_exclude="--help --all-parameters --list-parameters"
+update_options="--help --simulate --list-parameters --parameter --value --filter --all-parameters --editor"
+update_param_exclude="--help --all-parameters --list-parameters --editor"
 update_all_exclude="--list-parameters --parameter --value"
 
 add_event_options="--help --new --value --override --delete"
@@ -95,6 +95,7 @@ _myscript_tab_complete () {
         prevs=$(echo $prevs | sed -e 's/\bv\b/-value/')
         prevs=$(echo $prevs | sed -e 's/\bf\b/-filter/')
         prevs=$(echo $prevs | sed -e 's/\ba\b/-all-parameters/')
+        prevs=$(echo $prevs | sed -e 's/\be\b/-editor/')
 
         # show all
         if [[ $prev == "update" ]] ; then
@@ -128,7 +129,6 @@ _myscript_tab_complete () {
             for element in ${prevs%%*(-)}; do
                 # remove previous used element
                 options=$(echo $options | sed -e 's:'$element'\b *::')
-                echo "====== $prevs ======="
 
                 # remove incompatibles paramaters
                 if [[ "$element" == "--parameter" || "$element" == "--value" ]]; then

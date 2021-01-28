@@ -43,6 +43,7 @@ optional arguments:
   -s, --simulate                don't change files and print to stdout
   -L, --list-parameters         show all parameters names
   -a, --all-parameters          open an editor to giva a value to all parameters
+  -e, --editor                  force editor with -a flag
   -p PARAMETER, --parameter PARAMETER
                                 parameter to change in all config files
   -v NEW_VALUE, --value  NEW_VALUE
@@ -87,6 +88,10 @@ while [ $# -gt 0 ] ; do
             FILTER="$2"
             shift
             ;;
+        -e|--editor)
+            EDITOR="$2"
+            shift
+            ;;
         -a|--all-parameters)
             IS_ALL_PARAM="true"
             ;;
@@ -98,6 +103,10 @@ while [ $# -gt 0 ] ; do
     esac
     shift # past value
 done
+
+if [ -z "$EDITOR" ]; then
+    EDITOR="xdg-open"
+fi
 
 if [ -z "$FILTER" ]; then
     FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -e "cfg")
@@ -114,7 +123,7 @@ if [ -n "$IS_ALL_PARAM" ]; then
     printf "# These themes going to be modified: \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "#%30s  %30s  %30s  %30s\n" $FILES >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "%s \n $PARAM_LIST" | sed -r 's/^([A-Z_]+)/\1 = /g' >> "$HOME/.cache/naivecalendar/updateall.cfg"
-    kate "$HOME/.cache/naivecalendar/updateall.cfg"
+    "$EDITOR" "$HOME/.cache/naivecalendar/updateall.cfg"
 
     sleep 1
 
@@ -128,8 +137,6 @@ if [ -n "$IS_ALL_PARAM" ]; then
         for line in $datas; do 
             param=$(echo "$line" | sed 's/=.*//g')
             value=$(echo "$line" | sed 's/.*=//g') 
-            echo "====================================================="
-            echo $line
             if [[ "$value" =~ ^\s*_\s*$ ]]; then
                 value=" "
             fi
