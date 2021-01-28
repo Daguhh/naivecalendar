@@ -42,6 +42,7 @@ optional arguments:
   -h, --help                    show this help message and exit
   -s, --simulate                don't change files and print to stdout
   -L, --list-parameters         show all parameters names
+  -a, --all-parameters          open an editor to giva a value to all parameters
   -p PARAMETER, --parameter PARAMETER
                                 parameter to change in all config files
   -v NEW_VALUE, --value  NEW_VALUE
@@ -67,11 +68,16 @@ while [ $# -gt 0 ] ; do
             help_msg 
             exit 0
             ;;
+        -L|--list-parameters)
+            list_param
+            exit 0
+            ;;
         -p|--parameter)
             PARAM="$2"
             shift # past argument
             ;;
         -s|--simulate)
+            IS_SIMULATE="true"
             ;;
         -v|--value)
             VALUE="$2"
@@ -81,9 +87,8 @@ while [ $# -gt 0 ] ; do
             FILTER="$2"
             shift
             ;;
-        -L|--list-parameters)
-            list_param
-            exit 0
+        -a|--all-parameters)
+            IS_ALL_PARAM="true"
             ;;
         *)
           printf "**************************\n"
@@ -94,61 +99,110 @@ while [ $# -gt 0 ] ; do
     shift # past value
 done
 
-# Test parameters validity
-if [ -z "$PARAM" ]
-  then
-    printf "***********************************************\n"
-    echo "Please give a parameter to set, see -L option"
-    printf "***********************************************\n"
-    exit 0
-fi
-
-if echo $PARAM_LIST | grep -w $PARAM > /dev/null; then
-    printf "setting parameter $PARAM "
-else
-    printf "*********************************************************\n"
-    printf "$PARAM in not in the parameter list, see -L option \n"
-    printf "*********************************************************\n"
-    exit 0
-fi
-
-if [ -z "$VALUE" ]
-  then
-    printf "\n***********************************************\n"
-    printf "Please give a value for $PARAM \n"
-    printf "***********************************************\n"
-    exit 0
-else
-    printf "to $VALUE \n"
-fi
-
-if [ -z "$FILTER" ]
-  then
+if [ -z "$FILTER" ]; then
     FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -e "cfg")
 else
     FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -e "$FILTER" | grep -e ".*\.cfg")
 fi
 
+if [ -n "$IS_ALL_PARAM" ]; then
+    touch "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# Please set only values you want to override\n" >"$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# If you want to empry a parameter, assign it to  '_'\n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# Changes will be made as soon as you save and exit this editor\n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# These themes going to be modified: \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "#%30s  %30s  %30s  %30s\n" $FILES >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "%s \n $PARAM_LIST" | sed -r 's/^([A-Z_]+)/\1 = /g' >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    kate "$HOME/.cache/naivecalendar/updateall.cfg"
 
-# Replace the parameter value or just print to stdout if simulate
-if [[ " ${option[@]} " =~ " -s " ]] || [[ " ${option[@]} " =~ " --simulate " ]] ; then
+    sleep 1
+
+    datas=$(cat "$HOME/.cache/naivecalendar/updateall.cfg" | sed -e '/=/!d' | sed -e '/= *$/d' | sed -e 's/ *= */=/g')
     for f in $FILES; do
-        expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
-        sed  -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
+        i=0 
+        tmp_file="$HOME/.cache/naivecalendar/temp_file"
+        cat "$HOME/.config/naivecalendar/themes/$f" > $tmp_file
+        OLD_IFS=$IFS
+        IFS='\n'
+        for line in $datas; do 
+            param=$(echo "$line" | sed 's/=.*//g')
+            value=$(echo "$line" | sed 's/.*=//g') 
+            echo "====================================================="
+            echo $line
+            if [[ "$value" =~ ^\s*_\s*$ ]]; then
+                value=" "
+            fi
+            expr="s/^("$param" =).*/\1 "$value"/g"
+            if [ -z "$IS_SIMULATE" ]; then
+                sed -i -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
+            else
+                sed -i -r "$expr" "$tmp_file"
+            fi
+        done
+        i=$(($i+1))
+        IFS=$OLD_IFS
+        if [ -n "$IsS_SIMULATE" ]; then
+            echo ""
+            echo "====================================================="
+            echo "====================================================="
+            echo "                $f                                   "
+            echo "====================================================="
+            echo "====================================================="
+            cat $tmp_file
+        fi
     done
-    printf "Simulation for: \n    "
-    echo $FILES | sed -e 's/\.cfg//g'
-    printf "remove '-s|--simulate' to apply changes\n"
+    rm $tmp_file
+    echo "Files updated:"
+    echo $(echo $FILES | sed -e 's/\.cfg//g' )
+
 else
+    # Test parameters validity
+    if [ -z "$PARAM" ]
+      then
+        printf "***********************************************\n"
+        echo "Please give a parameter to set, see -L option"
+        printf "***********************************************\n"
+        exit 0
+    fi
+
+    if echo $PARAM_LIST | grep -w $PARAM > /dev/null; then
+        printf "setting parameter $PARAM "
+    else
+        printf "*********************************************************\n"
+        printf "$PARAM is not in the parameter list, see -L option \n"
+        printf "*********************************************************\n"
+        exit 0
+    fi
+
+    if [ -z "$VALUE" ]
+      then
+        printf "\n***********************************************\n"
+        printf "Please give a value for $PARAM \n"
+        printf "***********************************************\n"
+        exit 0
+    else
+        printf "to $VALUE \n"
+    fi
+
     i=0
     for f in $FILES; do
-        expr="s/("$PARAM" =).*/\1 "$VALUE"/g"
-        sed -i -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
+        expr="s/^("$PARAM" =).*/\1 "$VALUE"/g"
+        if [ -n "$IS_SIMULATE" ]; then
+            sed -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
+        else
+            sed -i -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
+        fi
         i=$(($i+1))
     done
-    printf "$i files updated :\n    "
+    echo "$i files Updated:"
     echo $FILES | sed -e 's/\.cfg//g'
-    printf "Bye!\n"
-    #printf "These themes files have been updated \n"$(echo $FILES | sed -e 's/\.cfg//g' )"\n"
-fi
 
+fi 
+
+if [ -n "$IS_SIMULATE" ]; then
+    printf "***************************************************\n"
+    printf "* /!\ remove '-s|--simulate' to apply changes /!\ *\n"
+    printf "***************************************************\n"
+fi
+printf "Bye!\n"

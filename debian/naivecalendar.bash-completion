@@ -32,9 +32,13 @@ submodules_options="update add-event"
 
 naivecalendar_options="--help --version --print --clipboard --format --editor --locale --read-cache --theme --date"
 
-update_options="--help --simulate --list-parameters --parameter --value --filter"
+update_options="--help --simulate --list-parameters --parameter --value --filter --all-parameters"
+update_param_exclude="--help --all-parameters --list-parameters"
+update_all_exclude="--list-parameters --parameter --value"
 
 add_event_options="--help --new --value --override --delete"
+add_event_delete_exclude="--new --value --override"
+add_event_other_exclude="--delete"
 
 
 theme_list="$(ls /usr/share/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
@@ -74,7 +78,7 @@ _myscript_tab_complete () {
 
             options=$naivecalendar_options
             for element in ${prevs%%*(-)}; do
-                options=$(echo $options | sed -e 's/'$element'\b *//')
+                options=$(echo $options | sed -e 's:'$element'\b *::')
             done
 
         else
@@ -83,6 +87,14 @@ _myscript_tab_complete () {
 
     # update subcommands
     elif [[ "$is_update" == "true" ]] ; then
+
+        prevs=$(echo $prevs | sed -e 's/\bh\b/-help/')
+        prevs=$(echo $prevs | sed -e 's/\bs\b/-simulate/')
+        prevs=$(echo $prevs | sed -e 's/\bL\b/-list-parameters/')
+        prevs=$(echo $prevs | sed -e 's/\bp\b/-parameter/')
+        prevs=$(echo $prevs | sed -e 's/\bv\b/-value/')
+        prevs=$(echo $prevs | sed -e 's/\bf\b/-filter/')
+        prevs=$(echo $prevs | sed -e 's/\ba\b/-all-parameters/')
 
         # show all
         if [[ $prev == "update" ]] ; then
@@ -95,14 +107,42 @@ _myscript_tab_complete () {
         elif [[ "$prev" == "-f" || $prev == "--filter" ]] ; then
             options='\"\.\*\"' #_get_update_opt
 
+        elif [[ "$prev" == "-v" || $prev == "--value" ]] ; then
+            options='<value>'
+
+        elif [[ "$prev" == "-L" || $prev == "--list-parameters" ]] ; then
+            options=" " 
+
+        elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
+            options=" " 
+
         # show all but remove already listed elements #if already listed
         else
             options=$update_options
+
+            # if any other remove help and list-parameters
+            options=$(echo $options | sed -e 's:--help\b *::')
+            options=$(echo $options | sed -e 's:--list-parameters\b *::')
+            
+
             for element in ${prevs%%*(-)}; do
-                if [[ "$prev" == "-v" || $prev == "--value" ]] ; then
-                    options=' '
-                else
-                    options=$(echo $options | sed -e 's/'$element'\b *//')
+                # remove previous used element
+                options=$(echo $options | sed -e 's:'$element'\b *::')
+                echo "====== $prevs ======="
+
+                # remove incompatibles paramaters
+                if [[ "$element" == "--parameter" || "$element" == "--value" ]]; then
+                    for exclude in ${update_param_exclude%%*(-)}; do 
+                        options=$(echo $options | sed -e 's:'$exclude'\b *::')
+                    done
+                elif [[ "$element" == "-p" || "$element" == "-v" ]]; then
+                    for exclude in ${update_param_exclude%%*(-)}; do 
+                        options=$(echo $options | sed -e 's:'$exclude'\b *::')
+                    done
+                elif [[ "$element" == "-a" || "$element" == "--all-parameters" ]]; then
+                    for exclude in ${update_all_exclude%%*(-)}; do 
+                        options=$(echo $options | sed -e 's:'$exclude'\b *::')
+                    done
                 fi
             done
         fi
@@ -110,25 +150,66 @@ _myscript_tab_complete () {
     # add-event subcommand
     elif [[ "$is_add_event" == "true" ]] ; then
 
+        prevs=$(echo $prevs | sed -e 's/\bh\b/-help/')
+        prevs=$(echo $prevs | sed -e 's/\bn\b/-new/')
+        prevs=$(echo $prevs | sed -e 's/\bv\b/-value/')
+        prevs=$(echo $prevs | sed -e 's/\bo\b/-override/')
+        prevs=$(echo $prevs | sed -e 's/\bd\b/-delete/')
+
         # show all
         if [[ "$prev" == "add-event" ]] ; then
             options=$add_event_options #_get_update_opt
         
         elif [[ "$prev" == "-v" || $prev == "--value" ]] ; then
-            options=" " #_get_update_opt
+            options="<path/to/event/my-event_%d-%m-%Y>" #_get_update_opt
 
         elif [[ "$prev" == "-n" || $prev == "--new" ]] ; then
-            options=" " #_get_update_opt
+            options="<event_name>" #_get_update_opt
+
+        elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
+            options=" " 
+
+        elif [[ "$prev" == "-d" || $prev == "--delete" ]] ; then
+            options="<event_name>" 
+
         # show all but remove already listed options
         else
             options=$add_event_options
+            options=$(echo $options | sed -e 's:--help\b *::')
             for element in ${prevs%%*(-)}; do
-                options=$(echo $options | sed -e 's/'$element'\b *//')
+                # remove already present arguemnts
+                options=$(echo $options | sed -e 's:'$element'\b *::')
+               
+                # remove incompatibles paramaters
+                if [[ "$element" == "-d" || "$element" == "--delete" ]]; then
+                    for exclude in ${add_event_delete_exclude%%*(-)}; do 
+                        options=$(echo $options | sed -e 's:'$exclude'\b *::')
+                    done
+                elif [[ "$element" == "--new" || "$element" == "--value" || "$element" == "--override" ]]; then
+                    for exclude in ${add_event_other_exclude%%*(-)}; do 
+                        options=$(echo $options | sed -e 's:'$exclude'\b *::')
+                    done
+                elif [[ "$element" == "-n" || "$element" == "-v" || "$element" == "-o" ]]; then
+                    for exclude in ${add_event_other_exclude%%*(-)}; do 
+                        options=$(echo $options | sed -e 's:'$exclude'\b *::')
+                    done
+                fi
             done
         fi
 
     # list naivecalendar main options
     else
+
+        prevs=$(echo $prevs | sed -e 's/\hx\b/-help/')
+        prevs=$(echo $prevs | sed -e 's/\bv\b/-version/')
+        prevs=$(echo $prevs | sed -e 's/\bp\b/-print/')
+        prevs=$(echo $prevs | sed -e 's/\bx\b/-clipboard/')
+        prevs=$(echo $prevs | sed -e 's/\bf\b/-format/')
+        prevs=$(echo $prevs | sed -e 's/\be\b/-editor/')
+        prevs=$(echo $prevs | sed -e 's/\bl\b/-locale/')
+        prevs=$(echo $prevs | sed -e 's/\bc\b/-read-cache/')
+        prevs=$(echo $prevs | sed -e 's/\bt\b/-theme/')
+        prevs=$(echo $prevs | sed -e 's/\bd\b/-date/')
 
         # show examples when option require a value
         if [[ "$prev" == "-t" || $prev == "--theme" ]] ; then
@@ -141,12 +222,34 @@ _myscript_tab_complete () {
             options=$locales_list #_get_update_opt
         elif [[ "$prev" == "-e" || $prev == "--editor" ]] ; then
             options="xdg-open" #_get_update_opt
+        elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
+            options=" " 
+        elif [[ "$prev" == "-v" || $prev == "--version" ]] ; then
+            options=" " 
+
 
         # list all but remove already listed options
         else
             options=$naivecalendar_options
+            options=$(echo $options | sed -e 's:--version\b *::')
+            options=$(echo $options | sed -e 's:--help\b *::')
+
             for element in ${prevs%%*(-)}; do
-                options=$(echo $options | sed -e 's/'$element'\b *//')
+                options=$(echo $options | sed -e 's:'$element'\b *::')
+                if [[ "$element" == "-d" || "$element" == "--date" ]]; then
+                    options=$(echo $options | sed -e 's:--read-cache\b *::')
+                elif [[ "$element" == "-c" || "$element" == "--read-cache" ]]; then
+                    options=$(echo $options | sed -e 's:--date\b *::')
+                elif [[ "$element" == "-p" || "$element" == "--print" ]]; then
+                    options=$(echo $options | sed -e 's:--clipboard\b *::')
+                    options=$(echo $options | sed -e 's:--editor\b *::')
+                elif [[ "$element" == "-x" || "$element" == "--clipboard" ]]; then
+                    options=$(echo $options | sed -e 's:--print\b *::')
+                    options=$(echo $options | sed -e 's:--editor\b *::')
+                elif [[ "$element" == "-e" || "$element" == "--editor" ]]; then
+                    options=$(echo $options | sed -e 's:--print\b *::')
+                    options=$(echo $options | sed -e 's:--clipboard\b *::')
+                fi
             done
         fi
 
