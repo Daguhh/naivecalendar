@@ -109,9 +109,9 @@ if [ -z "$EDITOR" ]; then
 fi
 
 if [ -z "$FILTER" ]; then
-    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -e "cfg")
+    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -r "cfg")
 else
-    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -e "$FILTER" | grep -e ".*\.cfg")
+    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -r "$FILTER" | grep -e ".*\.cfg")
 fi
 
 if [ -n "$IS_ALL_PARAM" ]; then
