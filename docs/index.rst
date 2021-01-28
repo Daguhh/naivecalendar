@@ -1,6 +1,6 @@
 
 .. include:: ../README.rst
-   :end-before: .. contents:: 
+   :end-before: .. _contents:
 
 .. include:: ../README.rst
    :start-after: .. _start-link:
