@@ -128,6 +128,22 @@ Sym     Keys                     Action
   ☰     menu       mm       ..   display menu 
 ====  ======  =======  ========  ========================================
 
+Events
+^^^^^^
+
+Events are simply files (usally text files) created by the calendar when you interact with a day (click/return key)
+Events files names should contain `strftime <https://strftime.org/>`_  directives (%d, %m ...) to appear in the calendar.
+Not giving it a day directive will make it occur every year (usefull for birthday isn't it?)
+
+The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files
+
+Notes support a very light format to be parsed when displaying "events of the month" :
+
+- show section : if you create sections (format : [section]) all lines containing a section will be displayed 
+- show header : if the event/note don't contain section, only first line will be displayed
+
+if you interact with the event file name, it will open the note again, other rows will bring you back to calendar
+
 Options
 ^^^^^^^
 

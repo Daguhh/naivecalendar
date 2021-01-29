@@ -712,8 +712,14 @@ def get_event_head(event_path):
     """
 
     with open(event_path, "r") as f:
-        head = f.read().split("\n")[0]
-    return head
+        note_txt = f.read()
+
+    head = list(re.findall('\[.*\].*', note_txt))
+
+    if head:
+        return '\n' + '\n'.join(head)
+    else:
+        return note_txt.split("\n")[0]
 
 
 def get_row_rofi_inds(row):
@@ -878,7 +884,19 @@ def show_events(date):
     """open rofi popup with events list of selected month"""
 
     events_heads = get_month_events_heads(date)
-    rofi_popup(EVENTS_DEFAULT, events_heads)
+    output = rofi_popup(EVENTS_DEFAULT, events_heads)
+
+    event= EVENTS_PATHS[EVENTS_DEFAULT]
+
+    event_folder = event.parent
+    event_name = output.split(':')[0].strip()
+    event_ext = event.suffix
+
+    event_path = f'{event_folder}/{event_name}{event_ext}'
+
+    if os.path.isfile(event_path):
+        edit_event_file(event_path)
+
 
 @open_n_reload_rofi
 def show_menu(d):
@@ -888,7 +906,7 @@ def show_menu(d):
     time.sleep(ROFI_RELOAD_TEMPO)
     process_event_popup(output, d)
 
-@open_n_reload_rofi
+#@open_n_reload_rofi
 def open_event(day_sym, date, editor):
     """open event for the selected date"""
 
@@ -897,12 +915,19 @@ def open_event(day_sym, date, editor):
     date_format = str(EVENTS_PATHS[EVENTS_DEFAULT])
     event_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
     #event_path = S_PATH}/{event_name}.txt"
+
+    edit_event_file(event_path, editor)
+
+@open_n_reload_rofi
+def edit_event_file(event_path, editor=ARGS.editor):
+
     cmd = f"touch {event_path} & {editor} {event_path}"
     p = subprocess.Popen(
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     sdtout, sdterr = p.communicate()
-0
+
+
 
 @open_n_reload_rofi
 def ask_event_to_display():

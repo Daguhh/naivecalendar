@@ -131,6 +131,22 @@ Sym     Keys                      Action
   ☰      menu       mm       ..   montre le menu
 ====  =======  =======  ========  ========================================
 
+Evenements
+^^^^^^^^^^
+
+Les événements sont de simples fichiers (textes) créés par le calendrier à l'interaction avec un jour (clic/touche entée)
+Les noms de fichiers de ces evenenements doivent contenir des directives au format `strftime <https://strftime.org/>`_ (%d, %m ...).
+Ne pas donner de directive identifiant un jour et un mois permet par exemple de rendre récurrent l'évenement (parfait pour les anniversaires!).
+
+Vous pouvez créer plusieurs types d'événements (qui ne sont que différents dossiers). Définir un nouveau type d'événement nécessite simplement la création d'un nouvelle entrée dans la section [EVENTS] des fichiers de configuration.
+
+Les notes quant à elles supportent un léger format pour être correctement affichées lors de l'action "montrer les événements du mois" :
+
+- montrer section : si vous crééz des sections (format : [section]), toute ligne contenant cette directive sera affichées
+- montrer entête : si la note ne contient pas de [section], la première ligne sera affichée
+
+Dans le menu "montrer les événements du mois", si vous interagissez avec le nom du fichier, l'editeur rouvrira la note, autrement, cliquer sur une autre ligne vous rammenaera au calendrier
+
 Options
 ^^^^^^^
 
