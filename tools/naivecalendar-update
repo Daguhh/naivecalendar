@@ -123,11 +123,12 @@ fi
 
 if [ -n "$IS_ALL_PARAM" ]; then
     touch "$HOME/.cache/naivecalendar/updateall.cfg"
-    printf "# Please set only values you want to override\n" >"$HOME/.cache/naivecalendar/updateall.cfg"
-    printf "# If you want to empry a parameter, assign it to  '_'\n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "####################################################################\n"  >"$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# Only set values will be overrided\n" >>"$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# If you want to empty a parameter, assign it to  '_'\n#\n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "# Changes will be made as soon as you save and exit this editor\n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
-    printf "# \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
-    printf "# These themes going to be modified: \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# Just quit to cancel\n#\n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "# Following themes files will be modified: \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "#%30s  %30s  %30s  %30s\n" $FILES >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "%s \n $PARAM_LIST" | sed -r 's/^([A-Z_]+)/\1 = /g' >> "$HOME/.cache/naivecalendar/updateall.cfg"
     $USER_EDITOR "$HOME/.cache/naivecalendar/updateall.cfg"
@@ -135,23 +136,24 @@ if [ -n "$IS_ALL_PARAM" ]; then
     sleep 1
     printf "Start updating files"
 
-    datas="$(cat "$HOME/.cache/naivecalendar/updateall.cfg" | sed -e 's/ /ooo/g' | grep -P '^[A-Z_]+.*=.*[\w\d]+')"
+    datas="$(cat "$HOME/.cache/naivecalendar/updateall.cfg" | grep -P '^[A-Z_]+.*=.*[\w\d]+' | sed -e 's/ /ooo/g' )"
     for f in $FILES; do
-        i=0 
         tmp_file="$HOME/.cache/naivecalendar/temp_file"
         cat "$HOME/.config/naivecalendar/themes/$f" > $tmp_file
+        UPDATED_PARAMS="" 
         for oline in $datas; do 
             line="$(echo $oline | sed 's/ooo/ /g')"
             param="$(echo "$line" | sed 's/=.*//g')"
             value="$(echo "$line" | sed 's/.*=//g' | sed 's/^ *_.*//g')"
-            expr="s/^("$param" *=).*/\1 "$value"/g"
+            expr="s?^("$param" *=).*?\1 "$value"?g"
+            UPDATED_PARAMS="$UPDATED_PARAMS $param"
+            #echo "$param === $value"
             if [ -z "$IS_SIMULATE" ]; then
                 sed -i -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
             else
                 sed -i -r "$expr" "$tmp_file"
             fi
         done
-        i=$(($i+1))
         if [ -n "$IS_SIMULATE" ]; then
             echo ""
             echo "====================================================="
@@ -165,9 +167,14 @@ if [ -n "$IS_ALL_PARAM" ]; then
         fi
     done
     rm $tmp_file
-    echo
-    echo "Files updated:"
-    echo $(echo $FILES | sed -e 's/\.cfg//g' )
+    if [[ "$UPDATED_PARAMS" == "" ]] ;then
+        printf "\nNo modifications made\n"
+    else
+        printf "\nUpdated parameters:\n"
+        printf '%25s %25s %25s %25s\n' $UPDATED_PARAMS
+        printf "\nIn themes :\n"
+        printf '%25s %25s %25s %25s\n' $(echo $FILES | sed -e 's/\.cfg//g' )
+    fi
 
 else
     # Test parameters validity
