@@ -181,10 +181,14 @@ except FileNotFoundError:
 # Some Functions
 ################
 # Functions to parse list and int from configparser
+def strip_list(lst):
+    """strip all element in a list"""
+    return [x.strip() for x in lst]
+
 def to_list(cfg_list):
     """convert string with comma separated elements into python list"""
     # align all elements to right
-    return [DAY_FORMAT.format(word.strip()) for word in cfg_list.split(',')]
+    return [DAY_FORMAT.format(word) for word in cfg_list.split(',')]
 
 def set_list(default, section, key, row):
     vals = section[key]
@@ -299,6 +303,8 @@ SYM_SHOW_MENU = to_list(config['SHORTCUTS']['SYM_SHOW_MENU'])
 PROMT_DATE_FORMAT = config['HEADER']['PROMT_DATE_FORMAT']
 #: toogle day num and name header display
 IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
+#: make message update at each loop
+IS_LOOP_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_LOOP_TODAY_HEAD_MSG')
 #: text to dislay in head message
 TODAY_HEAD_MSG_TXT = [w for w in config['HEADER']['TODAY_HEAD_MSG_TXT'].split(',')]
 #: size of each element in head message
@@ -361,7 +367,8 @@ def main(args, rofi_output):
     if isinstance(rofi_output, str):
         out = DAY_FORMAT.format(rofi_output) # rofi strip blank character so reformat
     else:
-        out = rofi_output
+        out = 'Nothing'
+
 
     # get date given context
     d = get_date(is_first_loop, args.is_force_read_cache, args.date)
@@ -409,15 +416,16 @@ def get_date(is_first_loop, is_force_read_cache, arg_date):
 def process_event_date(out, d, args):
     """React to rofi output for "date" events"""
 
-    if out in SYM_PREV_YEAR:
+    out = out.strip()
+    if out in strip_list(SYM_PREV_YEAR):
         d.year -= 1
-    elif out in SYM_PREV_MONTH:
+    elif out in strip_list(SYM_PREV_MONTH):
         d.month -= 1
-    elif out in SYM_NEXT_MONTH:
+    elif out in strip_list(SYM_NEXT_MONTH):
         d.month += 1
-    elif out in SYM_NEXT_YEAR:
+    elif out in strip_list(SYM_NEXT_YEAR):
         d.year += 1
-    elif out in SYMS_DAYS_NUM:
+    elif out in strip_list(SYMS_DAYS_NUM):
         if args.print:
             print_selection(out, d.date, args.format)
         elif args.clipboard:
@@ -433,15 +441,16 @@ def process_event_date(out, d, args):
 def process_event_popup(out, d):
     """React when shortcut for popup is enter in rofi prompt"""
 
-    if out in SYM_SHOW_EVENTS:
+    out = out.strip()
+    if out in strip_list(SYM_SHOW_EVENTS):
         show_events(d.date)
-    elif out in SYM_SHOW_HELP:
+    elif out in strip_list(SYM_SHOW_HELP):
         display_help()
-    elif out in SYM_SWITCH_THEME:
+    elif out in strip_list(SYM_SWITCH_THEME):
         ask_theme()
-    elif out in SYM_SWITCH_EVENT:
+    elif out in strip_list(SYM_SWITCH_EVENT):
         ask_event_to_display()
-    elif out in SYM_SHOW_MENU:
+    elif out in strip_list(SYM_SHOW_MENU):
         show_menu(d)
 
 
@@ -466,7 +475,7 @@ def update_rofi(date, is_first_loop):
     events_inds = get_month_events_ind(date)
     print(f"\0urgent\x1f{events_inds}\n")
 
-    if is_first_loop:
+    if is_first_loop or IS_LOOP_TODAY_HEAD_MSG:
         today_ind = cal2rofi_ind(date.day, date.month, date.year)
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
@@ -910,7 +919,7 @@ def show_menu(d):
 def open_event(day_sym, date, editor):
     """open event for the selected date"""
 
-    day_ind = SYMS_DAYS_NUM.index(day_sym) + 1
+    day_ind = strip_list(SYMS_DAYS_NUM).index(day_sym) +1
 
     date_format = str(EVENTS_PATHS[EVENTS_DEFAULT])
     event_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
