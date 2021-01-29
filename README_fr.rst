@@ -111,6 +111,8 @@ Raccourcis
 ^^^^^^^^^^
 
 Les raccourcis sont à entrer dans l'invite de commande rofi.
+La liste ci-dessous est à titre indicative et peut varier selon les themes. 
+L'entièreté des symboles peut être modifée via les fichiers de configurations.
 *Sym* est le symbole affiché à l'écran. *Sym* et *Keys* peuvent être utilisés pour executer une action.
 
 ====  =======  =======  ========  ========================================
@@ -189,29 +191,29 @@ Files
 
 Voici une brêve description des fichiers demandés/générés par le calendrier
 
-================================   =================================================
+================================   ===================================================================
 Fonction                           Fichier
-================================   =================================================
+================================   ===================================================================
 ..
-------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
 commande rofi                      /usr/share/naivecalendar/**naivecalendar.sh**
 script appellé par rofi            /usr/share/naivecalendar/**naivecalendar.py**
 fichiers de thèmes rofi            /usr/share/naivecalendar/**themes/\*.rasi**
 configuration du contenu           /usr/share/naivecalendar/**themes/\*.cfg**
---------------------------------   -------------------------------------------------
+--------------------------------   -------------------------------------------------------------------
 ..
-------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
 thèmes de l'utilisateur            ~/.config/naivecalendar/**themes/\*.rasi**
 conf du contenu de l'utilisateur   ~/.config/naivecalendar/**themes/\*.cfg**
---------------------------------   -------------------------------------------------
+--------------------------------   -------------------------------------------------------------------
 ..
-------------------------------------------------------------------------------------
-dossier des evenements             ~/.naivecalendar_notes/**<user date format>.txt**
+------------------------------------------------------------------------------------------------------
+dossier des evenements (defaut)    ~/.naivecalendar_events/<event type>/**<user date format>.txt**
 fichier cache : date               ~/.cache/naivecalendar/**date_cache.ini**
 date au format -f|-format          ~/.cache/naivecalendar/**pretty_print_cache.txt**
 sauvegarde le thème                ~/.cache/naivecalendar/**theme_cache.txt**
 sauvegarder le type d'évenement    ~/.cache/naivecalendar/**event_cache.txt**
-================================   =================================================
+================================   ===================================================================
 
 ---------------------------------------------------------------------------------
 
