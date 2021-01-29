@@ -1,4 +1,4 @@
-v0.6.2 : Maturity?
+v0.6.2 : Improvements
 
     Minor:
         Improve Completion
@@ -6,6 +6,7 @@ v0.6.2 : Maturity?
 
     Bugs:
         infinite loop with --theme option
+        special symbols issues in regex
 
 v0.6.1 : Scripts & Completion
 
