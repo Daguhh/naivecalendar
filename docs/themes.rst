@@ -62,6 +62,11 @@ Retro blue : Compact
 
 |retro_blue_compact|
 
+Lead pencil
+^^^^^^^^^^^
+
+|lead_pencil|
+
 
 .. |classic dark| image:: ./screenshots/classic_dark.png
     :height: 180px
@@ -97,5 +102,8 @@ Retro blue : Compact
     :height: 180px
 
 .. |retro_blue_compact| image::  ./screenshots/retro_blue_compact.png
+    :height: 180px
+
+.. |lead_pencil| image::  ./screenshots/lead_pencil.png
     :height: 180px
 
