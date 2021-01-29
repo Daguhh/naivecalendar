@@ -32,7 +32,7 @@ SYM_SHOW_MENU"""
 
 help_msg () {
     echo """
-usage: naivecalendar update [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE] [-f REGEX] [-e EDITOR]
+usage: naivecalendar update [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE] [-f REGEX] [-e USER_EDITOR]
 
 Give a new value to a calendar parameter for all themes in ~/.config/naivecalendar/themes/
 
@@ -48,7 +48,7 @@ optional arguments:
                                 parameter to change in all config files
   -v NEW_VALUE, --value  NEW_VALUE
                                 new value to set
-  -f REGEX, --filter REGEX      if set, only edit themes with names that match REGEX
+  -f REGEX, --filter REGEX      if set, only edit themes with names that match the extended-regexp (grep -E)
 """
 }
 
@@ -57,6 +57,13 @@ list_param () {
     printf "%-25s  %-25s  %-25s  %-25s\n"$PARAM_LIST
 }
 
+get_editor () {
+    if ! [[ -f "$HOME/.selected_editor" ]]; then
+        select-editor
+    fi
+source "$HOME/.selected_editor"
+USER_EDITOR=$SELECTED_EDITOR
+}
 
 # Save parameters
 option="$@"
@@ -89,7 +96,7 @@ while [ $# -gt 0 ] ; do
             shift
             ;;
         -e|--editor)
-            EDITOR="$2"
+            USER_EDITOR="$2"
             shift
             ;;
         -a|--all-parameters)
@@ -104,14 +111,14 @@ while [ $# -gt 0 ] ; do
     shift # past value
 done
 
-if [ -z "$EDITOR" ]; then
-    EDITOR="xdg-open"
+if [ -z "$USER_EDITOR" ]; then
+    get_editor
 fi
 
 if [ -z "$FILTER" ]; then
-    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -r "cfg")
+    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -E "cfg")
 else
-    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -r "$FILTER" | grep -e ".*\.cfg")
+    FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -E "$FILTER" | grep -e ".*\.cfg")
 fi
 
 if [ -n "$IS_ALL_PARAM" ]; then
@@ -123,24 +130,21 @@ if [ -n "$IS_ALL_PARAM" ]; then
     printf "# These themes going to be modified: \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "#%30s  %30s  %30s  %30s\n" $FILES >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "%s \n $PARAM_LIST" | sed -r 's/^([A-Z_]+)/\1 = /g' >> "$HOME/.cache/naivecalendar/updateall.cfg"
-    "$EDITOR" "$HOME/.cache/naivecalendar/updateall.cfg"
+    $USER_EDITOR "$HOME/.cache/naivecalendar/updateall.cfg"
 
     sleep 1
+    printf "Start updating files"
 
-    datas=$(cat "$HOME/.cache/naivecalendar/updateall.cfg" | sed -e '/=/!d' | sed -e '/= *$/d' | sed -e 's/ *= */=/g')
+    datas="$(cat "$HOME/.cache/naivecalendar/updateall.cfg" | sed -e 's/ /ooo/g' | grep -P '^[A-Z_]+.*=.*[\w\d]+')"
     for f in $FILES; do
         i=0 
         tmp_file="$HOME/.cache/naivecalendar/temp_file"
         cat "$HOME/.config/naivecalendar/themes/$f" > $tmp_file
-        OLD_IFS=$IFS
-        IFS='\n'
-        for line in $datas; do 
-            param=$(echo "$line" | sed 's/=.*//g')
-            value=$(echo "$line" | sed 's/.*=//g') 
-            if [[ "$value" =~ ^\s*_\s*$ ]]; then
-                value=" "
-            fi
-            expr="s/^("$param" =).*/\1 "$value"/g"
+        for oline in $datas; do 
+            line="$(echo $oline | sed 's/ooo/ /g')"
+            param="$(echo "$line" | sed 's/=.*//g')"
+            value="$(echo "$line" | sed 's/.*=//g' | sed 's/^ *_.*//g')"
+            expr="s/^("$param" *=).*/\1 "$value"/g"
             if [ -z "$IS_SIMULATE" ]; then
                 sed -i -r "$expr" "$HOME/.config/naivecalendar/themes/$f"
             else
@@ -148,8 +152,7 @@ if [ -n "$IS_ALL_PARAM" ]; then
             fi
         done
         i=$(($i+1))
-        IFS=$OLD_IFS
-        if [ -n "$IsS_SIMULATE" ]; then
+        if [ -n "$IS_SIMULATE" ]; then
             echo ""
             echo "====================================================="
             echo "====================================================="
@@ -157,9 +160,12 @@ if [ -n "$IS_ALL_PARAM" ]; then
             echo "====================================================="
             echo "====================================================="
             cat $tmp_file
+        else
+            printf "...."
         fi
     done
     rm $tmp_file
+    echo
     echo "Files updated:"
     echo $(echo $FILES | sed -e 's/\.cfg//g' )
 

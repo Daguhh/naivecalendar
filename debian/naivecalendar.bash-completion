@@ -106,7 +106,7 @@ _myscript_tab_complete () {
             options=$parameter_options #_get_update_opt
 
         elif [[ "$prev" == "-f" || $prev == "--filter" ]] ; then
-            options='\"\.\*\"' #_get_update_opt
+            options=$theme_list #'\"\.\*\"' #_get_update_opt
 
         elif [[ "$prev" == "-v" || $prev == "--value" ]] ; then
             options='<value>'
