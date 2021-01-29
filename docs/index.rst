@@ -9,6 +9,10 @@
    :maxdepth: 2
 
    install  
+   usage
+   customize
+   files
+   build
    module
    themes
    license
