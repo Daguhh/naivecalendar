@@ -929,6 +929,9 @@ def open_event(day_sym, date, editor):
 @open_n_reload_rofi
 def edit_event_file(event_path, editor=ARGS.editor):
 
+    event_folder = pathlib.Path(event_path).parent
+    if not os.path.isdir(event_folder):
+        os.makedirs(event_folder)
     cmd = f"touch {event_path} & {editor} {event_path}"
     p = subprocess.Popen(
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
