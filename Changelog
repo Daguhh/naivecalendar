@@ -1,13 +1,15 @@
-v0.7.0 : 
+v0.7.0 : Again and again and again
 
 	Major:
 		Add config option : update message at each date change
-		Event : tiny format to format in menus
+		Event : tiny format to parse event for menus
 		
 	Minor:
 		New themes : lead pencil and blackboard
-		Update Doc
+		Update readme : add version number
+		Update doc : add example
 		Keep whitespace defined in config for alignement control
+		Can now set "back to calendar" symbol
 
 v0.6.2 : Improvements
 
@@ -24,7 +26,7 @@ v0.6.1 : Scripts & Completion
     Major:
         add completion
     Minor:
-        impprove scripts
+        improve scripts
     Bugs:
         script now handle special character as space and slash
 

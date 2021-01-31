@@ -57,7 +57,8 @@ elif test -f "$THEME_CACHE_FILE"; then
     fi
     printf "%-25s  %-25s  %-25s  %-25s\n"$PARAM_LIST
 
-
+else
+    THEME="$THEME_SOURCE_PATH/classic_dark.rasi"
 fi
 
 # launch rofi

@@ -136,17 +136,44 @@ Events
 ^^^^^^
 
 Events are simply files (usally text files) created by the calendar when you interact with a day (click/return key)
-Events files names should contain `strftime <https://strftime.org/>`_  directives (%d, %m ...) to appear in the calendar.
-Not giving it a day directive will make it occur every year (usefull for birthday isn't it?)
+Events files names should contain `strftime <https://strftime.org/>`_  directives (%d, %m ...) to appear in the calendar. ::
 
-The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files
+    note_%Y-%m-%d.txt
+
+Not giving it a day directive will make it occur every year (usefull for birthday isn't it?)::
+
+    birthday_on_%d-%m.txt
+
+The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files. Paths are relative to home.::
+
+    [EVENTS]
+
+    Notes = .naivecalendar_events/MyNotes/note_%Y-%m-%d.txt
+    Birthday = .naivecalendar_events/Birthdays/birthday_on_%d-%m.txt
 
 Notes support a very light format to be parsed when displaying "events of the month" :
 
-- show section : if you create sections (format : [section]) all lines containing a section will be displayed 
-- show header : if the event/note don't contain section, only first line will be displayed
+- show section : if you create sections (format : [section]) all lines containing a section will be displayed ::
 
-if you interact with the event file name, it will open the note again, other rows will bring you back to calendar
+    # Note Title  <---- only first line is displayed
+    Some text
+    Some text again...
+
+- show header : if the event/note don't contain section, only first line will be displayed::
+
+    [9H30] rdv with truc <---- will be displayed
+    Some text
+    Some text again
+    [14H30] rdv with muche <----- will be displayed
+    Some text again again
+
+if you interact with the event file name, it will open the note again, other rows will bring you back to calendar::
+
+    notes_2021-01-05 : <---- reopen editor
+    [9H30] rdv with truc   <--- do nothing : back to calendar
+    [14H30] rdv with muche
+
+
 
 Options
 ^^^^^^^
@@ -181,8 +208,6 @@ Subcommands **update** and **add-event** could be useful to update all theme con
       -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
 
 
----------------------------------------------------------------------------------
-
 .. _customize:
 
 Customize
@@ -197,9 +222,20 @@ You can edit parameters :
 
    adjusting content that can induce row number variation may require editing calendar shape too
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes*. If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes*. 
 
----------------------------------------------------------------------------------
+You can start from a copy of "officials" themes::
+
+    cp /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
+
+.. note::
+
+    If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
+
+Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once, see (use completion)::
+
+    naivecalendar <subcommand> -h
+
 
 .. _files:
 
@@ -232,7 +268,6 @@ remember theme after quitting      ~/.cache/naivecalendar/**theme_cache.txt**
 remember event type                ~/.cache/naivecalendar/**event_cache.txt**
 ================================   ===========================================================
 
----------------------------------------------------------------------------------
 
 .. _dev:
 

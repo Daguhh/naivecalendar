@@ -139,17 +139,44 @@ Evenements
 ^^^^^^^^^^
 
 Les événements sont de simples fichiers (textes) créés par le calendrier à l'interaction avec un jour (clic/touche entée)
-Les noms de fichiers de ces evenenements doivent contenir des directives au format `strftime <https://strftime.org/>`_ (%d, %m ...).
-Ne pas donner de directive identifiant un jour et un mois permet par exemple de rendre récurrent l'évenement (parfait pour les anniversaires!).
+Les noms de fichiers de ces evenenements doivent contenir des directives au format `strftime <https://strftime.org/>`_ (%d, %m ...). ::
 
-Vous pouvez créer plusieurs types d'événements (qui ne sont que différents dossiers). Définir un nouveau type d'événement nécessite simplement la création d'un nouvelle entrée dans la section [EVENTS] des fichiers de configuration.
+    note_%Y-%m-%d.txt
+
+Ne pas donner de directive identifiant un jour et un mois permet par exemple de rendre récurrent l'évenement (parfait pour les anniversaires!).::
+
+    birthday_on_%d-%m.txt
+
+Vous pouvez créer plusieurs types d'événements (qui ne sont que différents dossiers). Définir un nouveau type d'événement nécessite simplement la création d'un nouvelle entrée dans la section [EVENTS] des fichiers de configuration.::
+
+    [EVENTS]
+
+    Notes = .naivecalendar_events/MyNotes/note_%Y-%m-%d.txt
+    Birthday = .naivecalendar_events/Birthdays/birthday_on_%d-%m.txt
 
 Les notes quant à elles supportent un léger format pour être correctement affichées lors de l'action "montrer les événements du mois" :
 
-- montrer section : si vous crééz des sections (format : [section]), toute ligne contenant cette directive sera affichées
-- montrer entête : si la note ne contient pas de [section], la première ligne sera affichée
+- montrer section : si vous crééz des sections (format : [section]), toute ligne contenant cette directive sera affichées::
 
-Dans le menu "montrer les événements du mois", si vous interagissez avec le nom du fichier, l'editeur rouvrira la note, autrement, cliquer sur une autre ligne vous rammenaera au calendrier
+    # Note Title  <---- only first line is displayed
+    Some text
+    Some text again...
+
+- montrer entête : si la note ne contient pas de [section], la première ligne sera affichée::
+
+    [9H30] rdv with truc <---- will be displayed
+    Some text
+    Some text again
+    [14H30] rdv with muche <----- will be displayed
+    Some text again again
+
+Dans le menu "montrer les événements du mois", si vous interagissez avec le nom du fichier, l'editeur rouvrira la note, autrement, cliquer sur une autre ligne vous rammenaera au calendrier::
+
+    notes_2021-01-05 : <---- reopen editor
+    [9H30] rdv with truc   <--- do nothing : back to calendar
+    [14H30] rdv with muche
+
+
 
 Options
 ^^^^^^^
@@ -199,10 +226,20 @@ Editer les paramètres dans les fichiers suivant:
 
    modifier le contenu du calendrier peut demander la modification conjointe de l'apparence de ce dernier.
 
-Themes
-------
 
 Des `themes sont disponibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/naivecalendar/themes/themes.rst>`_, vous pouvez les appliquer en tapant *theme* dans l'init de rofi ou les charger temporairement en précisnat l'arugment *--theme*. Vous pouvez créer vos propres fichiers de thème (`rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_), placez les dans le dossier *./themes/* 
+
+Vous pouvez commencer avec une copie des thèmes "officiels"::
+
+    cp /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
+
+.. note::
+
+    Si vous créez un thème du même nom qu'existant dans le dossier /usr/share/naivecalendar/themes/, seul celui-ci sera prit en compte.
+
+Puis, modifiez les thèmes, un par un avec votre éditeur favoris, ou, en masse à l'aide des sous commandes du naivecalendar (utilisez la complétion) ::
+
+    naivecalendar <subcommand> -h
 
 -----------------------------------------------------------------------------
 
