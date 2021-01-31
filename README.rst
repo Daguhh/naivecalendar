@@ -47,6 +47,7 @@ Recommends
 ^^^^^^^^^^
 
 * xclip (copy to clipboard option)
+* sensible-utils (choose editor in update subcommand)
 
 Suggests
 ^^^^^^^^
