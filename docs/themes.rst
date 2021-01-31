@@ -18,54 +18,31 @@ Inspirations:
  - own interpretarion
 
 
-Classic dark & light
---------------------
+Dark & Light : classic, extended, variant
+-----------------------------------------
 
-|classic dark| |classic light|
-
-Classic dark & light : compact
-------------------------------
-
-|classic dark compact| |classic light compact|
-
-Classic dark & light : extended
--------------------------------
-
-|classic dark extended| |classic light extended|
-
-Nord : Round light & Square dark 
---------------------------------
-
-|round light nord| |square dark nord|
-
-Miscellaneous
--------------
+|classic dark| |classic light| 
 
 
-Classic dark variant
-^^^^^^^^^^^^^^^^^^^^
+|classic dark extended| |classic light extended| 
 
-|classic_dark_variant| 
 
-Material darker
-^^^^^^^^^^^^^^^
+|classic dark variant|
 
-|material_darker|
+Compact
+-------
 
-Paper-float
-^^^^^^^^^^^
+|classic dark compact| |classic light compact| |retro blue compact| 
 
-|paper-float| 
+Nord : round & square
+---------------------
 
-Retro blue : Compact
-^^^^^^^^^^^^^^^^^^^^
+|round light nord| |square dark nord| 
 
-|retro_blue_compact|
+Misc : paper-float & lead pencil & blackboard
+---------------------------------------------
 
-Lead pencil
-^^^^^^^^^^^
-
-|lead_pencil|
+|paper-float| |lead pencil| |blackboard|
 
 
 .. |classic dark| image:: ./screenshots/classic_dark.png
@@ -73,37 +50,50 @@ Lead pencil
 
 .. |classic light| image:: ./screenshots/classic_light.png
     :height: 180px
+    :alt: classic light
 
 .. |classic dark compact| image:: ./screenshots/classic_dark_compact.png
     :height: 180px
+    :alt: classic dark compact
 
 .. |classic light compact| image:: ./screenshots/classic_light_compact.png
     :height: 180px
+    :alt: classic light compact
 
 .. |classic dark extended| image:: ./screenshots/classic_dark_extended.png
     :height: 180px
+    :alt: classic dark extended
 
 .. |classic light extended| image:: ./screenshots/classic_light_extended.png
     :height: 180px
+    :alt: classic light extended
 
 .. |round light nord| image:: ./screenshots/round_light_nord.png
     :height: 180px
+    :alt: round light nord
 
 .. |square dark nord| image:: ./screenshots/square_dark_nord.png
     :height: 180px
+    :alt: square dark nord
 
-.. |classic_dark_variant| image::  ./screenshots/classic_dark_variant.png
+.. |classic dark variant| image::  ./screenshots/classic_dark_variant.png
     :height: 180px
+    :alt: classic_dark_variant
 
-.. |material_darker| image::  ./screenshots/material_darker.png
+.. |material darker| image::  ./screenshots/material_darker.png
     :height: 180px
+    :alt: material_darker
 
 .. |paper-float| image::  ./screenshots/paper-float.png
     :height: 180px
 
-.. |retro_blue_compact| image::  ./screenshots/retro_blue_compact.png
+.. |retro blue compact| image::  ./screenshots/retro_blue_compact.png
     :height: 180px
 
-.. |lead_pencil| image::  ./screenshots/lead_pencil.png
+.. |lead pencil| image::  ./screenshots/lead_pencil.png
+    :height: 180px
+    :alt: lead_pencil
+
+.. |blackboard| image::  ./screenshots/blackboard.png
     :height: 180px
 

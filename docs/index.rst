@@ -12,7 +12,7 @@
    usage
    customize
    files
-   build
    module
    themes
+   build
    license

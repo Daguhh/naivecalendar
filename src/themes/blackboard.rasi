@@ -5,42 +5,27 @@
  ***********************************************/
 
 * {
-    nord0: 	        #2e3440;	
-    nord1: 	        #3b4252;	
-    nord2:          #434c5e;
-    nord3: 	        #4c566a;	
-    nord4: 	        #d8dee9;	
-    nord5: 	        #e5e9f0;	
-    nord6: 	        #eceff4;	
-    nord7: 	        #8fbcbb;	
-    nord8: 	        #88c0d0;	
-    nord9: 	        #81a1c1;	
-    nord11:         #bf616a;
-    nord12:         #d08770;
-    nord13: 	    #ebcb8b;	
-    nord14: 	    #a3be8c;	
-    nord15: 	    #b48ead;	
     blue:           #56769E;
     blue2:          #1E88E5;
     dark1:                       #1F1F1F;
-    dark2:                       #252525;
+    dark2:                       #454545;
     white1:                      #FFFFFF;
     blue3:                       #8E24AA;
-    foreground:                  @dark1;
-    background:                  @white1;
+    foreground:                  @white1;
+    background:                  @dark1;
     foreground-normal:           @foreground;
-    background-normal:           @white1;
-    foreground-urgent:           @nord13;
-    background-urgent:           #BBFFBB;
-    foreground-active:           @blue2;
-    background-active:           #D7D7FF;
-    foreground-select:           #00005F;
-    background-select:           #CCBBFF;
+    background-normal:           @dark1;
+    foreground-urgent:           #77FF77;
+    background-urgent:           @dark1;
+    foreground-active:           #AAAAFF;
+    background-active:           @dark1;
+    foreground-select:           #8888FF;
+    background-select:           @dark1;
     border:                      @dark1;
     lightbg:                     #434c5e;
     lightbg2:                     #636c8e;
-    font : "Bitstream Vera Sans Mono Bold 12";
-    text-color:                 @lightbg;
+    font : "Noto Sans Mono Ultra-Bold 12";
+    text-color:                 @white1;
 }
 #window {
     fullscreen:             false;
@@ -59,8 +44,8 @@
     background-color:   @background;
 }
 #message {
-    border-color: @dark1;
-    background-color:   @background;
+    border-color: @white1;
+    background-color:   @dark1;
     border :2;
     padding: 10 30 10 90;
     text-color : @lightbg2;
@@ -70,7 +55,7 @@
 }
 #listview {
     border:  0;
-    border-color: @dark1;
+    border-color: @white1;
     background-color:   @background;
     spacing:      0px;
     scrollbar:    false;
@@ -80,7 +65,7 @@
 }
 #element {
     border:  1;
-    border-color: @dark1;
+    border-color: @white1;
     padding: 9px -5px 0px 5px;
     background-color:   @background;
     spacing: 0;
@@ -93,22 +78,25 @@
 #element.normal.urgent {
     background-color: @background-urgent;
     foreground-color : @foreground-urgent;
+    text-color : @foreground-urgent;
 }
 #element.normal.active {
-    text-color : @lightbg2;
+    text-color : @foreground-active;
     background-color: @background-active;
     foreground-color : @foreground-active;
 }
 #element.selected.normal {
+    text-color : @foreground-select;
     background-color: @background-select;
     foreground-color : @foreground-select;
-    text-color : @foreground-select;
 }
 #element.selected.urgent {
+    text-color : @foreground-select;
     background-color: @background-select;
     foreground-color : @foreground-select;
 }
 #element.selected.active {
+    text-color : @foreground-select;
     background-color: @background-select;
     foreground-color : @foreground-select;
 }
@@ -117,9 +105,13 @@
 }
 #element.alternate.urgent {
     background-color: @background-urgent;
+    foreground-color : @foreground-urgent;
+    text-color : @foreground-urgent;
 }
 #element.alternate.active {
     background-color: @background-active;
+    foreground-color : @foreground-active;
+    text-color : @foreground-active;
 }
 #mode-switcher {
     border:       0px 0px 0px ;
@@ -148,7 +140,8 @@
 }
 #inputbar {
     children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
-    border-color:   @dark1;
+    background-color: @dark1;
+    border-color:   @white1;
     border :2;
     padding: 10 30 10 70;
 }
@@ -156,5 +149,5 @@
     expand:     false;
     str:        " ";
     margin:     0px 0.3em 0em 0em ;
-    background-color:   @background;
+    background-color:   @dark1;
 }

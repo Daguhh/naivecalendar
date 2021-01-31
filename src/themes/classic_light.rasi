@@ -31,7 +31,7 @@
     background:                  @white1;
     foreground-normal:           @foreground;
     background-normal:           @background;
-    foreground-urgent:           @nord13;
+    foreground-urgent:           @nord8;
     background-urgent:           @background-normal;
     foreground-active:           @red;
     background-active:           @background;
