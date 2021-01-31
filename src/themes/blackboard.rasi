@@ -6,23 +6,21 @@
 
 * {
     blue:           #56769E;
-    blue2:          #1E88E5;
     dark1:                       #1F1F1F;
-    dark2:                       #454545;
     white1:                      #FFFFFF;
     blue3:                       #8E24AA;
+    lightgreen:                 #77FF77;
     foreground:                  @white1;
     background:                  @dark1;
     foreground-normal:           @foreground;
-    background-normal:           @dark1;
-    foreground-urgent:           #77FF77;
-    background-urgent:           @dark1;
+    background-normal:           @background;
+    foreground-urgent:           @lightgreen;
+    background-urgent:           @background;
     foreground-active:           #AAAAFF;
-    background-active:           @dark1;
+    background-active:           @background;
     foreground-select:           #8888FF;
-    background-select:           @dark1;
-    border:                      @dark1;
-    lightbg:                     #434c5e;
+    background-select:           @background;
+    border:                      @white1;
     lightbg2:                     #636c8e;
     font : "Noto Sans Mono Ultra-Bold 12";
     text-color:                 @white1;
@@ -44,8 +42,8 @@
     background-color:   @background;
 }
 #message {
-    border-color: @white1;
-    background-color:   @dark1;
+    border-color: @border;
+    background-color:   @background;
     border :2;
     padding: 10 30 10 90;
     text-color : @lightbg2;
@@ -55,7 +53,7 @@
 }
 #listview {
     border:  0;
-    border-color: @white1;
+    border-color: @border;
     background-color:   @background;
     spacing:      0px;
     scrollbar:    false;
@@ -65,7 +63,7 @@
 }
 #element {
     border:  1;
-    border-color: @white1;
+    border-color: @border;
     padding: 9px -5px 0px 5px;
     background-color:   @background;
     spacing: 0;
@@ -140,8 +138,8 @@
 }
 #inputbar {
     children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
-    background-color: @dark1;
-    border-color:   @white1;
+    background-color: @background;
+    border-color:   @border;
     border :2;
     padding: 10 30 10 70;
 }
@@ -149,5 +147,5 @@
     expand:     false;
     str:        " ";
     margin:     0px 0.3em 0em 0em ;
-    background-color:   @dark1;
+    background-color:   @background;
 }
