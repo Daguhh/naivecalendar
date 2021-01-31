@@ -2,6 +2,9 @@
 NaïveCalendar
 =============
 
+:author: Daguhh
+:version: 0.7.0
+
 |readme_fr| |git_badge| |doc sphinx| |deb package|
 
     **naïf, naïve n. adj**.
@@ -46,12 +49,13 @@ Requirements
 Recommends
 ^^^^^^^^^^
 
-* xclip (copy to clipboard option)
+* xclip (option "copier dans le presse papier)
+* sensible-utils (sous-command "update" : choix de l'éditeur)
 
 Suggests
 ^^^^^^^^
 
-* fontawesome (for icons)
+* fontawesome (icons)
 
 Installation
 ------------

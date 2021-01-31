@@ -1,3 +1,14 @@
+v0.7.0 : 
+
+	Major:
+		Add config option : update message at each date change
+		Event : tiny format to format in menus
+		
+	Minor:
+		New themes : lead pencil and blackboard
+		Update Doc
+		Keep whitespace defined in config for alignement control
+
 v0.6.2 : Improvements
 
     Minor:

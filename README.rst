@@ -1,6 +1,9 @@
 =============
 NaïveCalendar
 =============
+ 
+:author: Daguhh
+:version: 0.7.0
 
 |readme_fr| |git_badge| |doc sphinx| |deb package|
 
