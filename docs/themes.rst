@@ -46,54 +46,53 @@ Misc : paper-float & lead pencil & blackboard
 
 
 .. |classic dark| image:: ./screenshots/classic_dark.png
-    :height: 180px
+    :height: 220px
 
 .. |classic light| image:: ./screenshots/classic_light.png
-    :height: 180px
+    :height: 220px
     :alt: classic light
 
 .. |classic dark compact| image:: ./screenshots/classic_dark_compact.png
-    :height: 180px
+    :height: 140px
     :alt: classic dark compact
 
 .. |classic light compact| image:: ./screenshots/classic_light_compact.png
-    :height: 180px
+    :height: 140px
     :alt: classic light compact
 
 .. |classic dark extended| image:: ./screenshots/classic_dark_extended.png
-    :height: 180px
+    :height: 220px
     :alt: classic dark extended
 
 .. |classic light extended| image:: ./screenshots/classic_light_extended.png
-    :height: 180px
+    :height: 220px
     :alt: classic light extended
 
 .. |round light nord| image:: ./screenshots/round_light_nord.png
-    :height: 180px
+    :height: 220px
     :alt: round light nord
 
 .. |square dark nord| image:: ./screenshots/square_dark_nord.png
-    :height: 180px
+    :height: 220px
     :alt: square dark nord
 
 .. |classic dark variant| image::  ./screenshots/classic_dark_variant.png
-    :height: 180px
+    :height: 220px
     :alt: classic_dark_variant
 
 .. |material darker| image::  ./screenshots/material_darker.png
-    :height: 180px
+    :height: 220px
     :alt: material_darker
 
 .. |paper-float| image::  ./screenshots/paper-float.png
-    :height: 180px
+    :height: 220px
 
 .. |retro blue compact| image::  ./screenshots/retro_blue_compact.png
-    :height: 180px
+    :height: 140px
 
 .. |lead pencil| image::  ./screenshots/lead_pencil.png
-    :height: 180px
-    :alt: lead_pencil
+    :height: 220px
 
 .. |blackboard| image::  ./screenshots/blackboard.png
-    :height: 180px
+    :height: 220px
 

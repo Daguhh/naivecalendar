@@ -303,10 +303,10 @@ Build the doc
    :target: https://framagit.org/Daguhh/naivecalendar/-/blob/master/README_fr.rst
 
 .. |classic dark extended| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_dark_extended.png
-    :height: 130 px
+    :height: 200 px
 
 .. |classic light extended| image:: https://framagit.org/Daguhh/naivecalendar/-/raw/master/docs/screenshots/classic_light_extended.png
-    :height: 130 px
+    :height: 200 px
 
 .. |doc sphinx| image:: https://framagit.org/Daguhh/naivecalendar/badges/master/pipeline.svg?key_text=Sphinx+doc&key_width=70
     :target: http://daguhh.frama.io/naivecalendar
