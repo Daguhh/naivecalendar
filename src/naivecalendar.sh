@@ -62,13 +62,22 @@ else
 fi
 
 # launch rofi
+#ROFI_LOG_FILE="$HOME/.cache/naivecalendar/rofi_log.txt"
+
 output="$(rofi -show calendar \
     -modi "calendar:$cmd" \
     -theme-str '@theme "'$THEME'"' \
     -hide-scrollbar true \
     -x-offset 0 \
     -y-offset 55 \
-    -location 3 2>&1)"
+    -location 3 \
+    2>&1)"
+
+# print date to stdout
+if [[ " ${param[@]} " =~ " -x " ]] || [[ " ${param[@]} " =~ " --clipboard " ]]; then
+    FILE="$HOME/.cache/naivecalendar/pretty_print_cache.txt"
+    cat $FILE | xclip -selection clipboard
+fi
 
 # print date to stdout
 if [[ " ${param[@]} " =~ " -p " ]] || [[ " ${param[@]} " =~ " --print " ]]; then

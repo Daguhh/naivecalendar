@@ -8,7 +8,7 @@ Cycle through month and create linked event to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 
 import glob, os, sys, subprocess, shutil, pathlib
 import re, argparse, configparser
@@ -39,16 +39,14 @@ subcommands:
         version="%(prog)s " + __version__
     )
 
-    cmd_group = parser.add_mutually_exclusive_group()
-
-    cmd_group.add_argument(
+    parser.add_argument(
         "-p",
         "--print",
         help="print date to stdout instead of opening a event",
         action="store_true",
     )
 
-    cmd_group.add_argument(
+    parser.add_argument(
         "-x",
         "--clipboard",
         help="copy date to clipboard",
@@ -426,10 +424,10 @@ def process_event_date(out, d, args):
     elif out in strip_list(SYM_NEXT_YEAR):
         d.year += 1
     elif out in strip_list(SYMS_DAYS_NUM):
-        if args.print:
-            print_selection(out, d.date, args.format)
-        elif args.clipboard:
-            send2clipboard(out, d.date, args.format)
+        if args.print or args.clipboard:
+            set_pp_date(out, d.date, args.format)
+        #elif args.clipboard:
+        #    send2clipboard(out, d.date, args.format)
         else:
             open_event(out, d.date, args.editor)
     else:
@@ -880,7 +878,6 @@ def open_n_reload_rofi(func):
         ROFI_RELAUNCH_COUNT -= 1
         if ROFI_RELAUNCH_COUNT == 0:
             time.sleep(ROFI_RELOAD_TEMPO)
-            print(sys.argv[1:-1], file=sys.stderr)
             cmd_args = ' '.join(sys.argv[1:-1])
             cmd = f"{script_path}/naivecalendar.sh -c {cmd_args}"
             os.system(cmd)
@@ -968,7 +965,7 @@ def ask_theme():
     else :
         print("this is not a valid theme", file=sys.stderr)
 
-def print_selection(day, date, f):
+def set_pp_date(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
 
     d = int(day)
@@ -1218,6 +1215,7 @@ def display_help(head_txt="help:"):
 (A day with attached event will appear yellow.)
  - Create multiple event type and with between them
 
+
 There's somme shortcut too, type it in rofi prompt :
     """
 
@@ -1230,10 +1228,16 @@ There's somme shortcut too, type it in rofi prompt :
     txt += '\n{:>20} : switch events folder to display'.format(','.join(SYM_SWITCH_EVENT[:-1]))
     txt += '\n{:>20} : show theme selector'.format(','.join(SYM_SWITCH_THEME[:-1]))
     txt += '\n{:>20} : display a selection menu (skip shortcuts)'.format(','.join(SYM_SHOW_MENU[:-1]))
+    txt += '\n'
 
     txt += f"""\n
 There's some command line option too :
 
+subcommands:
+    update      Update a calendar parameter for all user themes at once
+    add-event   Add, modify, delete event in all user themes config at once
+
+optional arguments:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
   -p, --print           print date to stdout instead of opening a event
@@ -1249,11 +1253,10 @@ There's some command line option too :
                         set calendar theme, default=classic_dark (theme file name without extention)
   -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
 
-That's all :
-press enter to continue...
+That's all : press enter to continue...
 """
 
-    rofi_popup("Help", txt, nb_lines=20)
+    rofi_popup("Help", txt, nb_lines=22)
 
 
 

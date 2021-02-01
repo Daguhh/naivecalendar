@@ -248,10 +248,8 @@ _myscript_tab_complete () {
                 elif [[ "$element" == "-c" || "$element" == "--read-cache" ]]; then
                     options=$(echo $options | sed -e 's:--date\b *::')
                 elif [[ "$element" == "-p" || "$element" == "--print" ]]; then
-                    options=$(echo $options | sed -e 's:--clipboard\b *::')
                     options=$(echo $options | sed -e 's:--editor\b *::')
                 elif [[ "$element" == "-x" || "$element" == "--clipboard" ]]; then
-                    options=$(echo $options | sed -e 's:--print\b *::')
                     options=$(echo $options | sed -e 's:--editor\b *::')
                 elif [[ "$element" == "-e" || "$element" == "--editor" ]]; then
                     options=$(echo $options | sed -e 's:--print\b *::')
