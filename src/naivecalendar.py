@@ -880,7 +880,9 @@ def open_n_reload_rofi(func):
         ROFI_RELAUNCH_COUNT -= 1
         if ROFI_RELAUNCH_COUNT == 0:
             time.sleep(ROFI_RELOAD_TEMPO)
-            cmd = f"{script_path}/naivecalendar.sh -c"
+            print(sys.argv[1:-1], file=sys.stderr)
+            cmd_args = ' '.join(sys.argv[1:-1])
+            cmd = f"{script_path}/naivecalendar.sh -c {cmd_args}"
             os.system(cmd)
 
         return out
