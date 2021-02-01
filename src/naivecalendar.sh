@@ -73,7 +73,7 @@ output="$(rofi -show calendar \
 # print date to stdout
 if [[ " ${param[@]} " =~ " -p " ]] || [[ " ${param[@]} " =~ " --print " ]]; then
     FILE="$HOME/.cache/naivecalendar/pretty_print_cache.txt"
-    cat $FILE
+    printf "%s" "$(cat $FILE)"
 fi
 
 

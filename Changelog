@@ -1,6 +1,8 @@
 v0.7.1 : 
 
 	Minor:
+		Capture rofi close error when openning menus
+		Save session cmd parameters after openning menu
 		events now support strftime format in folder name
 
 v0.7.0 : Again and again and again
