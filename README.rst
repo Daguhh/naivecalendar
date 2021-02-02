@@ -104,7 +104,7 @@ Simply execute the script, then:
 - Use mouse or keyboard to interact with the calendar.
 - Hit bottom arrows to cycle through months.
 - Hit a day to create a linked event. (A day with attached event will appear yellow.)
-- Create multiple event type and with between them
+- Create multiple event type and switch between them
 
 Shortcuts
 ^^^^^^^^^
@@ -152,17 +152,17 @@ Notes support a very light format to be parsed when displaying "events of the mo
 
 - show section : if you create sections (format : [section]) all lines containing a section will be displayed ::
 
-    # Note Title  <---- only first line is displayed
-    Some text
-    Some text again...
-
-- show header : if the event/note don't contain section, only first line will be displayed::
-
     [9H30] rdv with truc <---- will be displayed
     Some text
     Some text again
     [14H30] rdv with muche <----- will be displayed
     Some text again again
+
+- show header : if the event/note don't contain section, only first line will be displayed::
+
+    # Note Title  <---- only first line is displayed
+    Some text
+    Some text again...
 
 if you interact with the event file name, it will open the note again, other rows will bring you back to calendar::
 

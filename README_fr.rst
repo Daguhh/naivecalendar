@@ -158,17 +158,17 @@ Les notes quant à elles supportent un léger format pour être correctement aff
 
 - montrer section : si vous crééz des sections (format : [section]), toute ligne contenant cette directive sera affichées::
 
-    # Note Title  <---- only first line is displayed
-    Some text
-    Some text again...
-
-- montrer entête : si la note ne contient pas de [section], la première ligne sera affichée::
-
     [9H30] rdv with truc <---- will be displayed
     Some text
     Some text again
     [14H30] rdv with muche <----- will be displayed
     Some text again again
+
+- montrer entête : si la note ne contient pas de [section], la première ligne sera affichée::
+
+    # Note Title  <---- only first line is displayed
+    Some text
+    Some text again...
 
 Dans le menu "montrer les événements du mois", si vous interagissez avec le nom du fichier, l'editeur rouvrira la note, autrement, cliquer sur une autre ligne vous rammenaera au calendrier::
 

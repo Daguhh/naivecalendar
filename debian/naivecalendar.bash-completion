@@ -120,6 +120,9 @@ _myscript_tab_complete () {
         elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
             options=" " 
 
+        elif [[ "$prev" == "-e" || $prev == "--editor" ]] ; then
+            options="xdg-open" 
+
         # show all but remove already listed elements #if already listed
         else
             options=$update_options
@@ -171,9 +174,6 @@ _myscript_tab_complete () {
 
         elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
             options=" " 
-
-        elif [[ "$prev" == "-e" || $prev == "--editor" ]] ; then
-            options="xdg-open" 
 
         elif [[ "$prev" == "-d" || $prev == "--delete" ]] ; then
             options=""
@@ -236,7 +236,6 @@ _myscript_tab_complete () {
             options=" " 
         elif [[ "$prev" == "-v" || $prev == "--version" ]] ; then
             options=" " 
-
 
         # list all but remove already listed options
         else
