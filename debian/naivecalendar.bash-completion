@@ -172,6 +172,9 @@ _myscript_tab_complete () {
         elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
             options=" " 
 
+        elif [[ "$prev" == "-e" || $prev == "--editor" ]] ; then
+            options="xdg-open" 
+
         elif [[ "$prev" == "-d" || $prev == "--delete" ]] ; then
             options=""
             for f in "$HOME/.config/naivecalendar/themes/*.cfg"; do
