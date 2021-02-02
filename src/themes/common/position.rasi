@@ -1,13 +1,12 @@
+
 /************************************************
  * ROFI Color theme
  * User: Daguhh
  * Copyright: 2020 Daguhh
  ***********************************************/
 
-@import "common/theme_dark.rasi"
-@import "common/position.rasi"
-
-#listview {
-    columns:      7;
-    lines:        9;
+#window {
+    location:               north east;
+    x-offset:               -4%;
+    y-offset:               3%;
 }

@@ -7,6 +7,8 @@
  * Copyright: Tomas Zaluckij
  */
 
+@import "common/position.rasi"
+
 * {
 	base00: #263238;
 	base01: #2E3C43;
@@ -39,8 +41,6 @@
     line-padding:           10;
     padding:                10px;
     width:                  330px;
-    x-offset:               -3%;
-    y-offset:               4%;
     border-color:           @blue;
     background-color:       @background;
     text-color:             @foreground;

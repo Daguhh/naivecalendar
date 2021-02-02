@@ -5,6 +5,8 @@
  * Inspired by nordtheme
  ***********************************************/
 
+@import "common/position.rasi"
+
 * {
     nord0: 	        #2e3440;	
     nord1: 	        #3b4252;	
@@ -43,8 +45,6 @@
     line-padding:           10;
     padding:                10px;
     width:                  320px;
-    x-offset:               -3%;
-    y-offset:               4%;
     columns:                7;
     border-color:           @blue;
     background-color:       @background;

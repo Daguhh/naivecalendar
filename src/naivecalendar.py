@@ -944,7 +944,7 @@ def ask_theme():
     themes = list2rofi(sorted(set(themes)))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue", nb_lines=7, width=-60)
+    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue", nb_lines=8, width=-60)
     if theme in themes:
         set_theme_cache(theme)
     else :

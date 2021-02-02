@@ -4,6 +4,8 @@
  * Copyright: 2020 Daguhh
  ***********************************************/
 
+@import "common/position.rasi"
+
 * {
     nord13: 	    #ebcb8b;	
     blue:           #56769E;
@@ -32,8 +34,6 @@
     line-padding:           10;
     padding:                5px;
     width:                  300px;
-    x-offset:               -3%;
-    y-offset:               4%;
     border-color:           @blue;
     background-color:       @background;
 }

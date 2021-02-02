@@ -1,55 +1,13 @@
-/************************************************
- * ROFI Color theme
- * User: Daguhh
- * Copyright: 2020 Daguhh
- * Inspired by nordtheme
- ***********************************************/
 
-@import "common/position.rasi"
-
-* {
-    nord0: 	        #2e3440;	
-    nord1: 	        #3b4252;	
-    nord2:          #434c5e;
-    nord3: 	        #4c566a;	
-    nord4: 	        #d8dee9;	
-    nord5: 	        #e5e9f0;	
-    nord6: 	        #eceff4;	
-    nord7: 	        #8fbcbb;	
-    nord8: 	        #88c0d0;	
-    nord9: 	        #81a1c1;	
-    nord11:         #bf616a;
-    nord12:         #d08770;
-    nord13: 	    #ebcb8b;	
-    nord14: 	    #a3be8c;	
-    nord15: 	    #b48ead;	
-    blue:           #56769E;
-    blue2:          #1E88E5;
-    foreground:                  @nord5;
-    background:                  @nord0;
-    foreground-normal:           @foreground;
-    background-normal:           @nord2;
-    foreground-urgent:           @nord13;
-    background-urgent:           @background-normal;
-    foreground-active:           @blue2;
-    background-active:           @background;
-    foreground-select:           @nord0;
-    background-select:           @nord15;
-    border:                      @nord15;
-    lightbg:                     #434c5e;
-}
 #window {
     fullscreen:             false;
     hide-scrollbar:         true;
-    lines:                  8;
     line-padding:           10;
-    padding:                6px;
-    width:                  335px;
-    columns:                7;
+    padding:                10px;
+    width:                  300px;
     border-color:           @blue;
     background-color:       @background;
     text-color:             @foreground;
-    border:                 5;
 }
 #mainbox {
     border:  0;
@@ -57,7 +15,6 @@
     background-color:   @background;
 }
 #message {
-    border:       2px 0px 0px ;
     border-color: @background;
     padding:      1px ;
     background-color:   @background;
@@ -73,15 +30,15 @@
     background-color:   @background;
     spacing:      3px;
     scrollbar:    false;
-    padding:      2px ;
+    padding:      1px 1px 1px ;
     columns:      7;
     lines:        8;
 }
 #element {
     border:  0;
-    padding: 5px;
-    margin: 0px;
+    padding: 8px 0px 0px ;
     background-color:   @background;
+    horizontal-align: true;
 }
 #element.normal.normal {
     background-color: @background-normal;

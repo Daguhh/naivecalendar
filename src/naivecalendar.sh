@@ -105,10 +105,6 @@ fi
 rofi_output="$(rofi -show calendar \
     -modi "calendar:$cmd" \
     -theme-str '@theme "'$THEME'"' \
-    -hide-scrollbar true \
-    -x-offset 0 \
-    -y-offset 55 \
-    -location 3 \
     2>&1)"
 
 #log

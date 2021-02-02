@@ -229,10 +229,13 @@ You can start from a copy of "officials" themes::
 
     If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
 
-Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once, see (use completion)::
+Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files), see (use completion)::
 
     naivecalendar <subcommand> -h
 
+.. note::
+
+   There is no specific tool to update .rasi files, but they share some ressources in *src/themes/common*, for example, you can update calendar position for all themes in *position.rasi*
 
 .. _files:
 

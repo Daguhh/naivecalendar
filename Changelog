@@ -4,6 +4,7 @@ v0.7.1 :
 		Capture rofi close error when openning menus
 		Save session cmd parameters after openning menu
 		Events now support strftime format in folder name
+		Themes now share common ressources
 
 	Bugs:
 		Only execute -p and -x action once (not in recursions)		
