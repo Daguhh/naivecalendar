@@ -1,15 +1,5 @@
 image: python:3.7
 
-test:
-  stage: test
-  script:
-  - pip install -U -r docs/requirements.txt
-  - sphinx-build -b html docs public
-  only:
-  - branches
-  except:
-  - master
-
 pages:
   stage: deploy
   script:
@@ -19,4 +9,4 @@ pages:
     paths:
     - public
   only:
-  - master
+  - tags
