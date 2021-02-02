@@ -186,7 +186,7 @@ Les sous-commandes **update** et **add-event** peuvent vous permettre d'éditere
 
 .. code::
 
-    usage: naivecalendar [-h] [-v] [-p | -x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
+    usage: naivecalendar [-h] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
 
     A simple popup calendar
 
@@ -266,10 +266,14 @@ conf du contenu de l'utilisateur   ~/.config/naivecalendar/**themes/\*.cfg**
 ..
 ------------------------------------------------------------------------------------------------------
 dossier des evenements (defaut)    ~/.naivecalendar_events/<event type>/**<user date format>.txt**
+--------------------------------   -------------------------------------------------------------------
+..
+------------------------------------------------------------------------------------------------------
 fichier cache : date               ~/.cache/naivecalendar/**date_cache.ini**
 date au format -f|-format          ~/.cache/naivecalendar/**pretty_print_cache.txt**
 sauvegarde le thème                ~/.cache/naivecalendar/**theme_cache.txt**
 sauvegarder le type d'évenement    ~/.cache/naivecalendar/**event_cache.txt**
+log de la dernière commande rofi   ~/.cache/naivecalendar/**rofi_log.txt** 
 ================================   ===================================================================
 
 ---------------------------------------------------------------------------------

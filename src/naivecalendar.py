@@ -20,7 +20,15 @@ import time
 #from parse_cmd_opt import get_arguments
 
 def get_arguments():
-    """Parse command line arguments"""
+    """Parse command line arguments
+
+    Returns
+    -------
+    args : argparse.Namespace
+        command line arguments
+    unknown : str
+        rofi output
+    """
 
     parser = argparse.ArgumentParser(
         prog="naivecalendar",
@@ -189,6 +197,7 @@ def to_list(cfg_list):
     return [DAY_FORMAT.format(word) for word in cfg_list.split(',')]
 
 def set_list(default, section, key, row):
+    """set, set default or desactivate given user config """
     vals = section[key]
     if row == EMPTY: # don't display row
         return []
@@ -201,6 +210,7 @@ def set_list(default, section, key, row):
         return [CONTROL_MENU_ID[x.strip()] if x.strip() in CONTROL_MENU_ID.keys() else ' ' for x in to_list(vals)]
 
 def to_int(section, key):
+    """Convert a configparser entry into an int"""
     val = section[key]
     if val == '':
         val = EMPTY
@@ -239,86 +249,61 @@ def set_locale_n_week_day_names(arg_locale, user_locale, syms_week_days, day_for
 
 # configure  locate
 ###################
-#: keep empty to get system locale,
-#: use 'locale -a' on your system to list locales
-USER_LOCALE = config['LOCALE']["USER_LOCALE"]
+USER_LOCALE = config['LOCALE']["USER_LOCALE"] # use 'locale -a' on your system to list locales
 
 # Day names abbreviations
 #########################
-#: day name lenght
-DAY_ABBR_LENGHT = int(config['DAY NAMES']["DAY_ABBR_LENGHT"])
-# format to align all signs to right given size of day names
-# example (_ represents spaces):
-# Mon Thu ...
-# __1 __2 ...
-DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}'
-#: 0 = sunday, 1 = monday...
-FIRST_DAY_WEEK = int(config['DAY NAMES']["FIRST_DAY_WEEK"])
+DAY_ABBR_LENGHT = int(config['DAY NAMES']["DAY_ABBR_LENGHT"]) # ex : 3 => Mon
+DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}' # align symbols right
+FIRST_DAY_WEEK = int(config['DAY NAMES']["FIRST_DAY_WEEK"]) # 0 = sunday, 1 = monday...
 
 # Day events configuration
 ##########################
-#: events path should contains at least %d and month (%b, %m...)  + year (%Y...) (strftime format)
 EVENTS_PATHS = {n:pathlib.Path.home()/pathlib.Path(config['EVENTS'][n]) for n in config['EVENTS']}
-#: default date events folder to display
+# default date events folder to display
 EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
 
 # Rofi/Calendar shape
 #####################
-#: 7 days for a week
 NB_COL = 7
-#: number of "complete" weeks, a month can extend up to 6 weeks
-NB_WEEK = 6
-#: 1 day header + 6 weeks + 1 control menu
+NB_WEEK = 6 # nb row of calendar "days number" part
 NB_ROW = int(config['SHAPE']['NB_ROW'])
 
 # Calendar symbols and shortcuts
 ################################
-#: 1st symbol is displayed, others are simply shortcuts
 SYM_NEXT_MONTH = to_list(config['CONTROL']['SYM_NEXT_MONTH'])
-#: 1st symbol is displayed, others are simply shortcuts
 SYM_NEXT_YEAR = to_list(config['CONTROL']['SYM_NEXT_YEAR'])
-#: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_MONTH = to_list(config['CONTROL']['SYM_PREV_MONTH'])
-#: 1st symbol is displayed, others are simply shortcuts
 SYM_PREV_YEAR = to_list(config['CONTROL']['SYM_PREV_YEAR'])
 
 # Shortcuts for popup windows
 #############################
-#: shortcut to display events popup
 SYM_SHOW_EVENTS = to_list(config['SHORTCUTS']['SYM_SHOW_EVENTS'])
-#: shortcut to display help popup
 SYM_SHOW_HELP = to_list(config['SHORTCUTS']['SYM_SHOW_HELP'])
-#: shortcut to display theme chooser popup
 SYM_SWITCH_THEME = to_list(config['SHORTCUTS']['SYM_SWITCH_THEME'])
-#: shortcut to display event chooser popup
 SYM_SWITCH_EVENT = to_list(config['SHORTCUTS']['SYM_SWITCH_EVENT'])
-#: 1st symbol is displayed, others are simply shortcuts
 SYM_SHOW_MENU = to_list(config['SHORTCUTS']['SYM_SHOW_MENU'])
 
 # Today header display
 ######################
-#: date format in rofi prompt
 PROMT_DATE_FORMAT = config['HEADER']['PROMT_DATE_FORMAT']
-#: toogle day num and name header display
 IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
-#: make message update at each loop
 IS_LOOP_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_LOOP_TODAY_HEAD_MSG')
-#: text to dislay in head message
-TODAY_HEAD_MSG_TXT = [w for w in config['HEADER']['TODAY_HEAD_MSG_TXT'].split(',')]
-#: size of each element in head message
-TODAY_HEAD_MSG_SIZES = [w.strip() for w in config['HEADER']['TODAY_HEAD_MSG_SIZES'].split(',')]
-#: rise of each element in head message
-TODAY_HEAD_MSG_RISES = [int(r) for r in config['HEADER']['TODAY_HEAD_MSG_RISES'].split(',')]
+
+# pango markup props
+TODAY_HEAD_MSG_TXT = [w for w in config['HEADER']['TODAY_HEAD_MSG_TXT'].split(',')] # Monday
+TODAY_HEAD_MSG_SIZES = [w.strip() for w in config['HEADER']['TODAY_HEAD_MSG_SIZES'].split(',')] # xx-large
+TODAY_HEAD_MSG_RISES = [int(r) for r in config['HEADER']['TODAY_HEAD_MSG_RISES'].split(',')] # 0
 
 # Calendar content and organisation
 ###################################
-#: row number where to display day symbols
+# row number where to display day symbols
 ROW_WEEK_SYM = to_int(config['CONTENT'], 'ROW_WEEK_SYM')
-#: symbols for week day names
+# symbols for week day names
 _syms_week_days = to_list(config['CONTENT']["SYMS_WEEK_DAYS"]) if not ROW_WEEK_SYM == EMPTY else []
 SYMS_WEEK_DAYS = set_locale_n_week_day_names(ARGS.locale, USER_LOCALE, _syms_week_days, DAY_FORMAT, FIRST_DAY_WEEK, DAY_ABBR_LENGHT)
 
-#: row number where to display calendar first line
+# row number where to display calendar first line
 ROW_CAL_START = to_int(config['CONTENT'], 'ROW_CAL_START')
 # symbols for day numbers
 default = (str(x) for x in range(1,32))
@@ -328,8 +313,8 @@ SYMS_DAYS_NUM= set_list(default, config['CONTENT'], 'SYMS_DAYS_NUM', ROW_CAL_STA
 CONTROL_MENU_ID = {
     'p' : SYM_PREV_MONTH[0],
     'pp': SYM_PREV_YEAR[0],
-    'n': SYM_NEXT_MONTH[0],
-    'nn' : SYM_NEXT_YEAR[0],
+    'n' : SYM_NEXT_MONTH[0],
+    'nn': SYM_NEXT_YEAR[0],
     'h' : SYM_SHOW_HELP[0],
     't' : SYM_SWITCH_THEME[0],
     'e' : SYM_SHOW_EVENTS[0],
@@ -337,16 +322,15 @@ CONTROL_MENU_ID = {
     'm' : SYM_SHOW_MENU[0],
 }
 
-
-#: row number where to display buttons
+# row number where to display buttons
 ROW_CONTROL_MENU = to_int(config['CONTENT'], 'ROW_CONTROL_MENU')
-#: symbols for control menu row
+# symbols for control menu row
 default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, ' ', SYM_SHOW_MENU, ' ', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
 SYMS_CONTROL_MENU = set_list(default, config['CONTENT'], 'SYMS_CONTROL_MENU', ROW_CONTROL_MENU)
 
-#: row number where to display shortcuts buttons
+# row number where to display shortcuts buttons
 ROW_SHORTCUTS = to_int(config['CONTENT'], 'ROW_SHORTCUTS')
-#: symbols to display in shortcuts row
+# symbols to display in shortcuts row
 default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_SWITCH_EVENT, ' ', ' ', SYM_SHOW_MENU))
 SYMS_SHORTCUTS = set_list(default, config['CONTENT'], 'SYMS_SHORTCUTS', ROW_SHORTCUTS)
 
@@ -367,23 +351,25 @@ def main(args, rofi_output):
     else:
         out = 'Nothing'
 
-
-    # get date given context
-    d = get_date(is_first_loop, args.is_force_read_cache, args.date)
+    # create CacheDate object (manage operation and writing to cache)
+    cdate = CacheDate()
+    # set date given context
+    cdate = set_date(cdate, is_first_loop, args.is_force_read_cache, args.date)
     # react to "date" event from rofi
-    d = process_event_date(out, d, args)
+    cdate = process_event_date(cdate, out, args)
     # send next datas to rofi
-    update_rofi(d.date, is_first_loop)
+    update_rofi(cdate.date, is_first_loop)
     # save  date
-    d.write_cache()
+    cdate.write_cache()
     # react to rofi output (read cache file to reload rofi)
 
     #if out in chain(SYM_SHOW_EVENTS, SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SWITCH_EVENT, SYM_SHOW_MENU):
-    process_event_popup(out, d)
+    process_event_popup(out, cdate)
 
 
-def get_date(is_first_loop, is_force_read_cache, arg_date):
-    """get date given the context
+def set_date(cdate, is_first_loop, is_force_read_cache, arg_date):
+    """set date given context
+    (read cache, get today date or set date argument)
 
     Parameters
     ----------
@@ -396,52 +382,49 @@ def get_date(is_first_loop, is_force_read_cache, arg_date):
 
     Returns
     -------
-    Date
-       Date object that contain the date to display
+    CacheDate
+       CacheDate object that contain the date to display
     """
 
-    d = Date()
     if not is_first_loop or is_force_read_cache:
-        d.read_cache() # read previous date
+        cdate.read_cache() # read previous date
     elif is_first_loop and arg_date:
-        d.set_month(arg_date) # command line force date
+        cdate.set_month(arg_date) # command line force date
     else: # at first loop if no force option
-        d.today()
+        cdate.today()
 
-    return d
+    return cdate
 
 
-def process_event_date(out, d, args):
+def process_event_date(cdate, out, args):
     """React to rofi output for "date" events"""
 
     out = out.strip()
     if out in strip_list(SYM_PREV_YEAR):
-        d.year -= 1
+        cdate.year -= 1
     elif out in strip_list(SYM_PREV_MONTH):
-        d.month -= 1
+        cdate.month -= 1
     elif out in strip_list(SYM_NEXT_MONTH):
-        d.month += 1
+        cdate.month += 1
     elif out in strip_list(SYM_NEXT_YEAR):
-        d.year += 1
+        cdate.year += 1
     elif out in strip_list(SYMS_DAYS_NUM):
         if args.print or args.clipboard:
-            set_pp_date(out, d.date, args.format)
-        #elif args.clipboard:
-        #    send2clipboard(out, d.date, args.format)
+            set_pp_date(out, cdate.date, args.format)
         else:
-            open_event(out, d.date, args.editor)
+            open_event(out, cdate.date, args.editor)
     else:
         joke(out)
 
-    return d
+    return cdate
 
 
-def process_event_popup(out, d):
+def process_event_popup(out, cdate):
     """React when shortcut for popup is enter in rofi prompt"""
 
     out = out.strip()
     if out in strip_list(SYM_SHOW_EVENTS):
-        show_events(d.date)
+        show_events(cdate.date)
     elif out in strip_list(SYM_SHOW_HELP):
         display_help()
     elif out in strip_list(SYM_SWITCH_THEME):
@@ -449,7 +432,7 @@ def process_event_popup(out, d):
     elif out in strip_list(SYM_SWITCH_EVENT):
         ask_event_to_display()
     elif out in strip_list(SYM_SHOW_MENU):
-        show_menu(d)
+        show_menu(cdate)
 
 
 def update_rofi(date, is_first_loop):
@@ -907,11 +890,13 @@ def show_events(date):
 
 
 @open_n_reload_rofi
-def show_menu(d):
+def show_menu(cdate):
+    """open popup menu"""
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
     output = rofi_popup("menu", menu, nb_lines=6, width=-30)
-    process_event_popup(output, d)
+    process_event_popup(output, cdate)
+
 
 #@open_n_reload_rofi
 def open_event(day_sym, date, editor):
@@ -925,6 +910,7 @@ def open_event(day_sym, date, editor):
 
     edit_event_file(event_path, editor)
 
+
 @open_n_reload_rofi
 def edit_event_file(event_path, editor=ARGS.editor):
 
@@ -936,7 +922,6 @@ def edit_event_file(event_path, editor=ARGS.editor):
         cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     sdtout, sdterr = p.communicate()
-
 
 
 @open_n_reload_rofi
@@ -964,6 +949,7 @@ def ask_theme():
         set_theme_cache(theme)
     else :
         print("this is not a valid theme", file=sys.stderr)
+
 
 def set_pp_date(day, date, f):
     """return select date to stdout given cmd line parameter '--format'"""
@@ -1022,9 +1008,16 @@ def first_time_init():
         display_help(head_txt="Welcome to naivecalendar")
 
 
-class Date:
+class CacheDate:
     """Class to store date
     Make easier reading and writing to date cache file
+
+    Attributes
+    ----------
+
+    year : Year
+    month: Month
+
     """
 
     def __init__(self):
@@ -1092,7 +1085,7 @@ class Year:
         Parameters
         ----------
         sourcedate : datetime.date
-            Date to Increment
+            CacheDate to Increment
         months : int
             number of years to add
 
@@ -1126,7 +1119,7 @@ class Month:
         Parameters
         ----------
         sourcedate : datetime.date
-            Date to Increment
+            CacheDate to Increment
         months : int
             number of month to add
 
@@ -1257,7 +1250,6 @@ That's all : press enter to continue...
 """
 
     rofi_popup("Help", txt, nb_lines=22)
-
 
 
 if __name__ == "__main__":

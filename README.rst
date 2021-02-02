@@ -180,7 +180,7 @@ Subcommands **update** and **add-event** could be useful to update all theme con
 
 .. code::
 
-    usage: naivecalendar [-h] [-v] [-p | -x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
+    usage: naivecalendar [-h] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
 
     A simple popup calendar
 
@@ -259,10 +259,14 @@ user content configuration         ~/.config/naivecalendar/**themes/\*.cfg**
 ..
 ----------------------------------------------------------------------------------------------
 day notes path (default)           ~/.naivecalendar_events/<event type>/**<date format>.txt**
+--------------------------------   -----------------------------------------------------------
+..
+----------------------------------------------------------------------------------------------
 remember date throught loops       ~/.cache/naivecalendar/**date_cache.ini**
 pass date to bash when -p option   ~/.cache/naivecalendar/**pretty_print_cache.txt**
 remember theme after quitting      ~/.cache/naivecalendar/**theme_cache.txt**
 remember event type                ~/.cache/naivecalendar/**event_cache.txt**
+last rofi command log file         ~/.cache/naivecalendar/**rofi_log.txt**
 ================================   ===========================================================
 
 

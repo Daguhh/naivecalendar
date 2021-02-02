@@ -1,5 +1,5 @@
-Build yourself
-==============
+Build
+=====
 
 .. include:: ../README.rst
    :start-after: .. _dev:
