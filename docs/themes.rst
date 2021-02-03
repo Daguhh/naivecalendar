@@ -39,63 +39,74 @@ Nord : round & square
 
 |round light nord| |square dark nord| 
 
+Modern : blue & wedgewood
+-------------------------
+
+|modern blue| |modern wedgewood|
+
 Misc : paper-float, lead pencil, blackboard & material
 ------------------------------------------------------
 
 |paper-float| |lead pencil| |blackboard| |material darker|
 
 .. |classic dark| image:: ./screenshots/classic_dark.png
-    :height: 180px
+    :height: 160px
 
 .. |classic light| image:: ./screenshots/classic_light.png
-    :height: 180px
+    :height: 160px
     :alt: classic light
 
 .. |classic dark compact| image:: ./screenshots/classic_dark_compact.png
-    :height: 120px
+    :height: 110px
     :alt: classic dark compact
 
 .. |classic light compact| image:: ./screenshots/classic_light_compact.png
-    :height: 120px
+    :height: 110px
     :alt: classic light compact
 
 .. |classic dark extended| image:: ./screenshots/classic_dark_extended.png
-    :height: 180px
+    :height: 170px
     :alt: classic dark extended
 
 .. |classic light extended| image:: ./screenshots/classic_light_extended.png
-    :height: 180px
+    :height: 170px
     :alt: classic light extended
 
 .. |round light nord| image:: ./screenshots/round_light_nord.png
-    :height: 180px
+    :height: 170px
     :alt: round light nord
 
 .. |square dark nord| image:: ./screenshots/square_dark_nord.png
-    :height: 180px
+    :height: 170px
     :alt: square dark nord
 
 .. |classic dark variant| image::  ./screenshots/classic_dark_variant.png
-    :height: 180px
+    :height: 170px
     :alt: classic_dark_variant
 
 .. |classic light variant| image::  ./screenshots/classic_light_variant.png
-    :height: 180px
+    :height: 170px
     :alt: classic_light_variant
 
 .. |material darker| image::  ./screenshots/material_darker.png
-    :height: 180px
+    :height: 170px
     :alt: material_darker
 
 .. |paper-float| image::  ./screenshots/paper-float.png
-    :height: 180px
+    :height: 170px
 
 .. |retro blue compact| image::  ./screenshots/retro_blue_compact.png
-    :height: 120px
+    :height: 110px
 
 .. |lead pencil| image::  ./screenshots/lead_pencil.png
-    :height: 180px
+    :height: 170px
 
 .. |blackboard| image::  ./screenshots/blackboard.png
-    :height: 180px
+    :height: 170px
+
+.. |modern blue| image::  ./screenshots/modern_blue.png
+    :height: 170px
+
+.. |modern wedgewood| image::  ./screenshots/modern_wedgewood.png
+    :height: 170px
 
