@@ -1,0 +1,95 @@
+/************************************************
+ * ROFI Color theme
+ * User: Daguhh
+ * Copyright: 2020 Daguhh
+ ***********************************************/
+
+@import "common/theme_light.rasi"
+@import "common/position.rasi"
+
+
+*{
+    white1 : #F6F6F6;
+    white2 : #C7FFD9;
+    white3 : #98DED9;
+    blue : #161D6F;
+    whatever : #1D666B;
+    whatever2 : #4D969B;
+    background1 : @whatever;
+    background : @white1;
+    foreground-normal : @whatever2;
+    background-select : @whatever;
+    foreground-active : @blue;
+    foreground-urgent : #AF5555;
+    
+}
+
+
+#window {
+    fullscreen:             false;
+    hide-scrollbar:         true;
+    line-padding:           10;
+    padding:                0px;
+    width:                  300px;
+    border-color:           @blue;
+    background-color:       @background;
+    text-color:             @blue;
+    border-radius: 20 20 20 20;
+}
+#mainbox {
+    border:  0;
+    background-color:   @background;
+    children : [inputbar, vertbox];
+}
+
+vertbox {
+    padding: 10;
+    children: [ listview ];
+}
+
+#listview {
+    columns:      7;
+    lines:        8;
+}
+
+#element.selected.normal {
+    border-radius : 30;
+}
+#element.selected.urgent {
+    border-radius : 30;
+}
+#element.selected.active {
+    border-radius : 30;
+}
+
+#entry {
+    spacing:    0;
+    text-color: @foreground;
+    background-color:   @background1;
+}
+#prompt {
+    spacing:    0;
+    text-color: @white3;
+    background-color:   @background1;
+    font : "Bitstream Vera Sans Mono Bold 18";
+}
+#inputbar {
+    children:   [prompt, entry];
+    background-color:   @background1;
+    padding : 10 0 10 80;
+    border-radius: 0 0 10 10;
+}
+#textbox-prompt-colon {
+    expand:     false;
+    str:        ":";
+    margin:     0px 0.3em 0em 0em ;
+    text-color: @foreground;
+    background-color:   @background1;
+}
+
+#case-indicator {
+    foreground-color: @background1;
+    background-color:   @background1;
+    enabled: false;
+}
+    
