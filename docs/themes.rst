@@ -27,7 +27,7 @@ Dark & Light : classic, extended, variant
 |classic dark extended| |classic light extended| 
 
 
-|classic dark variant|
+|classic dark variant| |classic light variant|
 
 Compact
 -------
@@ -39,60 +39,63 @@ Nord : round & square
 
 |round light nord| |square dark nord| 
 
-Misc : paper-float & lead pencil & blackboard
----------------------------------------------
+Misc : paper-float, lead pencil, blackboard & material
+------------------------------------------------------
 
-|paper-float| |lead pencil| |blackboard|
-
+|paper-float| |lead pencil| |blackboard| |material darker|
 
 .. |classic dark| image:: ./screenshots/classic_dark.png
-    :height: 220px
+    :height: 180px
 
 .. |classic light| image:: ./screenshots/classic_light.png
-    :height: 220px
+    :height: 180px
     :alt: classic light
 
 .. |classic dark compact| image:: ./screenshots/classic_dark_compact.png
-    :height: 140px
+    :height: 120px
     :alt: classic dark compact
 
 .. |classic light compact| image:: ./screenshots/classic_light_compact.png
-    :height: 140px
+    :height: 120px
     :alt: classic light compact
 
 .. |classic dark extended| image:: ./screenshots/classic_dark_extended.png
-    :height: 220px
+    :height: 180px
     :alt: classic dark extended
 
 .. |classic light extended| image:: ./screenshots/classic_light_extended.png
-    :height: 220px
+    :height: 180px
     :alt: classic light extended
 
 .. |round light nord| image:: ./screenshots/round_light_nord.png
-    :height: 220px
+    :height: 180px
     :alt: round light nord
 
 .. |square dark nord| image:: ./screenshots/square_dark_nord.png
-    :height: 220px
+    :height: 180px
     :alt: square dark nord
 
 .. |classic dark variant| image::  ./screenshots/classic_dark_variant.png
-    :height: 220px
+    :height: 180px
     :alt: classic_dark_variant
 
+.. |classic light variant| image::  ./screenshots/classic_light_variant.png
+    :height: 180px
+    :alt: classic_light_variant
+
 .. |material darker| image::  ./screenshots/material_darker.png
-    :height: 220px
+    :height: 180px
     :alt: material_darker
 
 .. |paper-float| image::  ./screenshots/paper-float.png
-    :height: 220px
+    :height: 180px
 
 .. |retro blue compact| image::  ./screenshots/retro_blue_compact.png
-    :height: 140px
+    :height: 120px
 
 .. |lead pencil| image::  ./screenshots/lead_pencil.png
-    :height: 220px
+    :height: 180px
 
 .. |blackboard| image::  ./screenshots/blackboard.png
-    :height: 220px
+    :height: 180px
 
