@@ -72,6 +72,8 @@ fi
 ############################  call rofi  #####################################
 ##############################################################################
 
+ROFI_LOG_FILE="$HOME/.cache/naivecalendar/rofi_log.txt"
+
 # Determine if is it a "first" call or a recursion
 if [ -z $NAIVECALENDAR_FIRST_CALL ]; then
     export NAIVECALENDAR_FIRST_CALL="true"
@@ -86,20 +88,19 @@ if [[ "$NAIVECALENDAR_FIRST_CALL" == "true" && "$NAIVECALENDAR_SECOND_CALL" == "
     loop_nb=0
     export NAIVECALENDAR_FIRST_CALL="false"
 
+    # empty log file at first call
+    echo "--- Init log file ---" > "$ROFI_LOG_FILE"
+
 elif [[ "$NAIVECALENDAR_FIRST_CALL" == "false" && "$NAIVECALENDAR_SECOND_CALL" == "true" ]]; then
     loop_nb=1
     export NAIVECALENDAR_FIRST_CALL="false"
     export NAIVECALENDAR_SECOND_CALL="false"
 
+
 elif [[ "$NAIVECALENDAR_FIRST_CALL" == "false" && "$NAIVECALENDAR_SECOND_CALL" == "false" ]]; then
     loop_nb=2
 fi
 
-# empty log file at first call
-ROFI_LOG_FILE="$HOME/.cache/naivecalendar/rofi_log.txt"
-if [ $loop_nb -eq 0 ]; then
-    echo "" > "$ROFI_LOG_FILE"
-fi
 
 # launch rofi
 rofi_output="$(rofi -show calendar \
@@ -107,8 +108,16 @@ rofi_output="$(rofi -show calendar \
     -theme-str '@theme "'$THEME'"' \
     2>&1)"
 
-#log
+# write to log (file will be time-reversed due to recursion)
+if [ $loop_nb -eq 0 ]; then
+    echo -e "\n--- first call ---" >> "$ROFI_LOG_FILE"
+elif [ $loop_nb -eq 1 ]; then
+    echo -e "\n--- first recursion ---" >> "$ROFI_LOG_FILE"
+elif [ $loop_nb -eq 2 ]; then
+    echo -e "\n--- 2+ recursion ---" >> "$ROFI_LOG_FILE"
+fi
 echo "$rofi_output" >> "$ROFI_LOG_FILE"
+
 
 ##############################################################################
 ####################  Naivecalendar ouputs ###################################
