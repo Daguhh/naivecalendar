@@ -6,14 +6,16 @@ naivecalendar-update
 
 
 .SH SYNOPSIS
-.B naivecalendar-update-all-themes [-h] [-s] [-L] [-p
+.B naivecalendar-update [-h] [-s] [-L] [-a] [-p
 .I PARAMETER
 .B ] [-v 
 .I NEW_VALUE
+.B ] [-f 
+.I REGEX
 .B ] 
 
 .SH DESCRIPTION
-.B naivecalendar-update-all-themes
+.B naivecalendar-update
 is a bash script to update a parameter for all naivecalendar themes in ~/.config/naivecalendar/themes at once
 
 /!\\ Save your themes before use!
@@ -33,10 +35,18 @@ don't change files and print to stdout
 show all parameters names
 
 .TP
-.B -p|--parameter PARAMETER
+.B -a|--all-parameters
+open an editor to giva a value to all parameters
+
+.TP
+.BI -p|--parameter " "PARAMETER
 parameter to change in all config files
 
 .TP
-.B -v|--value NEW_VALUE
+.BI -v|--value " "NEW_VALUE
 new value to set (see any config file for type and format)
+
+.TP
+.BI -f|--filter " "REGEX
+only edit themes with names that match the extended-regexp (grep -E)
 

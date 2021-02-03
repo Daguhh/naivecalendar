@@ -61,15 +61,15 @@ print date to stdout instead of opening a note
 copy date to clipboard
 
 .TP
-.B -f|--format FORMAT
+.BI -f|--format " "FORMAT
 option '-p' or '-x' output format (datetime.strftime format, defaut='%Y-%m-%d')
 
 .TP
-.B -e|--editor EDITOR
+.BI -e|--editor " "EDITOR
 editor command to open notes
 
 .TP
-.B -l|--locale LOCALE
+.BI -l|--locale " "LOCALE
 force system locale, for example '-l es_ES.utf8'
 
 .TP
@@ -77,11 +77,11 @@ force system locale, for example '-l es_ES.utf8'
 force calendar to read old date from cache
 
 .TP
-.B -t|--theme THEME
+.BI -t|--theme " "THEME
 set calendar theme, default=classic_dark (theme file name without extention)
 
 .TP
-.B -d|--date DATE  
+.BI -d|--date " "DATE  
 display calendar at the given month, format='%m-%Y'
 
 .SH FILES
@@ -124,4 +124,8 @@ remember theme after quitting
 .RS
 remember event type after quitting      
 
+.RE
+.I ~/.cache/naivecalendar/rofi_log.txt
+.RS
+rofi command log of previous session 
 

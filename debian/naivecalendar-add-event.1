@@ -1,12 +1,12 @@
 .TH NAIVECALENDAR 1 "January 6, 2021"
 
 .SH NAME
-naivecalendar-update
-- script to update all naivecalendar theme at once
+naivecalendar-add-event
+- Add, modify, delete an event entry in all user themes
 
 
 .SH SYNOPSIS
-.B naivecalendar-update-all-themes [-h] [-o] [-n|-d
+.B naivecalendar-add-event [-h] [-o] [-n|-d
 .I EVENT_NAME
 .B ] [-v 
 .I NEW_VALUE
@@ -27,11 +27,11 @@ is a bash script to create, override, delete an event definition for all naiveca
 show this help message and exit
 
 .TP
-.B -n|--new NEW_EVENT
+.BI -n|--new " "NEW_EVENT
 name of the new event
 
 .TP
-.B -v|--value NEW_VALUE
+.BI -v|--value " "NEW_VALUE
 string value of the new event (see any config file for format spec)
 
 .TP
