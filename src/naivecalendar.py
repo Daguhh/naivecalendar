@@ -872,14 +872,20 @@ def open_n_reload_rofi(func):
 
 @open_n_reload_rofi
 def show_events(date):
-    """open rofi popup with events list of selected month"""
+    """open rofi popup with events list of selected month
+
+    Parameters
+    ----------
+    date : datetime.date
+        current month
+    """
 
     events_heads = get_month_events_heads(date)
     output = rofi_popup(EVENTS_DEFAULT, events_heads)
 
     event= EVENTS_PATHS[EVENTS_DEFAULT]
 
-    event_folder = event.parent
+    event_folder = date.strftime(str(event.parent))
     event_name = output.split(':')[0].strip()
     event_ext = event.suffix
 

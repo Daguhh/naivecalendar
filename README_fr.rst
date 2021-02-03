@@ -231,7 +231,7 @@ Des `themes sont disponibles <https://framagit.org/Daguhh/naivecalendar/-/blob/m
 
 Vous pouvez commencer avec une copie des thèmes "officiels"::
 
-    cp /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
+    cp -r /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
 
 .. note::
 

@@ -223,7 +223,7 @@ Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/mast
 
 You can start from a copy of "officials" themes::
 
-    cp /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
+    cp -r /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
 
 .. note::
 
