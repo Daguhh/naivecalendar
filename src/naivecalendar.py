@@ -1254,17 +1254,16 @@ def display_help(head_txt="help:"):
     """Show a rofi popup with help message"""
 
 
-    txt = f"""This calendar is interactive. Here some tips:
+    txt = f"""NaïveCalendar {__version__}
 
+Usage:
  - Use mouse or keyboard to interact with the calendar.
  - Hit bottom arrows to cycle through months.
  - Hit a day to create a linked event.
 (A day with attached event will appear yellow.)
  - Create multiple event type and with between them
 
-
-There's somme shortcut too, type it in rofi prompt :
-    """
+Shortcuts (type it in rofi prompt) :"""
 
     txt += '\n{:>20} : display this help'.format(','.join(SYM_SHOW_HELP[:-1]))
     txt += '\n{:>20} : go to previous year'.format(','.join(SYM_PREV_YEAR))
@@ -1275,35 +1274,30 @@ There's somme shortcut too, type it in rofi prompt :
     txt += '\n{:>20} : switch events folder to display'.format(','.join(SYM_SWITCH_EVENT[:-1]))
     txt += '\n{:>20} : show theme selector'.format(','.join(SYM_SWITCH_THEME[:-1]))
     txt += '\n{:>20} : display a selection menu (skip shortcuts)'.format(','.join(SYM_SHOW_MENU[:-1]))
-    txt += '\n'
 
     txt += f"""\n
-There's some command line option too :
+Command line option:
 
 subcommands:
     update      Update a calendar parameter for all user themes at once
     add-event   Add, modify, delete event in all user themes config at once
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
-  -p, --print           print date to stdout instead of opening a event
-  -x, --clipboard       copy date to clipboard
-  -f FORMAT, --format FORMAT
-                        option '-p' or '-x' output format (datetime.strftime format, defaut='%Y-%m-%d')
-  -e EDITOR, --editor EDITOR
-                        editor command to open events
-  -l LOCALE, --locale LOCALE
-                        force system locale, for example '-l es_ES.utf8'
-  -c, --read-cache      force calendar to read old date from cache
-  -t THEME, --theme THEME
-                        set calendar theme, default=classic_dark (theme file name without extention)
-  -d DATE, --date DATE  display calendar at the given month, format='%m-%Y'
+      -h, --help
+      -v, --version
+      -p, --print
+      -x, --clipboard
+      -f FORMAT, --format FORMAT
+      -e EDITOR, --editor EDITOR
+      -l LOCALE, --locale LOCALE
+      -c, --read-cache
+      -t THEME, --theme THEME
+      -d DATE, --date DATE
 
 That's all : press enter to continue...
 """
 
-    rofi_popup("Help", txt, nb_lines=22)
+    rofi_popup("Help", txt, nb_lines=20)
 
 
 if __name__ == "__main__":

@@ -37,7 +37,7 @@ if [[ " ${param[@]} " =~ " -t " ]] || [[ " ${param[@]} " =~ " --theme " ]] ; the
         shift # past value
     done
     # search in user path before
-    THEME="$THEME_USER_PATH/$OPT_THEME).rasi"
+    THEME="$THEME_USER_PATH/$OPT_THEME.rasi"
     if ! test -f "$THEME"; then
         THEME="$THEME_SOURCE_PATH/$OPT_THEME.rasi"
     fi
