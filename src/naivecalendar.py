@@ -202,7 +202,7 @@ def set_list(default, section, key, row):
     elif vals == '': # use default vals
         return [DAY_FORMAT.format(s) for s in default]
     elif key == 'SYMS_DAYS_NUM':
-        to_list(vals)
+        return to_list(vals)
     else: # parse config values
         #return to_list(vals)
         return [CONTROL_MENU_ID[x.strip()] if x.strip() in CONTROL_MENU_ID.keys() else ' ' for x in to_list(vals)]
