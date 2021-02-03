@@ -1,10 +1,17 @@
-v0.7.1 : 
+v0.7.2 : Socialism
+
+	Minor:
+		Themes now share common ressources
+	Bugs:
+		log was erased at last loop
+		reopen notes with "strftime folder" in show event popup
+		
+v0.7.1 : Faith
 
 	Minor:
 		Capture rofi close error when openning menus
 		Save session cmd parameters after openning menu
 		Events now support strftime format in folder name
-		Themes now share common ressources
 
 	Bugs:
 		Only execute -p and -x action once (not in recursions)		

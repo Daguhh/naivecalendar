@@ -17,8 +17,6 @@ from itertools import chain
 from functools import wraps
 import time
 
-#from parse_cmd_opt import get_arguments
-
 def get_arguments():
     """Parse command line arguments
 
@@ -369,6 +367,7 @@ def main(args, rofi_output):
 
 def set_date(cdate, is_first_loop, is_force_read_cache, arg_date):
     """set date given context
+
     (read cache, get today date or set date argument)
 
     Parameters
@@ -397,7 +396,22 @@ def set_date(cdate, is_first_loop, is_force_read_cache, arg_date):
 
 
 def process_event_date(cdate, out, args):
-    """React to rofi output for "date" events"""
+    """React to rofi output for "date" events
+
+    Parameters
+    ----------
+    cdate : CacheDate
+        current month
+    out : str
+        rofi output
+    args : argparse.Namespace
+        print, clipboard, format, editor arguments
+
+    Returns
+    -------
+    CacheDate
+        new month to display
+    """
 
     out = out.strip()
     if out in strip_list(SYM_PREV_YEAR):
@@ -420,7 +434,15 @@ def process_event_date(cdate, out, args):
 
 
 def process_event_popup(out, cdate):
-    """React when shortcut for popup is enter in rofi prompt"""
+    """React to rofi event hat open a popup window
+
+    Parameters
+    ----------
+    out : str
+        rofi output
+    cdate : CacheDate
+        current month
+    """
 
     out = out.strip()
     if out in strip_list(SYM_SHOW_EVENTS):
@@ -447,7 +469,6 @@ def update_rofi(date, is_first_loop):
         A day of the month to display
     is_first_loop : bool
         True on first loop, if true, update today highlights
-
     """
 
     date_prompt = date.strftime(PROMT_DATE_FORMAT).title()
@@ -663,7 +684,7 @@ def rofi2list(datas):
     return datas.split("\n")
 
 
-def get_month_events_heads(date):
+def parse_month_events_files(date):
     """
     Return a list of file's first line of a specific month
 
@@ -678,17 +699,34 @@ def get_month_events_heads(date):
         A rofi formatted list of month's events first line
     """
 
-    event_lst = get_month_events(date)
-
-    heads = [get_event_head(n) for n in event_lst]
-    prompts = [pathlib.Path(n).stem for n in event_lst]
-
+    # paths
+    events_paths = get_month_events(date)
+    # first line
+    heads = [parse_event_file(n) for n in events_paths]
+    # file name
+    prompts = [pathlib.Path(n).stem for n in events_paths]
+    # return : <file_name> : <first line> for each event
     return "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
 
 
-def get_event_head(event_path):
-    """
-    Return first line of a text file
+def parse_event_file(event_path):
+    """Parse event file for compact display
+
+    **Event format:**
+
+    - Section ::
+
+        [9H30] rdv with truc <---- will be displayed
+        Some text
+        Some text again
+        [14H30] rdv with muche <----- will be displayed
+        Some text again again
+
+    - header ::
+
+        # Note Title  <---- only first line is displayed
+        Some text
+        Some text again...
 
     Parameters
     ----------
@@ -698,18 +736,19 @@ def get_event_head(event_path):
     Returns
     -------
     str
-        First line of the text file
+        Parsed lines
     """
 
     with open(event_path, "r") as f:
         note_txt = f.read()
 
+    # get lines with [section]
     head = list(re.findall('\[.*\].*', note_txt))
 
-    if head:
-        return '\n' + '\n'.join(head)
-    else:
-        return note_txt.split("\n")[0]
+    if head: # if sections
+        return '\n' + '\n'.join(head) # join them into multilines
+    else: # otherwise
+        return note_txt.split("\n")[0] # get first line
 
 
 def get_row_rofi_inds(row):
@@ -729,9 +768,9 @@ def get_row_rofi_inds(row):
     return ",".join(str(i * NB_ROW + row) for i in range(NB_COL))
 
 
-def rofi2cal_ind(ind):
-    """ Convert coordinate from rofi to day number """
-    pass
+#def rofi2cal_ind(ind):
+#    """ Convert coordinate from rofi to day number """
+#    pass
 
 
 def cal2rofi_ind(day, month, year):
@@ -752,18 +791,23 @@ def cal2rofi_ind(day, month, year):
     int
         A rofi index
     """
-    # correct day offset
+
+    # day number area offset in calendar
     cal_offset = NB_COL * ROW_CAL_START
-    day = int(day) - 1  # make month start at 0
+
+    # offset due to first month day
     start_day, _ = calendar.monthrange(year, month)
+    # and correct by day starting the week
     ind_start_day = (start_day - (FIRST_DAY_WEEK - 1)) % 7
 
-    ind_r = cal_offset + day + ind_start_day
+    # make month start at 0
+    day = int(day) - 1
 
+    # row-by-row index
+    ind_r = cal_offset + day + ind_start_day
     # calendar coordinate
     row, col = ind_r // NB_COL, ind_r % NB_COL
-
-    # rofi coordinate
+    # rofi coordinate (column-by-column index)
     ind_c = col * NB_ROW + row
 
     return ind_c
@@ -787,20 +831,20 @@ def get_month_events(date):
     # folder of the actual watched events
     path = EVENTS_PATHS[EVENTS_DEFAULT]
 
-    # make all elements that change during a month (d, h, m, s) match a regex
+    # transform all directive  '< montth'  into regex
     # "%a-%d-%b-%m-%Y" --> "[a-zA-Z.]*-[0-9]*-%b-%m-%Y"
     file_pattern = re.sub('%-{0,1}[dwjhHIMSfzZ]', '[0-9]*', str(path))
     file_pattern = re.sub('%[aAp]', '[a-zA-Z.]*', file_pattern)
 
-    # format all element that identify the month (year, month)
+    # format all others directives (>= month) with date
     # "[a-zA-Z.]*-[0-9]*-%b-%m-%Y" --> "[a-zA-Z.]*-[0-9]*-Jan.-01-2021"
     file_pattern = date.strftime(file_pattern) #f"{date.year}-{date.month}-"
 
     # return all elements that belong to current month (match previous regex)
     path = pathlib.Path(file_pattern)
-    event_lst = list(pathlib.Path(path.parent).glob(path.name))
+    events_paths = list(pathlib.Path(path.parent).glob(path.name))
 
-    return event_lst
+    return events_paths
 
 
 def get_month_events_ind(date):
@@ -819,18 +863,18 @@ def get_month_events_ind(date):
     """
 
     # get file list
-    event_lst = get_month_events(date)
+    events_paths = get_month_events(date)
     # get event day number
     date_format = EVENTS_PATHS[EVENTS_DEFAULT].name
     # make capture group for day number (%d)
     pattern = re.sub('%d',r'([0-9]*)', date_format)
-    # create pattern for %-d, %w, %a, %A
+    # create pattern for directives < month
     pattern = re.sub('%-{0,1}[dwjhHIMSfzZ]',r'[0-9]*', pattern)
     pattern = re.sub('%[aAp]',r'[a-zA-Z.]*', pattern)
-    # replace other (month and year) with real date
+    # replace other (>= month) with real date
     pattern = date.strftime(pattern)
-    # match the day (%d) capture group for each event in event_lst
-    days = [re.match(pattern, f.name).group(1) for f in event_lst]
+    # match the day (%d) capture group for each event in events_paths
+    days = [re.match(pattern, f.name).group(1) for f in events_paths]
     # transform into rofi index
     inds = [cal2rofi_ind(int(d), date.month, date.year) for d in days]
     # format into rofi command
@@ -880,8 +924,8 @@ def show_events(date):
         current month
     """
 
-    events_heads = get_month_events_heads(date)
-    output = rofi_popup(EVENTS_DEFAULT, events_heads)
+    parsed_events = parse_month_events_files(date)
+    output = rofi_popup(EVENTS_DEFAULT, parsed_events)
 
     event= EVENTS_PATHS[EVENTS_DEFAULT]
 
@@ -897,7 +941,9 @@ def show_events(date):
 
 @open_n_reload_rofi
 def show_menu(cdate):
-    """open popup menu"""
+    """open popup menu
+
+    (list <theme>.cfg SHORTCUTS section entries)"""
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
     output = rofi_popup("menu", menu, nb_lines=6, width=-30)
@@ -906,19 +952,19 @@ def show_menu(cdate):
 
 #@open_n_reload_rofi
 def open_event(day_sym, date, editor):
-    """open event for the selected date"""
+    """open event with editor for the selected date"""
 
     day_ind = strip_list(SYMS_DAYS_NUM).index(day_sym) +1
 
     date_format = str(EVENTS_PATHS[EVENTS_DEFAULT])
     event_path = datetime.date(date.year, date.month, day_ind).strftime(date_format)
-    #event_path = S_PATH}/{event_name}.txt"
 
     edit_event_file(event_path, editor)
 
 
 @open_n_reload_rofi
 def edit_event_file(event_path, editor=ARGS.editor):
+    """open event file with text editor"""
 
     event_folder = pathlib.Path(event_path).parent
     if not os.path.isdir(event_folder):
@@ -932,6 +978,7 @@ def edit_event_file(event_path, editor=ARGS.editor):
 
 @open_n_reload_rofi
 def ask_event_to_display():
+    """Popup that show all events type"""
 
     events = list(EVENTS_PATHS.keys())
     events = list2rofi(events)
@@ -1017,6 +1064,7 @@ def first_time_init():
 class CacheDate:
     """Class to store date
     Make easier reading and writing to date cache file
+    Make easier operation on date
 
     Attributes
     ----------
