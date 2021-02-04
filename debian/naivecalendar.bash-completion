@@ -33,7 +33,7 @@ SYM_BACK_TO_CALENDAR
 
 submodules_options="update add-event"
 
-naivecalendar_options="--help --version --print --clipboard --format --editor --locale --read-cache --theme --date"
+naivecalendar_options="--help --version --verbose --print --clipboard --format --editor --locale --read-cache --theme --date"
 
 update_options="--help --simulate --list-parameters --parameter --value --filter --all-parameters --editor"
 update_param_exclude="--help --all-parameters --list-parameters --editor"
@@ -211,7 +211,7 @@ _myscript_tab_complete () {
     else
 
         prevs=$(echo $prevs | sed -e 's/\hx\b/-help/')
-        prevs=$(echo $prevs | sed -e 's/\bv\b/-version/')
+        prevs=$(echo $prevs | sed -e 's/\bV\b/-version/')
         prevs=$(echo $prevs | sed -e 's/\bp\b/-print/')
         prevs=$(echo $prevs | sed -e 's/\bx\b/-clipboard/')
         prevs=$(echo $prevs | sed -e 's/\bf\b/-format/')
@@ -220,6 +220,7 @@ _myscript_tab_complete () {
         prevs=$(echo $prevs | sed -e 's/\bc\b/-read-cache/')
         prevs=$(echo $prevs | sed -e 's/\bt\b/-theme/')
         prevs=$(echo $prevs | sed -e 's/\bd\b/-date/')
+        prevs=$(echo $prevs | sed -e 's/\bv\b/-verbose/')
 
         # show examples when option require a value
         if [[ "$prev" == "-t" || $prev == "--theme" ]] ; then
@@ -234,7 +235,7 @@ _myscript_tab_complete () {
             options="xdg-open" #_get_update_opt
         elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
             options=" " 
-        elif [[ "$prev" == "-v" || $prev == "--version" ]] ; then
+        elif [[ "$prev" == "-V" || $prev == "--version" ]] ; then
             options=" " 
 
         # list all but remove already listed options

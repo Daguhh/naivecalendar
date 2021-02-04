@@ -1,3 +1,12 @@
+v0.7.3 : Derivation
+
+	Minor:
+		Add "modern" themes
+		Revert log file 
+	Bugs:
+		missing return in set_list function
+		typing error when searching for theme existence in user path
+
 v0.7.2 : Socialism
 
 	Minor:

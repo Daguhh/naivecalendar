@@ -39,12 +39,18 @@ subcommands:
     )
 
     parser.add_argument(
-        '-v',
+        '-V',
         '--version',
         action='version',
         version="%(prog)s " + __version__
     )
 
+    parser.add_argument(
+        '-v',
+        '--verbose',
+        help="direct rofi error to stdout",
+        action="store_true",
+    )
     parser.add_argument(
         "-p",
         "--print",

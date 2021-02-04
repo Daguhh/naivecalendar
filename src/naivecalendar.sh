@@ -14,7 +14,7 @@ if [[ " ${param[@]} " =~ " -h " ]] || [[ " ${param[@]} " =~ " --help " ]] ; then
 fi
 
 # display version msg
-if [[ " ${param[@]} " =~ " -v " ]] || [[ " ${param[@]} " =~ " --version " ]] ; then
+if [[ " ${param[@]} " =~ " -V " ]] || [[ " ${param[@]} " =~ " --version " ]] ; then
     $cmd
     exit 0
 fi
@@ -89,7 +89,7 @@ if [[ "$NAIVECALENDAR_FIRST_CALL" == "true" && "$NAIVECALENDAR_SECOND_CALL" == "
     export NAIVECALENDAR_FIRST_CALL="false"
 
     # empty log file at first call
-    echo "--- Init log file ---" > "$ROFI_LOG_FILE"
+    echo "--- end naivecalendar rofi log ---" > "$ROFI_LOG_FILE"
 
 elif [[ "$NAIVECALENDAR_FIRST_CALL" == "false" && "$NAIVECALENDAR_SECOND_CALL" == "true" ]]; then
     loop_nb=1
@@ -108,15 +108,16 @@ rofi_output="$(rofi -show calendar \
     -theme-str '@theme "'$THEME'"' \
     2>&1)"
 
-# write to log (file will be time-reversed due to recursion)
+# write to log file (prepend because of recursion)
+printf '%s\n' "$rofi_output" | tac | while read -r line; do sed -i '1s?^?'"$line"'\n?' "$ROFI_LOG_FILE"; done
+
 if [ $loop_nb -eq 0 ]; then
-    echo -e "\n--- first call ---" >> "$ROFI_LOG_FILE"
+    sed -i  "1i--- first call ---" "$ROFI_LOG_FILE"
 elif [ $loop_nb -eq 1 ]; then
-    echo -e "\n--- first recursion ---" >> "$ROFI_LOG_FILE"
+    sed -i "1i--- first recursion ---" "$ROFI_LOG_FILE"
 elif [ $loop_nb -eq 2 ]; then
-    echo -e "\n--- 2+ recursion ---" >> "$ROFI_LOG_FILE"
+    sed -i "1i--- 2+ recursion ---" "$ROFI_LOG_FILE"
 fi
-echo "$rofi_output" >> "$ROFI_LOG_FILE"
 
 
 ##############################################################################
@@ -137,6 +138,10 @@ if [ "$loop_nb" -eq 0 ]; then
         FILE="$HOME/.cache/naivecalendar/pretty_print_cache.txt"
         cat $FILE > "$HOME/temp.txt"
         printf "%s" "$(cat $FILE)"
+    fi
+
+    if [[ " ${param[@]} " =~ " -v " ]] || [[ " ${param[@]} " =~ " --verbose " ]]; then
+        cat "$ROFI_LOG_FILE"
     fi
 fi
 
