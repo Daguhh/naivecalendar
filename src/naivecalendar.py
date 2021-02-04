@@ -8,7 +8,7 @@ Cycle through month and create linked event to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
-__version__ = "0.7.2"
+__version__ = "0.7.3"
 
 import glob, os, sys, subprocess, shutil, pathlib
 import re, argparse, configparser
@@ -1003,7 +1003,7 @@ def ask_theme():
     themes = list2rofi(sorted(set(themes)))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue", nb_lines=8, width=-60)
+    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue", nb_lines=9, width=-60)
     if theme in themes:
         set_theme_cache(theme)
     else :
@@ -1290,7 +1290,8 @@ subcommands:
 
 optional arguments:
       -h, --help
-      -v, --version
+      -V, --version
+      -v, --verbose
       -p, --print
       -x, --clipboard
       -f FORMAT, --format FORMAT

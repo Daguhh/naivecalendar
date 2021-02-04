@@ -186,7 +186,7 @@ Les sous-commandes **update** et **add-event** peuvent vous permettre d'éditere
 
 .. code::
 
-    usage: naivecalendar [-h] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
+    usage: naivecalendar [-h] [-V] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
 
     A simple popup calendar
 
@@ -196,7 +196,8 @@ Les sous-commandes **update** et **add-event** peuvent vous permettre d'éditere
 
     optional arguments:
       -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
+      -V, --version         show program's version number and exit
+      -v, --verbose         direct rofi command  errors to stdout
       -p, --print           print date to stdout instead of opening a event
       -x, --clipboard       copy date to clipboard
       -f FORMAT, --format FORMAT
