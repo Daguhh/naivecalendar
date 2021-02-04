@@ -2,31 +2,34 @@
 NaïveCalendar
 =============
 
+A popup calendar with rofi_ and python3_
+
 |readme_fr| |git_badge| |doc sphinx| |deb package|
 
-    **naïf, naïve n. adj**.
+**naïf, naïve n. adj**.
 
     `1.` *LITTERAIRE* Qui est naturel, sans artifice, spontané. Art naïf, art populaire, folklorique. —  Un peintre naïf.
 
     `2.` *COURANT* Qui est plein de confiance et de simplicité par ignorance, par inexpérience. ➙ candide, ingénu, simple. —  Qui exprime des choses simples que tout le monde sait. Remarque naïve. ➙ simpliste.
 
-    LeRobert_
-
-
-A popup calendar with `rofi`_ and `python3`_
+    -- LeRobert_
 
 |classic dark extended| |classic light extended|
 
 Features
 --------
  
-* Cycle through calendar months by months, years by years.
-* Use locale or force any language
-* Create notes linked to days. *Days with notes will appear colored*.
-* Create multiple notes types (i.e. folders) and switch between them
-* Customize themes, content, symbols, shortcuts with text files
-* Change theme on the fly
-* Integrate it with your scripts and make them more interactive: open on a particular date, request a date. 
+* **Interactive** : Cycle through calendar months by months, years by years.
+* **Locale support** : Automatic or force desired one
+* **Events** : Create notes linked to days, create multiple notes types, switch between them, (link to other app?)
+* **Customize** : change themes, content, symbols, shortcuts with text files, switch on the fly
+* **Integrate** : use it in your scripts and make them more interactive: open on a particular date, request a date, copy-to-clipboard. 
+
+.. admonition:: Author note
+
+    This script/programm/app/whatever you call it, is a spare time and learning purpose project, nevertheless I hope you will find it useful. I intended this rofi_ diversion to be used with `my polybar/i3 installation <https://framagit.org/Daguhh/naivecalendar/-/wikis/home>`_. 
+    
+    Although it's seems working fine to me, there might be still some (ok, there are) bugs, so feel free to open an issue for any comment or consideration.
 
 .. _contents:
 
@@ -70,7 +73,7 @@ Plus, a couple of theme files:
 - /themes/**<theme>.rasi** : a rofi configration file (shape and colors)
 - /themes/**<theme>.cfg** : an ini file that define calendar content
 
-Simply copy those files in the same folder (.ie : keep the tree as it is)
+Simply copy those files (src folder content) in the same place (.ie : keep the tree as it is), remove as many theme as you want, but please keep at least *classic_dark* default theme. 
 
 Then, Launch with:: 
 
@@ -129,6 +132,8 @@ Sym     Keys                     Action
   ☰     menu       mm       ..   display menu 
 ====  ======  =======  ========  ========================================
 
+.. _Events:
+
 Events
 ^^^^^^
 
@@ -176,7 +181,7 @@ Options
 ^^^^^^^
 
 Some command line options are avaible and can be useful if you want to integrate the naivecalendar in a script or temporarily override parameters.
-Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually.
+Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually (use completion).
 
 .. code::
 
@@ -212,14 +217,14 @@ Customize
 
 You can edit parameters :
 
-- calendar content : **<theme>.cfg** files in theme folder
-- calendar appearance : **<theme>.rasi** files in themes folder 
+- calendar content : **<theme>.cfg** 
+- calendar appearance : **<theme>.rasi** 
 
 .. warning::
 
-   adjusting content that can induce row number variation may require editing calendar shape too
+   adjusting content that can induce row number variation may require editing calendar shape too. See more details in .cfg files.
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes*. 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *~/.config/naivecalendar/themes*. 
 
 You can start from a copy of "officials" themes::
 
@@ -229,13 +234,13 @@ You can start from a copy of "officials" themes::
 
     If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
 
-Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files), see (use completion)::
+Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files)::
 
     naivecalendar <subcommand> -h
 
 .. note::
 
-   There is no specific tool to update .rasi files, but they share some ressources in *src/themes/common*, for example, you can update calendar position for all themes in *position.rasi*
+   There is no specific tool to update .rasi files, but they share some ressources in *themes/common/*, for example, you can update calendar position for all themes in *position.rasi*
 
 .. _files:
 
@@ -247,23 +252,29 @@ Here is a brief description of files needed/generated by the naivecalendar
 ================================   ===========================================================
 Function                           File
 ================================   ===========================================================
-..
+**Minimal : required**
 ----------------------------------------------------------------------------------------------
 rofi command                       /usr/share/naivecalendar/**naivecalendar.sh**
 script called by rofi              /usr/share/naivecalendar/**naivecalendar.py**
 rofi theme files                   /usr/share/naivecalendar/**themes/\*.rasi**
 calendar content configuration     /usr/share/naivecalendar/**themes/\*.cfg**
 --------------------------------   -----------------------------------------------------------
-..
+**Installation & optional**
+----------------------------------------------------------------------------------------------
+system command                      /usr/bin/**naivecalendar**
+theme config editor command         /usr/share/naivecalendar/tools/**naivecalendar-update**
+theme event editor command          /usr/share/naivecalendar/tools/**naivecalendar-add-event**
+--------------------------------   -----------------------------------------------------------
+**User themes : optional**
 ----------------------------------------------------------------------------------------------
 user theme files                   ~/.config/naivecalendar/**themes/\*.rasi**
 user content configuration         ~/.config/naivecalendar/**themes/\*.cfg**
 --------------------------------   -----------------------------------------------------------
-..
+**Event : editable**
 ----------------------------------------------------------------------------------------------
 day notes path (default)           ~/.naivecalendar_events/<event type>/**<date format>.txt**
 --------------------------------   -----------------------------------------------------------
-..
+**Generated**
 ----------------------------------------------------------------------------------------------
 remember date throught loops       ~/.cache/naivecalendar/**date_cache.ini**
 pass date to bash when -p option   ~/.cache/naivecalendar/**pretty_print_cache.txt**
