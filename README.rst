@@ -19,13 +19,11 @@ A popup calendar with rofi_ and python3_
 Features
 --------
  
-* Cycle through calendar months by months, years by years.
-* Use locale or force any language
-* Create notes linked to days. *Days with notes will appear colored*.
-* Create multiple notes types (i.e. folders) and switch between them
-* Customize themes, content, symbols, shortcuts with text files
-* Change theme on the fly
-* Integrate it with your scripts and make them more interactive: open on a particular date, request a date. 
+* **Interactive** : Cycle through calendar months by months, years by years.
+* **Locale support** : Automatic or force desired one
+* **Events** : Create notes linked to days, create multiple notes types, switch between them, (`link to other app`_?)
+* **Customize** : change themes, content, symbols, shortcuts with text files, switch on the fly
+* **Integrate** : use it in your scripts and make them more interactive: open on a particular date, request a date, copy-to-clipboard. 
 
 .. admonition:: Author note
 
@@ -133,6 +131,8 @@ Sym     Keys                     Action
       theme       tt       ..   display theme selector
   ☰     menu       mm       ..   display menu 
 ====  ======  =======  ========  ========================================
+
+.. _link to other app:
 
 Events
 ^^^^^^
