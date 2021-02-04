@@ -181,7 +181,7 @@ Options
 ^^^^^^^
 
 Some command line options are avaible and can be useful if you want to integrate the naivecalendar in a script or temporarily override parameters.
-Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually.
+Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually (use completion).
 
 .. code::
 
@@ -217,14 +217,14 @@ Customize
 
 You can edit parameters :
 
-- calendar content : **<theme>.cfg** files in theme folder
-- calendar appearance : **<theme>.rasi** files in themes folder 
+- calendar content : **<theme>.cfg** 
+- calendar appearance : **<theme>.rasi** 
 
 .. warning::
 
-   adjusting content that can induce row number variation may require editing calendar shape too
+   adjusting content that can induce row number variation may require editing calendar shape too. See more details in .cfg files.
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *naivecalendar/themes*. 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *~/.config/naivecalendar/themes*. 
 
 You can start from a copy of "officials" themes::
 
@@ -234,13 +234,13 @@ You can start from a copy of "officials" themes::
 
     If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
 
-Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files), see (use completion)::
+Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files)::
 
     naivecalendar <subcommand> -h
 
 .. note::
 
-   There is no specific tool to update .rasi files, but they share some ressources in *src/themes/common*, for example, you can update calendar position for all themes in *position.rasi*
+   There is no specific tool to update .rasi files, but they share some ressources in *themes/common/*, for example, you can update calendar position for all themes in *position.rasi*
 
 .. _files:
 
