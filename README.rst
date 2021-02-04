@@ -21,7 +21,7 @@ Features
  
 * **Interactive** : Cycle through calendar months by months, years by years.
 * **Locale support** : Automatic or force desired one
-* **Events** : Create notes linked to days, create multiple notes types, switch between them, (`link to other app`_?)
+* **Events** : Create notes linked to days, create multiple notes types, switch between them, (link to other app?)
 * **Customize** : change themes, content, symbols, shortcuts with text files, switch on the fly
 * **Integrate** : use it in your scripts and make them more interactive: open on a particular date, request a date, copy-to-clipboard. 
 
@@ -132,7 +132,7 @@ Sym     Keys                     Action
   ☰     menu       mm       ..   display menu 
 ====  ======  =======  ========  ========================================
 
-.. _link to other app:
+.. _Events:
 
 Events
 ^^^^^^
