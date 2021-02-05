@@ -120,7 +120,6 @@ subcommands:
 
 
 # get command line arguments and if exist : rofi output
-#args, rofi_output = get_arguments()
 ARGS, ROFI_OUTPUT = get_arguments()
 
 # Global var :
@@ -230,7 +229,7 @@ def to_int(section, key):
 def set_locale_n_week_day_names(arg_locale, user_locale, syms_week_days, day_format, first_day_week, day_abbr_lenght):
     """ Set SYMS_WEEK_DAYS constante given command line argument """
 
-    if not syms_week_days == [DAY_FORMAT.format('')]: # overwrited by user in config file
+    if not syms_week_days == [DAY_FORMAT.format('')]: # overrided by user in config file
         syms = [day_format.format(s) for s in syms_week_days] # just align right
         return syms
 
@@ -355,19 +354,12 @@ def main(args, rofi_output):
     else:
         out = 'Nothing'
 
-    # create CacheDate object (manage operation and writing to cache)
-    cdate = CacheDate()
-    # set date given context
+    cdate = CacheDate() # manage operation and writing to cache
     cdate = set_date(cdate, is_first_loop, args.is_force_read_cache, args.date)
-    # react to "date" event from rofi
     cdate = process_event_date(cdate, out, args)
-    # send next datas to rofi
-    update_rofi(cdate.date, is_first_loop)
-    # save  date
-    cdate.write_cache()
-    # react to rofi output (read cache file to reload rofi)
 
-    #if out in chain(SYM_SHOW_EVENTS, SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SWITCH_EVENT, SYM_SHOW_MENU):
+    update_rofi(cdate.date, is_first_loop)
+    cdate.write_cache()
     process_event_popup(out, cdate)
 
 
@@ -429,12 +421,11 @@ def process_event_date(cdate, out, args):
     elif out in strip_list(SYM_NEXT_YEAR):
         cdate.year += 1
     elif out in strip_list(SYMS_DAYS_NUM):
+        set_pp_date(out, cdate.date, args.format)
         if args.print or args.clipboard:
-            set_pp_date(out, cdate.date, args.format)
+            sys.exit(0)
         else:
             open_event(out, cdate.date, args.editor)
-    else:
-        joke(out)
 
     return cdate
 
@@ -557,48 +548,12 @@ def get_calendar_from_date(date):
     content = [SYMS_WEEK_DAYS, cal, SYMS_CONTROL_MENU, SYMS_SHORTCUTS]
     index, content = (list(x) for x in zip(*sorted(zip(index, content))))
 
-    # chain calendar elements
-    cal = list(chain(*content))
-
-    # Format calendar for rofi (column by column)
-    cal = list_transpose(cal) # + ["theme", "help", "event", "switch"]
-
-    # format data to be read by rofi (linebreak separated elements)
-    cal = list2rofi(cal)
+    # transform
+    cal = list(chain(*content)) # row-by-row list
+    cal = list_transpose(cal) # col-by-col list
+    cal = list2rofi(cal) # rofi formated
 
     return cal
-
-
-def rofi_transpose(rofi_datas, column_number=NB_COL):
-    """
-    Transpose (math) a row by row rofi-list into column by column rofi-list
-    given column number
-
-    Parameters
-    ----------
-    lst : str
-        row by row elements
-    col_nb : int
-        number of column to display
-
-    Returns
-    -------
-    str
-        A rofi-list, column by column elements
-
-    Examples
-    --------
-
-    >>> by_row = "1\\n2\\n3\\n4\\n5\\n6"
-    >>> rofi_transpose(by_row, 3)
-    "1\\n4\\n2\\n5\\n3\\n6"
-
-    """
-
-    byrow_datas = rofi2list(rofi_datas)
-    bycol_datas = list_transpose(byrow_datas, column_number)
-
-    return list2rofi(bycol_datas)
 
 
 def list_transpose(lst, col_nb=NB_COL):
@@ -774,10 +729,6 @@ def get_row_rofi_inds(row):
     return ",".join(str(i * NB_ROW + row) for i in range(NB_COL))
 
 
-#def rofi2cal_ind(ind):
-#    """ Convert coordinate from rofi to day number """
-#    pass
-
 
 def cal2rofi_ind(day, month, year):
     """
@@ -870,7 +821,7 @@ def get_month_events_ind(date):
 
     # get file list
     events_paths = get_month_events(date)
-    # get event day number
+    # event name
     date_format = EVENTS_PATHS[EVENTS_DEFAULT].name
     # make capture group for day number (%d)
     pattern = re.sub('%d',r'([0-9]*)', date_format)
@@ -1011,7 +962,7 @@ def ask_theme():
 
 
 def set_pp_date(day, date, f):
-    """return select date to stdout given cmd line parameter '--format'"""
+    """write date to cache with command line specified format"""
 
     d = int(day)
     m = date.month
@@ -1020,8 +971,6 @@ def set_pp_date(day, date, f):
     pretty_date = datetime.date(y, m, d).strftime(f)
     with open(PP_CACHE, "w") as f:
         f.write(pretty_date + "\n")
-
-    sys.exit(0)
 
 
 @open_n_reload_rofi

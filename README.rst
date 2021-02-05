@@ -138,15 +138,21 @@ Events
 ^^^^^^
 
 Events are simply files (usally text files) created by the calendar when you interact with a day (click/return key)
-Events files names should contain `strftime <https://strftime.org/>`_  directives (%d, %m ...) to appear in the calendar. ::
+Events files names should contain `strftime <https://strftime.org/>`_  directives (%d, %m ...) to appear in the calendar. 
+
+.. code:: ini
 
     note_%Y-%m-%d.txt
 
-Not giving it a day directive will make it occur every year (usefull for birthday isn't it?)::
+Not giving it a day directive will make it occur every year (usefull for birthday isn't it?)
+
+.. code:: ini
 
     birthday_on_%d-%m.txt
 
-The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files. Paths are relative to home.::
+The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files. Paths are relative to home.
+
+.. code:: ini
 
     [EVENTS]
 
@@ -155,7 +161,9 @@ The calendar handle multiple events types (that are simply differents folders), 
 
 Notes support a very light format to be parsed when displaying "events of the month" :
 
-- show section : if you create sections (format : [section]) all lines containing a section will be displayed ::
+- show section : if you create sections (format : [section]) all lines containing a section will be displayed 
+  
+  .. code:: ini
 
     [9H30] rdv with truc <---- will be displayed
     Some text
@@ -163,13 +171,17 @@ Notes support a very light format to be parsed when displaying "events of the mo
     [14H30] rdv with muche <----- will be displayed
     Some text again again
 
-- show header : if the event/note don't contain section, only first line will be displayed::
+- show header : if the event/note don't contain section, only first line will be displayed
+  
+  .. code:: ini
 
     # Note Title  <---- only first line is displayed
     Some text
     Some text again...
 
-if you interact with the event file name, it will open the note again, other rows will bring you back to calendar::
+if you interact with the event file name, it will open the note again, other rows will bring you back to calendar
+
+.. code:: ini
 
     notes_2021-01-05 : <---- reopen editor
     [9H30] rdv with truc   <--- do nothing : back to calendar
@@ -183,7 +195,6 @@ Options
 Some command line options are avaible and can be useful if you want to integrate the naivecalendar in a script or temporarily override parameters.
 Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually (use completion).
 
-.. code::
 
     usage: naivecalendar [-h] [-V] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
 
@@ -227,7 +238,9 @@ You can edit parameters :
 
 Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *~/.config/naivecalendar/themes*. 
 
-You can start from a copy of "officials" themes::
+You can start from a copy of "officials" themes
+
+.. code:: bash
 
     cp -r /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
 
@@ -235,7 +248,9 @@ You can start from a copy of "officials" themes::
 
     If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
 
-Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files)::
+Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files)
+
+.. code:: bash
 
     naivecalendar <subcommand> -h
 
@@ -290,7 +305,7 @@ last rofi command log file         ~/.cache/naivecalendar/**rofi_log.txt**
 Build debian package
 --------------------
 
-.. code::
+.. code:: bash
 
     sudo apt install devscripts
     cd naivecalendar-x.y.z/
@@ -303,7 +318,7 @@ Build debian package
 Build the doc
 -------------
 
-.. code::
+.. code:: bash
 
    cd docs/
    python3 -m pip install -r requirements.txt

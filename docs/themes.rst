@@ -13,9 +13,9 @@ To apply theme :
 
 Inspirations:
 
- - `nordtheme <https://www.nordtheme.com/>`_
- - `polybar-themes <https://github.com/adi1090x/polybar-themes>`_
- - own interpretarion
+- `nordtheme <https://www.nordtheme.com/>`_
+- `polybar-themes <https://github.com/adi1090x/polybar-themes>`_
+- own interpretarion
 
 
 Dark & Light : classic, extended, variant

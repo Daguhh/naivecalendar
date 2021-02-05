@@ -14,4 +14,4 @@ Example
 ^^^^^^^
 
 .. literalinclude:: ../src/themes/classic_dark.cfg
-
+   :language: ini

@@ -127,6 +127,11 @@ fi
 # execute copy-to-clipboard or print action only with main/first script call
 if [ "$loop_nb" -eq 0 ]; then
 
+    # print log
+    if [[ " ${param[@]} " =~ " -v " ]] || [[ " ${param[@]} " =~ " --verbose " ]]; then
+        cat "$ROFI_LOG_FILE"
+    fi
+
     # print date to stdout
     if [[ " ${param[@]} " =~ " -x " ]] || [[ " ${param[@]} " =~ " --clipboard " ]]; then
         FILE="$HOME/.cache/naivecalendar/pretty_print_cache.txt"
@@ -138,10 +143,6 @@ if [ "$loop_nb" -eq 0 ]; then
         FILE="$HOME/.cache/naivecalendar/pretty_print_cache.txt"
         cat $FILE > "$HOME/temp.txt"
         printf "%s" "$(cat $FILE)"
-    fi
-
-    if [[ " ${param[@]} " =~ " -v " ]] || [[ " ${param[@]} " =~ " --verbose " ]]; then
-        cat "$ROFI_LOG_FILE"
     fi
 fi
 
