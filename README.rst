@@ -33,6 +33,9 @@ Features
 
 .. _contents:
 
+.. contents:: Table of Contents
+    :depth: 1
+
 ---------------------------------------------------------------------------------
 
 .. _installation:
@@ -299,11 +302,13 @@ remember event type                ~/.cache/naivecalendar/**event_cache.txt**
 last rofi command log file         ~/.cache/naivecalendar/**rofi_log.txt**
 ================================   ===========================================================
 
+Build
+-----
 
 .. _dev:
 
 Build debian package
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 .. code:: bash
 
@@ -316,7 +321,7 @@ Build debian package
    You can personnalize your themes before building, all themes folder content will be included in the package
 
 Build the doc
--------------
+^^^^^^^^^^^^^
 
 .. code:: bash
 

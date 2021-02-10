@@ -388,7 +388,7 @@ def set_date(cdate, is_first_loop, is_force_read_cache, arg_date):
     elif is_first_loop and arg_date:
         cdate.set_month(arg_date) # command line force date
     else: # at first loop if no force option
-        cdate.today()
+        cdate.now()
 
     return cdate
 
@@ -1031,14 +1031,14 @@ class CacheDate:
 
     def __init__(self):
 
-        self.today()
+        self.now()
         self._cache = configparser.ConfigParser()
         self.year = Year(self)
         self.month = Month(self)
 
-    def today(self):
+    def now(self):
         """Set and return today date"""
-        self.date = datetime.date.today()
+        self.date = datetime.datetime.now()
         return self.date
 
     def set_month(self, month):

@@ -1,3 +1,9 @@
+v0.7.5 : 
+
+	Minor:
+		Change datetime : today() to now() : permit displaying hour in header
+		or message
+
 v0.7.3 : Quinquennial plan
 
 	Minor:
