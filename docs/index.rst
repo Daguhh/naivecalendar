@@ -10,6 +10,7 @@
 
    install  
    usage
+   subcommands
    customize
    files
    module

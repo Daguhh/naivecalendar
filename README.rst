@@ -105,12 +105,11 @@ Usage
 Basic
 ^^^^^
 
-Simply execute the script, then:
+Simply execute the script, then, Use mouse or keyboard to interact with the calendar:
 
-- Use mouse or keyboard to interact with the calendar.
-- Hit bottom arrows to cycle through months.
-- Hit a day to create a linked event. (A day with attached event will appear yellow.)
-- Create multiple event type and switch between them
+- Hit arrows to cycle through months or years
+- Hit a day to create a linked event. *(day change color as it has a linked event)*
+- Hit menu button to switch theme, switch event type, show month events
 
 Shortcuts
 ^^^^^^^^^
@@ -147,13 +146,13 @@ Events files names should contain `strftime <https://strftime.org/>`_  directive
 
     note_%Y-%m-%d.txt
 
-Not giving it a day directive will make it occur every year (usefull for birthday isn't it?)
+Not giving it a year directive will make it occur every year (usefull for birthday isn't it?)
 
 .. code:: ini
 
     birthday_on_%d-%m.txt
 
-The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files. Paths are relative to home.
+The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files. Paths are relative to user's home.
 
 .. code:: ini
 
@@ -199,15 +198,15 @@ Some command line options are avaible and can be useful if you want to integrate
 Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually (use completion).
 
 
-    usage: naivecalendar [-h] [-V] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
+    **usage:** *naivecalendar* [-h] [-V] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
 
     A simple popup calendar
 
-    subcommands:
+    **subcommands:**
         update      Update a calendar parameter for all user themes at once
         add-event   Add, modify, delete event in all user themes config at once
 
-    optional arguments:
+    **optional arguments:**
       -h, --help            show this help message and exit
       -V, --version         show program's version number and exit
       -v, --verbose         direct rofi command errors to stdout
@@ -230,10 +229,10 @@ Subcommands **update** and **add-event** could be useful to update all theme con
 Customize
 ---------
 
-You can edit parameters :
+A theme consist of two files :
 
-- calendar content : **<theme>.cfg** 
-- calendar appearance : **<theme>.rasi** 
+- **<theme>.cfg** : an ini file, configure calendar content
+- **<theme>.rasi** : a rofi theme file, configure apperance (color, sise, layout...)
 
 .. warning::
 
@@ -249,9 +248,9 @@ You can start from a copy of "officials" themes
 
 .. note::
 
-    If you create at theme with the same name as it exist in /usr/share/naivecalendar/themes, it will overwrite its configuration. 
+    If it exist two themes with the same name, the one in *$HOME/.config/...* will be prevalent over the others
 
-Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files)
+Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files only)
 
 .. code:: bash
 

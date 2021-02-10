@@ -1,15 +1,12 @@
 Themes
 ======
 
-Some themes are avaible for example,
-As rofi window size can change along themes, you will sometime have to adjust avaible user parameters in naivecalendar.py (week day name length in header for example)
+Those are official/example themes
 
-Themes files are `.rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ files and reside in *naivecalendar/themes/* folder.
+To apply a theme :
 
-To apply theme :
-
+- go to menu > swith theme
 - set command line optioh **-t** or **--theme** with file name (without extention) as argument.
-- overwrite default.rasi file
 
 Inspirations:
 
