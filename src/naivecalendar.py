@@ -286,6 +286,7 @@ SYM_SHOW_HELP = to_list(config['SHORTCUTS']['SYM_SHOW_HELP'])
 SYM_SWITCH_THEME = to_list(config['SHORTCUTS']['SYM_SWITCH_THEME'])
 SYM_SWITCH_EVENT = to_list(config['SHORTCUTS']['SYM_SWITCH_EVENT'])
 SYM_SHOW_MENU = to_list(config['SHORTCUTS']['SYM_SHOW_MENU'])
+SYM_GO_TODAY = to_list(config['SHORTCUTS']['SYM_GO_TODAY'])
 
 # Today header display
 ######################
@@ -323,6 +324,7 @@ CONTROL_MENU_ID = {
     'e' : SYM_SHOW_EVENTS[0],
     's' : SYM_SWITCH_EVENT[0],
     'm' : SYM_SHOW_MENU[0],
+    'bb': SYM_GO_TODAY[0],
 }
 
 # row number where to display buttons
@@ -426,6 +428,8 @@ def process_event_date(cdate, out, args):
             sys.exit(0)
         else:
             open_event(out, cdate.date, args.editor)
+    elif out in strip_list(SYM_GO_TODAY):
+        cdate.now()
 
     return cdate
 
@@ -903,7 +907,7 @@ def show_menu(cdate):
     (list <theme>.cfg SHORTCUTS section entries)"""
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
-    output = rofi_popup("menu", menu, nb_lines=6, width=-30)
+    output = rofi_popup("menu", menu, nb_lines=7, width=-30)
     process_event_popup(output, cdate)
 
 

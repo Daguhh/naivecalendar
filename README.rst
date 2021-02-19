@@ -167,10 +167,11 @@ Notes support a very light format to be parsed when displaying "events of the mo
   
   .. code:: ini
 
-    [9H30] rdv with truc <---- will be displayed
-    Some text
-    Some text again
-    [14H30] rdv with muche <----- will be displayed
+    [9H30 -> 10H] short description <---- will be displayed
+    Long 
+    multilines
+    description...
+    [14H30] rdv with bidulle <----- will be displayed
     Some text again again
 
 - show header : if the event/note don't contain section, only first line will be displayed
@@ -186,8 +187,8 @@ if you interact with the event file name, it will open the note again, other row
 .. code:: ini
 
     notes_2021-01-05 : <---- reopen editor
-    [9H30] rdv with truc   <--- do nothing : back to calendar
-    [14H30] rdv with muche
+    [9H30 -> 10H] short description  <--- do nothing : back to calendar
+    [14H30] rdv with bidulle
 
 
 
