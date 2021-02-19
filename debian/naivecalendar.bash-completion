@@ -29,6 +29,7 @@ SYM_SHOW_EVENTS
 SYM_SWITCH_EVENT
 SYM_SHOW_MENU
 SYM_BACK_TO_CALENDAR
+SYM_GO_TODAY
 """
 
 submodules_options="update add-event"
