@@ -671,15 +671,10 @@ def parse_month_events_files(date):
     # file name
     prompts = [pathlib.Path(n).stem for n in events_paths]
 
-    prompts_pos = []
-    for head in heads:
-        prompts_pos += [len(head.split('\n'))]
-
-    print("==============", file=sys.stderr)
-    print(prompts_pos, file=sys.stderr)
-    prompts_pos = ','.join(prompts_pos)
-    print(prompts_pos, file=sys.stderr)
-    print("==============", file=sys.stderr)
+    prompts_pos = [0]
+    for head in heads[:-1]:
+        prompts_pos += [prompts_pos[-1] + len(head.split('\n'))]
+    prompts_pos = ','.join(str(x) for x in prompts_pos)
 
 
     # return : <file_name> : <first line> for each event
@@ -900,7 +895,7 @@ def show_events(date):
     """
 
     parsed_events, prompts_pos = parse_month_events_files(date)
-    output = rofi_popup(EVENTS_DEFAULT, parsed_events, highlight=prompts_pos)
+    output = rofi_popup(EVENTS_DEFAULT, parsed_events, highlights=prompts_pos)
 
     event= EVENTS_PATHS[EVENTS_DEFAULT]
 
@@ -1213,7 +1208,7 @@ def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper", width=5
     cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
     selection = (
         subprocess.check_output(
-            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -width {width} -selection {highlights} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
+            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -width {width} -u {highlights} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
         )
         .decode("utf-8")
         .replace("\n", "")
