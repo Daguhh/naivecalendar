@@ -1,0 +1,13 @@
+/************************************************
+ * ROFI Color theme
+ * User: Daguhh
+ * Copyright: 2020 Daguhh
+ ***********************************************/
+
+@import "common/theme_magnolia.rasi"
+@import "common/position.rasi"
+
+#listview {
+    columns:      7;
+    lines:        8;
+}

@@ -670,8 +670,22 @@ def parse_month_events_files(date):
     heads = [parse_event_file(n) for n in events_paths]
     # file name
     prompts = [pathlib.Path(n).stem for n in events_paths]
+
+    prompts_pos = []
+    for head in heads:
+        prompts_pos += [len(head.split('\n'))]
+
+    print("==============", file=sys.stderr)
+    print(prompts_pos, file=sys.stderr)
+    prompts_pos = ','.join(prompts_pos)
+    print(prompts_pos, file=sys.stderr)
+    print("==============", file=sys.stderr)
+
+
     # return : <file_name> : <first line> for each event
-    return "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
+    text = "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
+
+    return text, prompts_pos
 
 
 def parse_event_file(event_path):
@@ -713,7 +727,7 @@ def parse_event_file(event_path):
     if head: # if sections
         return '\n' + '\n'.join(head) # join them into multilines
     else: # otherwise
-        return note_txt.split("\n")[0] # get first line
+        return '\n' + note_txt.split("\n")[0] # get first line
 
 
 def get_row_rofi_inds(row):
@@ -885,8 +899,8 @@ def show_events(date):
         current month
     """
 
-    parsed_events = parse_month_events_files(date)
-    output = rofi_popup(EVENTS_DEFAULT, parsed_events)
+    parsed_events, prompts_pos = parse_month_events_files(date)
+    output = rofi_popup(EVENTS_DEFAULT, parsed_events, highlight=prompts_pos)
 
     event= EVENTS_PATHS[EVENTS_DEFAULT]
 
@@ -1180,7 +1194,7 @@ def set_event_cache(selected):
         f.write(selected)
 
 
-def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper", width=50):
+def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper", width=50, highlights=None):
     """Launch a rofi window
 
     Parameters
@@ -1199,7 +1213,7 @@ def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper", width=5
     cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
     selection = (
         subprocess.check_output(
-            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -width {width} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
+            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -width {width} -selection {highlights} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
         )
         .decode("utf-8")
         .replace("\n", "")

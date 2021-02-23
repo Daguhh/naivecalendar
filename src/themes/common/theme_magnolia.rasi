@@ -1,0 +1,37 @@
+/************************************************
+ * ROFI Color theme
+ * User: Daguhh
+ * From : magnolia
+ ***********************************************/
+
+@import "theme_base.rasi"
+
+* {
+    foreground:                  #bc988a;
+    background:                  #ffdcc9;
+    foreground-normal:           @foreground;
+    background-normal:           @background;
+    foreground-active:           #857a4c;
+    background-active:           #cecd8a;
+    foreground-urgent:           #b9856f;
+    background-urgent:           #eac3a4;
+    foreground-select:           #035ac3;
+    background-select:           #ebc9a6;
+}
+
+#window {
+    width: 340px;
+    border-radius:3px;
+}
+
+#listview {
+    padding: 20px;
+    spacing: 8px;
+}
+
+#element {
+    padding: 2px -5px 2px 1px;
+    border: 0px;
+    border-radius: 5px;
+}
+
