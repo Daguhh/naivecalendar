@@ -41,6 +41,11 @@ Modern : blue & wedgewood
 
 |modern blue| |modern wedgewood|
 
+Magnolia
+--------
+
+|magnolia|
+
 Misc : paper-float, lead pencil, blackboard & material
 ------------------------------------------------------
 
@@ -105,5 +110,8 @@ Misc : paper-float, lead pencil, blackboard & material
     :height: 170px
 
 .. |modern wedgewood| image::  ./screenshots/modern_wedgewood.png
+    :height: 170px
+
+.. |magnolia| image::  ./screenshots/magnolia.png
     :height: 170px
 
