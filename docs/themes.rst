@@ -8,11 +8,11 @@ To apply a theme :
 - go to menu > swith theme
 - set command line optioh **-t** or **--theme** with file name (without extention) as argument.
 
-Inspirations:
+Sources & Inspirations:
 
 - `nordtheme <https://www.nordtheme.com/>`_
 - `polybar-themes <https://github.com/adi1090x/polybar-themes>`_
-- own interpretarion
+- `themes by ZB652 <https://www.deviantart.com/zb652>`_
 
 
 Dark & Light : classic, extended, variant
