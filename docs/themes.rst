@@ -41,10 +41,10 @@ Modern : blue & wedgewood
 
 |modern blue| |modern wedgewood|
 
-Magnolia
---------
+Magnolia & Carbon Gold
+----------------------
 
-|magnolia|
+|magnolia| |carbon gold|
 
 Misc : paper-float, lead pencil, blackboard & material
 ------------------------------------------------------
@@ -113,5 +113,8 @@ Misc : paper-float, lead pencil, blackboard & material
     :height: 170px
 
 .. |magnolia| image::  ./screenshots/magnolia.png
+    :height: 170px
+
+.. |carbon gold| image::  ./screenshots/carbon_gold.png
     :height: 170px
 

@@ -1218,7 +1218,6 @@ def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, width='40%', highlight
             columns:      {nb_col};
             lines:        {nb_lines};
             witdh:        {width};
-            location:     0;
         }}
     '''
 
