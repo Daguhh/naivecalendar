@@ -6,8 +6,5 @@
 
 @import "common/theme_carbon_gold.rasi"
 @import "common/position.rasi"
+@import "common/shape_classic.rasi"
 
-#listview {
-    columns:      7;
-    lines:        8;
-}

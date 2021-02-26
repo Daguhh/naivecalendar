@@ -1,0 +1,30 @@
+
+#mainbox {
+	children: [message, inputbar, listview];
+    border:  0;
+    padding: 0;
+    background-color:   @background;
+}
+#listview {
+    columns:      7;
+    lines:        8;
+}
+#inputbar {
+    border : 1 0 0 0;
+    border-color : @border;
+}
+#entry {
+    spacing:    0;
+    padding : 10 0 0 0;
+}
+#prompt {
+    padding: 10 0 0 0;
+}
+#inputbar {
+    padding : 0 0 0 80;
+    children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
+}
+#textbox-prompt-colon {
+    expand:     false;
+    str:        " ";
+}

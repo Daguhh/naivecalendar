@@ -1,0 +1,12 @@
+
+#window {
+    width:                  200px;
+}
+#listview {
+    spacing:      1px;
+    columns:      7;
+    lines:        8;
+}
+#element {
+    padding: 2px 0px 0px ;
+}

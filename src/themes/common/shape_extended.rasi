@@ -1,0 +1,5 @@
+
+#listview {
+    columns:      7;
+    lines:        9;
+}

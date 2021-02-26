@@ -16,6 +16,6 @@ update
 ^^^^^^
 
 .. include:: ../tools/naivecalendar-update
-   :start-line: 37
+   :start-line: 38
    :end-line: 54
 

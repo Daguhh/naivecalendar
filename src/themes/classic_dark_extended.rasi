@@ -6,8 +6,4 @@
 
 @import "common/theme_dark.rasi"
 @import "common/position.rasi"
-
-#listview {
-    columns:      7;
-    lines:        9;
-}
+@import "common/shape_extended.rasi"
