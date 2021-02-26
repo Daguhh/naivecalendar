@@ -65,7 +65,7 @@ elif test -f "$THEME_CACHE_FILE"; then
     fi
 
 else
-    THEME="$THEME_SOURCE_PATH/classic_dark.rasi"
+    THEME="$THEME_SOURCE_PATH/classic_dark_extended.rasi"
 fi
 
 ##############################################################################

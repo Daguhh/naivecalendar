@@ -8,7 +8,7 @@ Cycle through month and create linked event to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
-__version__ = "0.7.3"
+__version__ = "0.7.4"
 
 import glob, os, sys, subprocess, shutil, pathlib
 import re, argparse, configparser
@@ -150,11 +150,12 @@ else:
         with open(THEME_CACHE, 'r') as theme_cache:
             theme = theme_cache.read()
     except FileNotFoundError: #  default if not initialized
-        theme = "classic_dark"
+        theme = "classic_dark_extended"
 
 #THEME_CONFIG_FILE = f"{THEME_PATHS[-1]}/{theme}.cfg"
 for path in THEME_PATHS:
     THEME_CONFIG_FILE = f"{path}/{theme}.cfg"
+    THEME_RASI_FILE = f"{path}/{theme}.rasi"
     if os.path.isfile(THEME_CONFIG_FILE):
         break
 
@@ -895,7 +896,7 @@ def show_events(date):
     """
 
     parsed_events, prompts_pos = parse_month_events_files(date)
-    output = rofi_popup(EVENTS_DEFAULT, parsed_events, highlights=prompts_pos)
+    output = rofi_popup(EVENTS_DEFAULT, parsed_events, highlights=prompts_pos, nb_lines=10)
 
     event= EVENTS_PATHS[EVENTS_DEFAULT]
 
@@ -916,7 +917,7 @@ def show_menu(cdate):
     (list <theme>.cfg SHORTCUTS section entries)"""
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
-    output = rofi_popup("menu", menu, nb_lines=7, width=-30)
+    output = rofi_popup("menu", menu, nb_lines=7, width='20em')
     process_event_popup(output, cdate)
 
 
@@ -953,7 +954,7 @@ def ask_event_to_display():
     events = list(EVENTS_PATHS.keys())
     events = list2rofi(events)
 
-    event = rofi_popup(f"select what to display (actual = {EVENTS_DEFAULT})", events)
+    event = rofi_popup(f"select what to display (actual = {EVENTS_DEFAULT})", events, nb_lines=6)
 
     set_event_cache(event)
 
@@ -967,7 +968,7 @@ def ask_theme():
     themes = list2rofi(sorted(set(themes)))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    theme = rofi_popup("select theme", themes, nb_col=2, theme="DarkBlue", nb_lines=9, width=-60)
+    theme = rofi_popup("select theme", themes, nb_col=2, nb_lines=9, width='30em')
     if theme in themes:
         set_theme_cache(theme)
     else :
@@ -1189,7 +1190,7 @@ def set_event_cache(selected):
         f.write(selected)
 
 
-def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper", width=50, highlights=None):
+def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, width='40%', highlights=1000):
     """Launch a rofi window
 
     Parameters
@@ -1206,10 +1207,24 @@ def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, theme="Paper", width=5
     """
 
     cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
+
+    theme_str = f'''
+        @import "{THEME_RASI_FILE}"
+        #window {{
+            location:               center;
+            width:                  {width};
+        }}
+        #listview {{
+            columns:      {nb_col};
+            lines:        {nb_lines};
+            witdh:        {width};
+            location:     0;
+        }}
+    '''
+
+    rofi_cmd = f'''rofi -dmenu -theme-str '{theme_str}' -p "{txt_head}" -u {highlights}'''
     selection = (
-        subprocess.check_output(
-            f'''rofi -dmenu -p "{txt_head}" -lines {nb_lines} -columns {nb_col} -width {width} -u {highlights} -theme-str '@theme "{theme}"' ''', stdin=cmd.stdout, shell=True
-        )
+        subprocess.check_output(rofi_cmd, stdin=cmd.stdout, shell=True)
         .decode("utf-8")
         .replace("\n", "")
     )
@@ -1266,7 +1281,7 @@ optional arguments:
 That's all : press enter to continue...
 """
 
-    rofi_popup("Help", txt, nb_lines=20)
+    rofi_popup("Help", txt, nb_lines=20, width='45em')
 
 
 if __name__ == "__main__":
