@@ -76,7 +76,7 @@ Plus, a couple of theme files:
 - /themes/**<theme>.rasi** : a rofi configration file (shape and colors)
 - /themes/**<theme>.cfg** : an ini file that define calendar content
 
-Simply copy those files (src folder content) in the same place (.ie : keep the tree as it is), remove as many theme as you want, but please keep at least *classic_dark* default theme. 
+Simply copy those files (src folder content) in the same place (.ie : keep the tree as it is), remove as many theme as you want, but please keep at least *classic_dark_extended* default theme. 
 
 Then, Launch with:: 
 
