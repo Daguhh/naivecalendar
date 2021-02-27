@@ -1,4 +1,6 @@
 
+@import "shape_base.rasi"
+
 #window {
     width:                  200px;
 }

@@ -5,6 +5,7 @@
  ***********************************************/
 
 @import "common/position.rasi"
+@import "common/shape_handmade.rasi"
 
 * {
     nord13: 	    #ebcb8b;	
@@ -16,129 +17,15 @@
     background:                  @white1;
     foreground-normal:           @foreground;
     background-normal:           @white1;
-    foreground-urgent:           @nord13;
+    foreground-urgent:           @lightbg2;
     background-urgent:           #BBFFBB;
-    foreground-active:           @blue2;
+    lightbg2:                     #636c8e;
+    foreground-active:           @lightbg2;
     background-active:           #D7D7FF;
     foreground-select:           #00005F;
     background-select:           #CCBBFF;
     border:                      @dark1;
     lightbg:                     #434c5e;
-    lightbg2:                     #636c8e;
     font : "Bitstream Vera Sans Mono Bold 12";
     text-color:                 @lightbg;
-}
-#window {
-    fullscreen:             false;
-    hide-scrollbar:         true;
-    line-padding:           10;
-    padding:                5px;
-    width:                  300px;
-    border-color:           @blue;
-    background-color:       @background;
-}
-#mainbox {
-    border:  0;
-    padding: 0;
-    background-color:   @background;
-}
-#message {
-    border-color: @border;
-    background-color:   @background;
-    border :2;
-    padding: 10 30 10 90;
-    text-color : @lightbg2;
-}
-#textbox {
-    background-color:   @background;
-}
-#listview {
-    border:  0;
-    border-color: @border;
-    background-color:   @background;
-    spacing:      0px;
-    scrollbar:    false;
-    padding:      1px 1px 1px ;
-    columns:      7;
-    lines:        8;
-}
-#element {
-    border:  1;
-    border-color: @border;
-    padding: 9px -5px 0px 5px;
-    background-color:   @background;
-    spacing: 0;
-    horizontal-align: true;
-}
-#element.normal.normal {
-    background-color: @background-normal;
-    foreground-color : @foreground-normal;
-}
-#element.normal.urgent {
-    background-color: @background-urgent;
-    foreground-color : @foreground-urgent;
-}
-#element.normal.active {
-    text-color : @lightbg2;
-    background-color: @background-active;
-    foreground-color : @foreground-active;
-}
-#element.selected.normal {
-    background-color: @background-select;
-    foreground-color : @foreground-select;
-    text-color : @foreground-select;
-}
-#element.selected.urgent {
-    background-color: @background-select;
-    foreground-color : @foreground-select;
-}
-#element.selected.active {
-    background-color: @background-select;
-    foreground-color : @foreground-select;
-}
-#element.alternate.normal {
-    background-color: @background-normal;
-}
-#element.alternate.urgent {
-    background-color: @background-urgent;
-}
-#element.alternate.active {
-    background-color: @background-active;
-}
-#mode-switcher {
-    border:       0px 0px 0px ;
-    border-color: @background;
-    foreground-color:   @background;
-    background-color:   @background;
-}
-#button {
-    spacing:    0;
-    background-color:   @background;
-}
-#button.selected {
-    background-color: @background;
-}
-#case-indicator {
-    spacing:    0;
-    background-color:   @background;
-}
-#entry {
-    spacing:    0;
-    background-color:   @background;
-}
-#prompt {
-    spacing:    0;
-    background-color:   @background;
-}
-#inputbar {
-    children:   [ prompt,textbox-prompt-colon,entry,case-indicator ];
-    border-color:   @border;
-    border :2;
-    padding: 10 30 10 70;
-}
-#textbox-prompt-colon {
-    expand:     false;
-    str:        " ";
-    margin:     0px 0.3em 0em 0em ;
-    background-color:   @background;
 }

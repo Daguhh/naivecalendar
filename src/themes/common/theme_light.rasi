@@ -4,7 +4,6 @@
  * Copyright: 2020 Daguhh
  ***********************************************/
 
-@import "theme_base.rasi"
 
 * {
     nord8: 	        #88c0d0;	
@@ -24,5 +23,4 @@
     foreground-select:           @white1;
     background-select:           @red;
     border:                      @red;
-    lightbg:                     #434c5e;
 }

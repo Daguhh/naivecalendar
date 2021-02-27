@@ -14,9 +14,10 @@
     white2 : #C7FFD9;
     white3 : #98DED9;
     blue : #161D6F;
-    background1 : @blue;
+    border : @blue;
+    background1 : @border;
     background : @white1;
-    foreground-normal : @blue;
+    foreground-normal : @border;
     
 }
 

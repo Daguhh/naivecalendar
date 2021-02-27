@@ -1,4 +1,5 @@
 
+@import "shape_base.rasi"
 
 #window {
     fullscreen:             false;
@@ -6,9 +7,9 @@
     line-padding:           10;
     padding:                0px;
     width:                  300px;
-    border-color:           @blue;
+    border-color:           @border;
     background-color:       @background;
-    text-color:             @blue;
+    text-color:             @border;
     border-radius: 20 20 20 20;
 }
 #mainbox {

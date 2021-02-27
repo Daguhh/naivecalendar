@@ -1,4 +1,6 @@
 
+@import "shape_base.rasi"
+
 #mainbox {
 	children: [message, inputbar, listview];
     border:  0;
