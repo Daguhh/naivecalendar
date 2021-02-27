@@ -7,11 +7,10 @@
 
 * {
     nord8: 	        #88c0d0;	
-    nord15: 	    #b48ead;	
-    blue:           #56769E;
     dark1:                       #1F1F1F;
     white1:                      #FFFFFF;
     red:                         #fd0e35;
+
     foreground:                  @dark1;
     background:                  @white1;
     foreground-normal:           @foreground;
