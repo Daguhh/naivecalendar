@@ -271,7 +271,7 @@ EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.k
 #####################
 NB_COL = 7
 NB_WEEK = 6 # nb row of calendar "days number" part
-NB_ROW = int(config['SHAPE']['NB_ROW'])
+#NB_ROW = int(config['SHAPE']['NB_ROW'])
 
 # Calendar symbols and shortcuts
 ################################
@@ -340,6 +340,8 @@ ROW_SHORTCUTS = to_int(config['CONTENT'], 'ROW_SHORTCUTS')
 default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_SWITCH_EVENT, ' ', ' ', SYM_SHOW_MENU))
 SYMS_SHORTCUTS = set_list(default, config['CONTENT'], 'SYMS_SHORTCUTS', ROW_SHORTCUTS)
 
+NB_ROW = int(bool(SYMS_SHORTCUTS)) + int(bool(SYMS_CONTROL_MENU)) + int(bool(SYMS_WEEK_DAYS)) + 6
+print(NB_ROW, file=sys.stderr)
 
 #############
 ###Script ###
