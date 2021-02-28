@@ -1,0 +1,22 @@
+
+* {
+    blue:           #56769E;
+    dark1:                       #1F1F1F;
+    white1:                      #FFFFFF;
+    blue3:                       #8E24AA;
+    lightgreen:                  #77FF77;
+    foreground:                  @white1;
+    background:                  @dark1;
+    foreground-normal:           @foreground;
+    background-normal:           @background;
+    foreground-urgent:           @lightgreen;
+    background-urgent:           @background;
+    foreground-active:           #AAAAFF;
+    background-active:           @background;
+    foreground-select:           #8888FF;
+    background-select:           @background;
+    border:                      @white1;
+    lightbg2:                     #636c8e;
+    font : "Noto Sans Mono Ultra-Bold 12";
+    text-color:                 @white1;
+}

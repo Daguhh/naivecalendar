@@ -19,19 +19,3 @@
     background-select:           #ebc9a6;
 }
 
-#window {
-    width: 340px;
-    border-radius:3px;
-}
-
-#listview {
-    padding: 20px;
-    spacing: 8px;
-}
-
-#element {
-    padding: 2px -5px 2px 1px;
-    border: 0px;
-    border-radius: 5px;
-}
-

@@ -6,5 +6,5 @@
 
 @import "common/theme_magnolia.rasi"
 @import "common/position.rasi"
-@import "common/shape_classic.rasi"
+@import "common/shape_classic_sparse.rasi"
 

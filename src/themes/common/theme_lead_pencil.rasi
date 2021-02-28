@@ -1,0 +1,23 @@
+
+* {
+    nord13: 	    #ebcb8b;	
+    blue:           #56769E;
+    blue2:          #1E88E5;
+    dark1:                       #1F1F1F;
+    white1:                      #FFFFFF;
+    foreground:                  @dark1;
+    background:                  @white1;
+    foreground-normal:           @foreground;
+    background-normal:           @white1;
+    foreground-urgent:           @lightbg2;
+    background-urgent:           #BBFFBB;
+    lightbg2:                     #636c8e;
+    foreground-active:           @lightbg2;
+    background-active:           #D7D7FF;
+    foreground-select:           #00005F;
+    background-select:           #CCBBFF;
+    border:                      @dark1;
+    lightbg:                     #434c5e;
+    font : "Bitstream Vera Sans Mono Bold 12";
+    text-color:                 @lightbg;
+}
