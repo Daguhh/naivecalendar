@@ -5,7 +5,7 @@
  * Inspired by nordtheme
  ***********************************************/
 
-@import "common/position.rasi"
 @import "common/theme_nord_light.rasi"
+@import "common/position.rasi"
 @import "common/shape_round.rasi"
 

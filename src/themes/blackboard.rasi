@@ -4,7 +4,7 @@
  * Copyright: 2020 Daguhh
  ***********************************************/
 
+@import "common/theme_blackboard.rasi"
 @import "common/position.rasi"
 @import "common/shape_handmade.rasi"
-@import "common/theme_blackboard.rasi"
 

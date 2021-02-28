@@ -1,0 +1,21 @@
+/************************************************
+ * ROFI Color theme
+ * Upload by: Daguhh
+ * Theme : Pastel <https://www.deviantart.com/zb652/art/Pastel-Type-Colours-Again-863272471>
+ * Creator : ZB652 <https://www.deviantart.com/zb652>
+ ***********************************************/
+
+
+* {
+    foreground:                  #b38671;
+    background:                  #fbebca;
+    foreground-normal:           @foreground;
+    background-normal:           @background;
+    foreground-active:           #987fa9;
+    background-active:           #b3e7f5;
+    foreground-urgent:           #967157;
+    background-urgent:           #eed3b6;
+    foreground-select:           #035ac3;
+    background-select:           #ebc9a6;
+}
+
