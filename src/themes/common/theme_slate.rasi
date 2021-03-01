@@ -1,0 +1,21 @@
+/************************************************
+ * ROFI Color theme
+ * Upload by: Daguhh
+ * Theme : Slate <https://www.deviantart.com/zb652/art/Slate-865544771>
+ * Creator : ZB652 <https://www.deviantart.com/zb652>
+ ***********************************************/
+
+* {
+    foreground:                  #acc2cd;
+    background:                  #425a64;
+    foreground-normal:           @foreground;
+    background-normal:           @background;
+    foreground-active:           #c0d4db;
+    background-active:           #5c7c89;
+    foreground-urgent:           #9cb2bd;
+    background-urgent:           #466672;
+    foreground-select:           #e7fafe;
+    background-select:           #506e79;
+    font : "Bitstream Vera Sans Mono Bold 12";
+}
+

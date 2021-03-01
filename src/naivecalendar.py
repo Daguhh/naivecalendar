@@ -210,7 +210,6 @@ def set_list(default, section, key, row):
     elif key == 'SYMS_DAYS_NUM':
         return to_list(vals)
     else: # parse config values
-        #return to_list(vals)
         return [CONTROL_MENU_ID[x.strip()] if x.strip() in CONTROL_MENU_ID.keys() else x for x in to_list(vals)]
 
 def to_int(section, key):
@@ -969,7 +968,7 @@ def ask_theme():
     themes = list2rofi(sorted(set(themes)))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    theme = rofi_popup("select theme", themes, nb_col=2, nb_lines=9, width='30em')
+    theme = rofi_popup("select theme", themes, nb_col=3, nb_lines=9, width='45em')
     if theme in themes:
         set_theme_cache(theme)
     else :

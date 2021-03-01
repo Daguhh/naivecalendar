@@ -26,8 +26,8 @@ Dark & Light : classic, extended, variant
 
 |classic dark variant| |classic light variant|
 
-Compact
--------
+Compact : dark, light, retro-blue
+---------------------------------
 
 |classic dark compact| |classic light compact| |retro blue compact| 
 
@@ -41,10 +41,10 @@ Modern : blue & wedgewood
 
 |modern blue| |modern wedgewood|
 
-Magnolia & Carbon Gold
-----------------------
+Magnolia, carbon gold, pastel blue & slate
+------------------------------------------
 
-|magnolia| |carbon gold|
+|magnolia| |carbon gold| |pastel blue| |slate|
 
 Misc : paper-float, lead pencil, blackboard & material
 ------------------------------------------------------
@@ -116,5 +116,11 @@ Misc : paper-float, lead pencil, blackboard & material
     :height: 170px
 
 .. |carbon gold| image::  ./screenshots/carbon_gold.png
+    :height: 170px
+
+.. |slate| image::  ./screenshots/slate.png
+    :height: 170px
+
+.. |pastel blue| image::  ./screenshots/pastel_blue.png
     :height: 170px
 
