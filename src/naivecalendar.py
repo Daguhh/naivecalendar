@@ -211,7 +211,7 @@ def set_list(default, section, key, row):
         return to_list(vals)
     else: # parse config values
         #return to_list(vals)
-        return [CONTROL_MENU_ID[x.strip()] if x.strip() in CONTROL_MENU_ID.keys() else ' ' for x in to_list(vals)]
+        return [CONTROL_MENU_ID[x.strip()] if x.strip() in CONTROL_MENU_ID.keys() else x for x in to_list(vals)]
 
 def to_int(section, key):
     """Convert a configparser entry into an int"""
@@ -341,7 +341,6 @@ default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_
 SYMS_SHORTCUTS = set_list(default, config['CONTENT'], 'SYMS_SHORTCUTS', ROW_SHORTCUTS)
 
 NB_ROW = int(bool(SYMS_SHORTCUTS)) + int(bool(SYMS_CONTROL_MENU)) + int(bool(SYMS_WEEK_DAYS)) + 6
-print(NB_ROW, file=sys.stderr)
 
 #############
 ###Script ###
