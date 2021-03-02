@@ -8,6 +8,8 @@ Customize
 In brief
 ^^^^^^^^
 
+Here is an overview of properties that can be edited in .cfg and .rasi files :
+
 .. image:: screenshots/theming.png
 
 Example

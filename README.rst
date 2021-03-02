@@ -237,9 +237,9 @@ A theme consist of two files :
 
 .. warning::
 
-   adjusting content that can induce row number variation may require editing calendar shape too. See more details in .cfg files.
+   Shape (.rasi) should match content (.cfg), i.e.  adjusting content that change row number require editing calendar shape too. See more details in .cfg files.
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. You can create your own `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file too and just place it in *~/.config/naivecalendar/themes*. 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. to create your own theme, create a`rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file, then just place it in *~/.config/naivecalendar/themes*. 
 
 You can start from a copy of "officials" themes
 
@@ -259,7 +259,13 @@ Then modify themes one by one with your favourite editor or use naivecalendar su
 
 .. note::
 
-   There is no specific tool to update .rasi files, but they share some ressources in *themes/common/*, for example, you can update calendar position for all themes in *position.rasi*
+   There is no specific tool to update .rasi files, but they (almost all) share some ressources in *themes/common/*, commonly:
+
+   - a color theme : **theme_<color_name>.rasi**
+   - a position on the screen : **position.rasi**
+   - a shape (contain number of row) : **shape_<kind>.rasi**
+
+   So you can easily mix them to customize calendar aspect.
 
 .. _files:
 
