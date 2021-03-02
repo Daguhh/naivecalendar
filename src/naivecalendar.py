@@ -295,9 +295,10 @@ IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
 IS_LOOP_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_LOOP_TODAY_HEAD_MSG')
 
 # pango markup props
-TODAY_HEAD_MSG_TXT = [w for w in config['HEADER']['TODAY_HEAD_MSG_TXT'].split(',')] # Monday
-TODAY_HEAD_MSG_SIZES = [w.strip() for w in config['HEADER']['TODAY_HEAD_MSG_SIZES'].split(',')] # xx-large
-TODAY_HEAD_MSG_RISES = [int(r) for r in config['HEADER']['TODAY_HEAD_MSG_RISES'].split(',')] # 0
+#TODAY_HEAD_MS_OLD = [w for w in config['HEADER']['TODAY_HEAD_MSG_TXT'].split(',')] # Monday
+#TODAY_HEAD_MSG_SIZES = [w.strip() for w in config['HEADER']['TODAY_HEAD_MSG_SIZES'].split(',')] # xx-large
+#TODAY_HEAD_MSG_RISES = [int(r) for r in config['HEADER']['TODAY_HEAD_MSG_RISES'].split(',')] # 0
+TODAY_HEAD_MSG_TXT = config['HEADER']['TODAY_HEAD_MSG_TXT']
 
 # Calendar content and organisation
 ###################################
@@ -483,19 +484,8 @@ def update_rofi(date, is_first_loop):
         today_ind = cal2rofi_ind(date.day, date.month, date.year)
         print(f"\0active\x1f{today_ind}\n")
         if IS_TODAY_HEAD_MSG:
-            msg = ''
-            vals = zip(
-                TODAY_HEAD_MSG_TXT,
-                TODAY_HEAD_MSG_SIZES,
-                TODAY_HEAD_MSG_RISES
-            )
-            for txt, size, rise in vals :
-                if '<br>' in txt: # return to line
-                    msg += '\r'
-                else:
-                    msg += f"""<span rise="{rise}" size="{size}">{date.strftime(txt)}</span>"""
+            msg = date.strftime(TODAY_HEAD_MSG_TXT)
             print(f"\0message\x1f{msg}\n")
-
 
     if not ROW_WEEK_SYM == EMPTY:
         week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
