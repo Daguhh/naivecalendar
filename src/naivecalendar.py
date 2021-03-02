@@ -295,9 +295,6 @@ IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
 IS_LOOP_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_LOOP_TODAY_HEAD_MSG')
 
 # pango markup props
-#TODAY_HEAD_MS_OLD = [w for w in config['HEADER']['TODAY_HEAD_MSG_TXT'].split(',')] # Monday
-#TODAY_HEAD_MSG_SIZES = [w.strip() for w in config['HEADER']['TODAY_HEAD_MSG_SIZES'].split(',')] # xx-large
-#TODAY_HEAD_MSG_RISES = [int(r) for r in config['HEADER']['TODAY_HEAD_MSG_RISES'].split(',')] # 0
 TODAY_HEAD_MSG_TXT = config['HEADER']['TODAY_HEAD_MSG_TXT']
 
 # Calendar content and organisation
@@ -342,9 +339,9 @@ SYMS_SHORTCUTS = set_list(default, config['CONTENT'], 'SYMS_SHORTCUTS', ROW_SHOR
 
 NB_ROW = int(bool(SYMS_SHORTCUTS)) + int(bool(SYMS_CONTROL_MENU)) + int(bool(SYMS_WEEK_DAYS)) + 6
 
-#############
-###Script ###
-#############
+##############
+### Script ###
+##############
 
 def main(args, rofi_output):
     """Print calendar to stdout and react to rofi output"""
@@ -844,7 +841,7 @@ def get_month_events_ind(date):
     return inds
 
 # Count recursive call from open_n_reload_rofi
-# and prevent relaunching rofi if its already planned
+# and prevent relaunching rofi if it's already planned
 ROFI_RELAUNCH_COUNT = 0
 
 def open_n_reload_rofi(func):

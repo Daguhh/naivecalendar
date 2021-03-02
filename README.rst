@@ -239,7 +239,7 @@ A theme consist of two files :
 
    Shape (.rasi) should match content (.cfg), i.e.  adjusting content that change row number require editing calendar shape too. See more details in .cfg files.
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with '--theme' argument. to create your own theme, create a`rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file, then just place it in *~/.config/naivecalendar/themes*. 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with :code:`--theme` argument. To create your own theme, create a `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file, then just place it in *~/.config/naivecalendar/themes*. 
 
 You can start from a copy of "officials" themes
 

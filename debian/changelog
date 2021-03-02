@@ -1,6 +1,7 @@
 naivecalendar (0.8.0) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Update completion
 
  -- Daguhh <code.daguhh@zaclys.net>  Tue, 02 Mar 2021 17:22:32 +0100
 
