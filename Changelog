@@ -1,3 +1,16 @@
+v0.8.0 :
+
+	Major:
+		Allow user to use full pango markup (+1versatility, +1kiss)
+		(~soft breaking)
+	Minor:
+		Allow custom character in ROWs
+		Add themes : pastel blue, slate
+		theme ressources haromonization (standard?)
+		remove useless [SHAPE] section in config (now just count ROWs)
+		Doc adjustements
+		Change default theme to classic dark extended (better example)
+
 v0.7.4 : Opulence
 
 	Major:
