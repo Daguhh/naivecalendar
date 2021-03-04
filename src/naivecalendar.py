@@ -17,6 +17,8 @@ from itertools import chain
 from functools import wraps
 import time
 
+#START = time.time()
+
 def get_arguments():
     """Parse command line arguments
 
@@ -357,11 +359,12 @@ def main(args, rofi_output):
 
     cdate = CacheDate() # manage operation and writing to cache
     cdate = set_date(cdate, is_first_loop, args.is_force_read_cache, args.date)
-    cdate = process_event_date(cdate, out, args)
+    cdate, is_match = process_event_date(cdate, out, args)
 
     update_rofi(cdate.date, is_first_loop)
     cdate.write_cache()
-    process_event_popup(out, cdate)
+    if not is_match: # don't test if out already match one condition in process_event_date
+        process_event_popup(out, cdate)
 
 
 def set_date(cdate, is_first_loop, is_force_read_cache, arg_date):
@@ -412,6 +415,7 @@ def process_event_date(cdate, out, args):
         new month to display
     """
 
+    is_match = True
     out = out.strip()
     if out in strip_list(SYM_PREV_YEAR):
         cdate.year -= 1
@@ -429,8 +433,10 @@ def process_event_date(cdate, out, args):
             open_event(out, cdate.date, args.editor)
     elif out in strip_list(SYM_GO_TODAY):
         cdate.now()
+    else:
+        is_match = False
 
-    return cdate
+    return cdate, is_match
 
 
 def process_event_popup(out, cdate):
@@ -455,6 +461,9 @@ def process_event_popup(out, cdate):
         ask_event_to_display()
     elif out in strip_list(SYM_SHOW_MENU):
         show_menu(cdate)
+    elif out in strip_list(SYM_GO_TODAY):
+        cdate.now()
+        cdate.write_cache()
 
 
 def update_rofi(date, is_first_loop):
@@ -1272,3 +1281,6 @@ That's all : press enter to continue...
 
 if __name__ == "__main__":
     main(ARGS, ROFI_OUTPUT)
+
+    #print("loop time =", "{:.2f}".format(1000*(time.time() - START)), 'ms', file=sys.stderr)
+
