@@ -1,3 +1,9 @@
+naivecalendar (1.0.0) UNRELEASED; urgency=medium
+
+  * New upstream release : release a first stable
+
+ -- Daguhh <code.daguhh@zaclys.net>  Mon, 22 Mar 2021 17:32:18 +0100
+
 naivecalendar (0.8.0) UNRELEASED; urgency=medium
 
   * New upstream release

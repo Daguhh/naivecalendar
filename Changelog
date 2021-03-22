@@ -1,3 +1,13 @@
+v1.0.0
+
+	Major:
+		Release naivecalendar as first stable
+
+v0.8.1
+
+	Minor:
+		Workaround for "back to current date"
+
 v0.8.0 :
 
 	Major:
