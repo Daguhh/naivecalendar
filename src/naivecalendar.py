@@ -679,6 +679,8 @@ def parse_month_events_files(date):
     -------
     str
         A rofi formatted list of month's events first line
+    str
+        Rows to highlight (date header)
     """
 
     # paths
@@ -687,6 +689,8 @@ def parse_month_events_files(date):
     heads = [parse_event_file(n) for n in events_paths]
     # file name
     prompts = [pathlib.Path(n).stem for n in events_paths]
+    # sort by file name (usually by date)
+    prompts, heads = (list(x) for x in zip(*sorted(zip(prompts, heads))))
 
     prompts_pos = [0]
     for head in heads[:-1]:
@@ -695,7 +699,7 @@ def parse_month_events_files(date):
 
 
     # return : <file_name> : <first line> for each event
-    text = "\n".join([f"{p} : {h}" for p, h in zip(prompts, heads)])
+    text = "\n".join([f"{p} : {h}" for p, h in sorted(zip(prompts, heads))])
 
     return text, prompts_pos
 
@@ -911,9 +915,11 @@ def show_events(date):
         current month
     """
 
+    # Show month events
     parsed_events, prompts_pos = parse_month_events_files(date)
     output = rofi_popup(EVENTS_DEFAULT, parsed_events, highlights=prompts_pos, nb_lines=10)
 
+    # open event file of selected day
     event= EVENTS_PATHS[EVENTS_DEFAULT]
 
     event_folder = date.strftime(str(event.parent))
