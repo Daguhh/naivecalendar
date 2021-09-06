@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 
+"""
+Still in dev. Put me in $HOME/.config/naivecalendar/scripts/
+
+This script get caldav events from an online account (1) and
+save it into files so it can show up in naivecalendar
+
+(1) : launch this script to create a config file at "$HOME/.naivecalendar/caldav_user.json" and fill it with your account infos. Launch it again tu download your events.
+"""
+
 import os
 import json
 
