@@ -290,6 +290,17 @@ SYM_SWITCH_EVENT = to_list(config['SHORTCUTS']['SYM_SWITCH_EVENT'])
 SYM_SHOW_MENU = to_list(config['SHORTCUTS']['SYM_SHOW_MENU'])
 SYM_GO_TODAY = to_list(config['SHORTCUTS']['SYM_GO_TODAY'])
 
+# Custom Functions
+##################
+SYM_CUSTOM_1 = to_list(config['CUSTOM']['SYM_CUSTOM_1'])
+CMD_CUSTOM_1 = HOME + "/" + config['CUSTOM']['CMD_CUSTOM_1']
+
+SYM_CUSTOM_2 = to_list(config['CUSTOM']['SYM_CUSTOM_2'])
+CMD_CUSTOM_2 = HOME + "/" + config['CUSTOM']['CMD_CUSTOM_2']
+
+SYM_CUSTOM_3 = to_list(config['CUSTOM']['SYM_CUSTOM_3'])
+CMD_CUSTOM_3 = HOME + "/" + config['CUSTOM']['CMD_CUSTOM_3']
+
 # Today header display
 ######################
 PROMT_DATE_FORMAT = config['HEADER']['PROMT_DATE_FORMAT']
@@ -325,6 +336,9 @@ CONTROL_MENU_ID = {
     's' : SYM_SWITCH_EVENT[0],
     'm' : SYM_SHOW_MENU[0],
     'bb': SYM_GO_TODAY[0],
+    'c1': SYM_CUSTOM_1[0],
+    'c2': SYM_CUSTOM_2[0],
+    'c3': SYM_CUSTOM_3[0],
 }
 
 # row number where to display buttons
@@ -464,6 +478,12 @@ def process_event_popup(out, cdate):
     elif out in strip_list(SYM_GO_TODAY):
         cdate.now()
         cdate.write_cache()
+    elif out in strip_list(SYM_CUSTOM_1):
+        subprocess.check_output(CMD_CUSTOM_1)
+    elif out in strip_list(SYM_CUSTOM_2):
+        subprocess.check_output(CMD_CUSTOM_2)
+    elif out in strip_list(SYM_CUSTOM_3):
+        subprocess.check_output(CMD_CUSTOM_3)
 
 
 def update_rofi(date, is_first_loop):
