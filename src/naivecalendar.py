@@ -933,6 +933,7 @@ def show_menu(cdate):
     (list <theme>.cfg SHORTCUTS section entries)"""
 
     menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
+    menu += '\n' + '\n'.join([to_list(config['CUSTOM'][s])[-1] for s in config['CUSTOM'] if 'sym' in s])
     output = rofi_popup("menu", menu, nb_lines=7, width='20em')
     process_event_popup(output, cdate)
 
