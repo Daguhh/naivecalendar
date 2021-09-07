@@ -10,7 +10,8 @@ __license__ = "MIT-0"
 __status__ = "Dev"
 __version__ = "1.0.0"
 
-import glob, os, sys, subprocess, shutil, pathlib
+import glob, os, sys, subprocess, shutil
+from pathlib import Path
 import re, argparse, configparser
 import datetime, calendar, locale
 from itertools import chain
@@ -131,35 +132,41 @@ ROFI_RELOAD_TEMPO = 0.2
 ######################
 ### Path constants ###
 ######################
-HOME = os.getenv("HOME")
-DIRNAME = os.path.dirname(__file__)
-CACHE_PATH = f"{HOME}/.cache/naivecalendar"
-DATE_CACHE = f"{CACHE_PATH}/date_cache.ini"
-PP_CACHE = f"{CACHE_PATH}/pretty_print_cache.txt"
-THEME_CACHE = f"{CACHE_PATH}/theme_cache.txt"
-EVENT_CACHE = f"{CACHE_PATH}/event_cache.txt"
-THEME_USER_PATH = f"{HOME}/.config/naivecalendar/themes"
-THEME_PATHS = [THEME_USER_PATH, f"{DIRNAME}/themes"]
+HOME = Path(os.getenv("HOME"))
+DIRNAME = Path(os.path.dirname(__file__))
+CACHE_PATH = HOME / ".cache/naivecalendar"
+DATE_CACHE = CACHE_PATH / "date_cache.ini"
+PP_CACHE = CACHE_PATH / "pretty_print_cache.txt"
+THEME_CACHE = CACHE_PATH / "theme_cache.txt"
+EVENT_CACHE = CACHE_PATH / "event_cache.txt"
+THEME_USER_PATH = HOME / ".config/naivecalendar/themes"
+THEME_PATHS = [THEME_USER_PATH, DIRNAME/"themes"]
 
 
 #######################################
 ### load a theme configuration file ###
 #######################################
+
+# get wanted theme
 if ARGS.theme:
     theme = ARGS.theme
 else:
-    try: # cache file
+    if THEME_CACHE.exists():
         with open(THEME_CACHE, 'r') as theme_cache:
             theme = theme_cache.read()
-    except FileNotFoundError: #  default if not initialized
+    else:
         theme = "classic_dark_extended"
 
-#THEME_CONFIG_FILE = f"{THEME_PATHS[-1]}/{theme}.cfg"
-for path in THEME_PATHS:
-    THEME_CONFIG_FILE = f"{path}/{theme}.cfg"
-    THEME_RASI_FILE = f"{path}/{theme}.rasi"
-    if os.path.isfile(THEME_CONFIG_FILE):
-        break
+# look for theme in config paths
+if (THEME_USER_PATH / f"{theme}.cfg").exists():
+    theme_path = THEME_USER_PATH
+else:
+    theme_path = DIRNAME / "themes"
+
+THEME_CONFIG_FILE = theme_path / f"{theme}.cfg"
+THEME_RASI_FILE = theme_path / f"{theme}.rasi"
+
+print(f"{50*'*'}\n{THEME_CONFIG_FILE=}\n {THEME_RASI_FILE=}\n{50*'*'}\n", file=sys.stderr)
 
 ########################
 ### Load config file ###
@@ -264,7 +271,7 @@ FIRST_DAY_WEEK = int(config['DAY NAMES']["FIRST_DAY_WEEK"]) # 0 = sunday, 1 = mo
 
 # Day events configuration
 ##########################
-EVENTS_PATHS = {n:pathlib.Path.home()/pathlib.Path(config['EVENTS'][n]) for n in config['EVENTS']}
+EVENTS_PATHS = {n:Path.home()/Path(config['EVENTS'][n]) for n in config['EVENTS']}
 # default date events folder to display
 EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
 
@@ -293,13 +300,13 @@ SYM_GO_TODAY = to_list(config['SHORTCUTS']['SYM_GO_TODAY'])
 # Custom Functions
 ##################
 SYM_CUSTOM_1 = to_list(config['CUSTOM']['SYM_CUSTOM_1'])
-CMD_CUSTOM_1 = HOME + "/" + config['CUSTOM']['CMD_CUSTOM_1']
+CMD_CUSTOM_1 = HOME / config['CUSTOM']['CMD_CUSTOM_1']
 
 SYM_CUSTOM_2 = to_list(config['CUSTOM']['SYM_CUSTOM_2'])
-CMD_CUSTOM_2 = HOME + "/" + config['CUSTOM']['CMD_CUSTOM_2']
+CMD_CUSTOM_2 = HOME / config['CUSTOM']['CMD_CUSTOM_2']
 
 SYM_CUSTOM_3 = to_list(config['CUSTOM']['SYM_CUSTOM_3'])
-CMD_CUSTOM_3 = HOME + "/" + config['CUSTOM']['CMD_CUSTOM_3']
+CMD_CUSTOM_3 = HOME / config['CUSTOM']['CMD_CUSTOM_3']
 
 # Today header display
 ######################
@@ -688,7 +695,7 @@ def parse_month_events_files(date):
     # first line
     heads = [parse_event_file(n) for n in events_paths]
     # file name
-    prompts = [pathlib.Path(n).stem for n in events_paths]
+    prompts = [Path(n).stem for n in events_paths]
     # sort by file name (usually by date)
     prompts, heads = (list(x) for x in zip(*sorted(zip(prompts, heads))))
 
@@ -832,8 +839,8 @@ def get_month_events(date):
     file_pattern = date.strftime(file_pattern) #f"{date.year}-{date.month}-"
 
     # return all elements that belong to current month (match previous regex)
-    path = pathlib.Path(file_pattern)
-    events_paths = list(pathlib.Path(path.parent).glob(path.name))
+    path = Path(file_pattern)
+    events_paths = list(Path(path.parent).glob(path.name))
 
     return events_paths
 
@@ -960,7 +967,7 @@ def open_event(day_sym, date, editor):
 def edit_event_file(event_path, editor=ARGS.editor):
     """open event file with text editor"""
 
-    event_folder = pathlib.Path(event_path).parent
+    event_folder = Path(event_path).parent
     if not os.path.isdir(event_folder):
         os.makedirs(event_folder)
     cmd = f"touch {event_path} & {editor} {event_path}"
