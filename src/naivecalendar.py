@@ -234,6 +234,16 @@ def to_int(section, key):
             raise e
     return val
 
+def to_path(path_str):
+    """make path relative to home or absolute"""
+
+    path = Path(path_str)
+
+    if path.is_absolute():
+        return path
+    else:
+        return HOME / path
+
 # week days symbols : can be changed by locale
 def set_locale_n_week_day_names(arg_locale, user_locale, syms_week_days, day_format, first_day_week, day_abbr_lenght):
     """ Set SYMS_WEEK_DAYS constante given command line argument """
@@ -271,7 +281,7 @@ FIRST_DAY_WEEK = int(config['DAY NAMES']["FIRST_DAY_WEEK"]) # 0 = sunday, 1 = mo
 
 # Day events configuration
 ##########################
-EVENTS_PATHS = {n:Path.home()/Path(config['EVENTS'][n]) for n in config['EVENTS']}
+EVENTS_PATHS = {n:to_path(config['EVENTS'][n]) for n in config['EVENTS']}
 # default date events folder to display
 EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
 
@@ -300,13 +310,13 @@ SYM_GO_TODAY = to_list(config['SHORTCUTS']['SYM_GO_TODAY'])
 # Custom Functions
 ##################
 SYM_CUSTOM_1 = to_list(config['CUSTOM']['SYM_CUSTOM_1'])
-CMD_CUSTOM_1 = HOME / config['CUSTOM']['CMD_CUSTOM_1']
+CMD_CUSTOM_1 = to_path(config['CUSTOM']['CMD_CUSTOM_1'])
 
 SYM_CUSTOM_2 = to_list(config['CUSTOM']['SYM_CUSTOM_2'])
-CMD_CUSTOM_2 = HOME / config['CUSTOM']['CMD_CUSTOM_2']
+CMD_CUSTOM_2 = to_path(config['CUSTOM']['CMD_CUSTOM_2'])
 
 SYM_CUSTOM_3 = to_list(config['CUSTOM']['SYM_CUSTOM_3'])
-CMD_CUSTOM_3 = HOME / config['CUSTOM']['CMD_CUSTOM_3']
+CMD_CUSTOM_3 = to_path(config['CUSTOM']['CMD_CUSTOM_3'])
 
 # Today header display
 ######################
