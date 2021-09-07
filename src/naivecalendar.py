@@ -134,13 +134,33 @@ ROFI_RELOAD_TEMPO = 0.2
 ######################
 HOME = Path.home()
 DIRNAME = Path(__file__).parent
+
+# cache files
 CACHE_PATH = HOME / ".cache/naivecalendar"
 DATE_CACHE = CACHE_PATH / "date_cache.ini"
 PP_CACHE = CACHE_PATH / "pretty_print_cache.txt"
 THEME_CACHE = CACHE_PATH / "theme_cache.txt"
 EVENT_CACHE = CACHE_PATH / "event_cache.txt"
-THEME_USER_PATH = HOME / ".config/naivecalendar/themes"
-THEME_PATHS = [THEME_USER_PATH, DIRNAME/"themes"]
+
+# config files
+CONFIG_PATH = HOME / ".config/naivecalendar"
+
+THEME_PATHS = {
+    'user' : CONFIG_PATH / "themes",
+    'rel' : DIRNAME / "themes"
+}
+SCRIPT_PATHS = {
+    'user' : CONFIG_PATH / "scripts",
+    'rel' : DIRNAME / "scripts"
+}
+EVENT_FILES = {
+    'user' : CONFIG_PATH / "global/events.cfg",
+    'rel' : DIRNAME / "global/events.cfg"
+}
+CUSTOM_ACTION_FILES = {
+    'user' : CONFIG_PATH / "global/custom_actions.cfg",
+    'rel' : DIRNAME / "global/custom_actions.cfg"
+}
 
 
 #######################################
@@ -148,35 +168,45 @@ THEME_PATHS = [THEME_USER_PATH, DIRNAME/"themes"]
 #######################################
 
 # get wanted theme
+theme = "classic_dark_extended"
 if ARGS.theme:
     theme = ARGS.theme
 else:
     if THEME_CACHE.exists():
         with open(THEME_CACHE, 'r') as theme_cache:
             theme = theme_cache.read()
-    else:
-        theme = "classic_dark_extended"
 
 # look for theme in config paths
-if (THEME_USER_PATH / f"{theme}.cfg").exists():
-    theme_path = THEME_USER_PATH
+if (THEME_PATHS['user'] / f"{theme}.cfg").exists():
+    theme_path = THEME_PATHS['user']
 else:
-    theme_path = DIRNAME / "themes"
+    theme_path = THEME_PATHS['rel']
 
 THEME_CONFIG_FILE = theme_path / f"{theme}.cfg"
 THEME_RASI_FILE = theme_path / f"{theme}.rasi"
 
-print(f"{50*'*'}\n{THEME_CONFIG_FILE=}\n {THEME_RASI_FILE=}\n{50*'*'}\n", file=sys.stderr)
 
 ########################
 ### Load config file ###
 ########################
-config = configparser.ConfigParser(interpolation=None)
-try:
-    config.read(THEME_CONFIG_FILE)
-except Exception as e:
-    print(e, file=sys.stderr)
-    raise e
+# -T-heme config
+cfg_t = configparser.ConfigParser(interpolation=None)
+cfg_t.read(THEME_CONFIG_FILE)
+
+# -E-vent config
+cfg_e = configparser.ConfigParser(interpolation=None)
+if EVENT_FILES['user'].exists():
+    cfg_e.read(EVENT_FILES['user'])
+else:
+    cfg_e.read(EVENT_FILES['rel'])
+
+# custom -A-ction config
+cfg_a = configparser.ConfigParser(interpolation=None)
+if CUSTOM_ACTION_FILES['user'].exists():
+    cfg_a.read(CUSTOM_ACTION_FILES['user'])
+else:
+    cfg_a.read(CUSTOM_ACTION_FILES['rel'])
+
 
 ###########################
 ### Get last event type ###
@@ -185,7 +215,7 @@ try:
     with open(EVENT_CACHE, 'r') as event_cache:
         EVENTS_DEFAULT = event_cache.read()
     try :
-        config['EVENTS'][EVENTS_DEFAULT]
+        cfg_t['EVENTS'][EVENTS_DEFAULT]
     except KeyError:
         #print(f'no event "{EVENTS_DEFAULT}" found', file=sys.stderr)
         EVENTS_DEFAULT = ''
@@ -221,6 +251,16 @@ def set_list(default, section, key, row):
     else: # parse config values
         return [CONTROL_MENU_ID[x.strip()] if x.strip() in CONTROL_MENU_ID.keys() else x for x in to_list(vals)]
 
+# def old_conf_file_compat(key):
+#     dct = {
+#         'ROW_CONTROL_MENU' : 'ROW_BAR_1',
+#         'ROW_SHORTCUTS' : 'ROW_BAR_2',
+#         'SYMS_CONTROL_MENU' : 'SYMS_BAR_1',
+#         'SYMS_SHORTCUTS' : 'SYMS_BAR_2'
+#     }
+#
+#     return dct.setdefault(key, key)
+
 def to_int(section, key):
     """Convert a configparser entry into an int"""
     val = section[key]
@@ -234,7 +274,7 @@ def to_int(section, key):
             raise e
     return val
 
-def to_path(path_str):
+def to_path(path_str, parent=HOME):
     """make path relative to home or absolute"""
 
     path = Path(path_str)
@@ -242,17 +282,13 @@ def to_path(path_str):
     if path.is_absolute():
         return path
     else:
-        return HOME / path
+        return parent / path
 
 # week days symbols : can be changed by locale
-def set_locale_n_week_day_names(arg_locale, user_locale, syms_week_days, day_format, first_day_week, day_abbr_lenght):
+def set_locale_n_week_day_names(arg_locale, user_locale, day_format, first_day_week, day_abbr_lenght):
     """ Set SYMS_WEEK_DAYS constante given command line argument """
 
-    if not syms_week_days == [DAY_FORMAT.format('')]: # overrided by user in config file
-        syms = [day_format.format(s) for s in syms_week_days] # just align right
-        return syms
-
-    elif arg_locale: # locale overwrited by user
+    if arg_locale: # locale overwrited by user
         locale.setlocale(locale.LC_ALL, arg_locale)
     else: # system locale
         locale.setlocale(locale.LC_ALL, user_locale)
@@ -269,19 +305,19 @@ def set_locale_n_week_day_names(arg_locale, user_locale, syms_week_days, day_for
 
     return sym_week_days
 
-# configure  locate
+# cfg_ture  locate
 ###################
-USER_LOCALE = config['LOCALE']["USER_LOCALE"] # use 'locale -a' on your system to list locales
+USER_LOCALE = cfg_t['LOCALE']["USER_LOCALE"] # use 'locale -a' on your system to list locales
 
 # Day names abbreviations
 #########################
-DAY_ABBR_LENGHT = int(config['DAY NAMES']["DAY_ABBR_LENGHT"]) # ex : 3 => Mon
+DAY_ABBR_LENGHT = int(cfg_t['DAY NAMES']["DAY_ABBR_LENGHT"]) # ex : 3 => Mon
 DAY_FORMAT = '{:>' + str(max(DAY_ABBR_LENGHT,2)) + '}' # align symbols right
-FIRST_DAY_WEEK = int(config['DAY NAMES']["FIRST_DAY_WEEK"]) # 0 = sunday, 1 = monday...
+FIRST_DAY_WEEK = int(cfg_t['DAY NAMES']["FIRST_DAY_WEEK"]) # 0 = sunday, 1 = monday...
 
 # Day events configuration
 ##########################
-EVENTS_PATHS = {n:to_path(config['EVENTS'][n]) for n in config['EVENTS']}
+EVENTS_PATHS = {n:to_path(cfg_e['EVENTS'][n]) for n in cfg_e['EVENTS']}
 # default date events folder to display
 EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.keys().__iter__()) #cfg['DEFAULT'].lower()
 
@@ -289,57 +325,51 @@ EVENTS_DEFAULT = EVENTS_DEFAULT if EVENTS_DEFAULT != '' else next(EVENTS_PATHS.k
 #####################
 NB_COL = 7
 NB_WEEK = 6 # nb row of calendar "days number" part
-#NB_ROW = int(config['SHAPE']['NB_ROW'])
+#NB_ROW = int(cfg_t['SHAPE']['NB_ROW'])
 
 # Calendar symbols and shortcuts
 ################################
-SYM_NEXT_MONTH = to_list(config['CONTROL']['SYM_NEXT_MONTH'])
-SYM_NEXT_YEAR = to_list(config['CONTROL']['SYM_NEXT_YEAR'])
-SYM_PREV_MONTH = to_list(config['CONTROL']['SYM_PREV_MONTH'])
-SYM_PREV_YEAR = to_list(config['CONTROL']['SYM_PREV_YEAR'])
+SYM_NEXT_MONTH = to_list(cfg_t['CONTROL']['SYM_NEXT_MONTH'])
+SYM_NEXT_YEAR = to_list(cfg_t['CONTROL']['SYM_NEXT_YEAR'])
+SYM_PREV_MONTH = to_list(cfg_t['CONTROL']['SYM_PREV_MONTH'])
+SYM_PREV_YEAR = to_list(cfg_t['CONTROL']['SYM_PREV_YEAR'])
 
 # Shortcuts for popup windows
 #############################
-SYM_SHOW_EVENTS = to_list(config['SHORTCUTS']['SYM_SHOW_EVENTS'])
-SYM_SHOW_HELP = to_list(config['SHORTCUTS']['SYM_SHOW_HELP'])
-SYM_SWITCH_THEME = to_list(config['SHORTCUTS']['SYM_SWITCH_THEME'])
-SYM_SWITCH_EVENT = to_list(config['SHORTCUTS']['SYM_SWITCH_EVENT'])
-SYM_SHOW_MENU = to_list(config['SHORTCUTS']['SYM_SHOW_MENU'])
-SYM_GO_TODAY = to_list(config['SHORTCUTS']['SYM_GO_TODAY'])
+SYM_SHOW_EVENTS = to_list(cfg_t['SHORTCUTS']['SYM_SHOW_EVENTS'])
+SYM_SHOW_HELP = to_list(cfg_t['SHORTCUTS']['SYM_SHOW_HELP'])
+SYM_SWITCH_THEME = to_list(cfg_t['SHORTCUTS']['SYM_SWITCH_THEME'])
+SYM_SWITCH_EVENT = to_list(cfg_t['SHORTCUTS']['SYM_SWITCH_EVENT'])
+SYM_SHOW_MENU = to_list(cfg_t['SHORTCUTS']['SYM_SHOW_MENU'])
+SYM_GO_TODAY = to_list(cfg_t['SHORTCUTS']['SYM_GO_TODAY'])
 
 # Custom Functions
 ##################
-SYM_CUSTOM_1 = to_list(config['CUSTOM']['SYM_CUSTOM_1'])
-CMD_CUSTOM_1 = config['CUSTOM']['CMD_CUSTOM_1'].split(' ')
-
-SYM_CUSTOM_2 = to_list(config['CUSTOM']['SYM_CUSTOM_2'])
-CMD_CUSTOM_2 = config['CUSTOM']['CMD_CUSTOM_2'].split(' ')
-
-SYM_CUSTOM_3 = to_list(config['CUSTOM']['SYM_CUSTOM_3'])
-CMD_CUSTOM_3 = config['CUSTOM']['CMD_CUSTOM_3'].split(' ')
+CUSTOM_ACTIONS = {s:{'sym':to_list(cfg_a[s]['sym']), 'cmd':to_list(cfg_a[s]['cmd'])} for s in cfg_a.sections()}
 
 # Today header display
 ######################
-PROMT_DATE_FORMAT = config['HEADER']['PROMT_DATE_FORMAT']
-IS_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
-IS_LOOP_TODAY_HEAD_MSG = config.getboolean('HEADER', 'IS_LOOP_TODAY_HEAD_MSG')
+PROMT_DATE_FORMAT = cfg_t['HEADER']['PROMT_DATE_FORMAT']
+IS_TODAY_HEAD_MSG = cfg_t.getboolean('HEADER', 'IS_TODAY_HEAD_MSG')
+IS_LOOP_TODAY_HEAD_MSG = cfg_t.getboolean('HEADER', 'IS_LOOP_TODAY_HEAD_MSG')
 
 # pango markup props
-TODAY_HEAD_MSG_TXT = config['HEADER']['TODAY_HEAD_MSG_TXT']
+TODAY_HEAD_MSG_TXT = cfg_t['HEADER']['TODAY_HEAD_MSG_TXT']
 
 # Calendar content and organisation
 ###################################
 # row number where to display day symbols
-ROW_WEEK_SYM = to_int(config['CONTENT'], 'ROW_WEEK_SYM')
+ROW_WEEK_SYM = to_int(cfg_t['CONTENT'], 'ROW_WEEK_SYM')
 # symbols for week day names
-_syms_week_days = to_list(config['CONTENT']["SYMS_WEEK_DAYS"]) if not ROW_WEEK_SYM == EMPTY else []
-SYMS_WEEK_DAYS = set_locale_n_week_day_names(ARGS.locale, USER_LOCALE, _syms_week_days, DAY_FORMAT, FIRST_DAY_WEEK, DAY_ABBR_LENGHT)
+#_syms_week_days = to_list(cfg_t['CONTENT']["SYMS_WEEK_DAYS"]) if not ROW_WEEK_SYM == EMPTY else []
+SYMS_WEEK_DAYS = set_locale_n_week_day_names(ARGS.locale, USER_LOCALE, DAY_FORMAT, FIRST_DAY_WEEK, DAY_ABBR_LENGHT)
 
 # row number where to display calendar first line
-ROW_CAL_START = to_int(config['CONTENT'], 'ROW_CAL_START')
+ROW_CAL_START = to_int(cfg_t['CONTENT'], 'ROW_CAL_START')
 # symbols for day numbers
-default = (str(x) for x in range(1,32))
-SYMS_DAYS_NUM= set_list(default, config['CONTENT'], 'SYMS_DAYS_NUM', ROW_CAL_START)
+#default = (str(x) for x in range(1,32))
+#SYMS_DAYS_NUM= set_list(default, cfg_t['CONTENT'], 'SYMS_DAYS_NUM', ROW_CAL_START)
+SYMS_DAYS_NUM = [str(x) for x in range(1,32)]
 
 
 CONTROL_MENU_ID = {
@@ -353,24 +383,24 @@ CONTROL_MENU_ID = {
     's' : SYM_SWITCH_EVENT[0],
     'm' : SYM_SHOW_MENU[0],
     'bb': SYM_GO_TODAY[0],
-    'c1': SYM_CUSTOM_1[0],
-    'c2': SYM_CUSTOM_2[0],
-    'c3': SYM_CUSTOM_3[0],
+    **{s:v['sym'][0] for s,v in CUSTOM_ACTIONS.items()}
 }
+print(f"{CONTROL_MENU_ID=}", file=sys.stderr)
 
 # row number where to display buttons
-ROW_CONTROL_MENU = to_int(config['CONTENT'], 'ROW_CONTROL_MENU')
+ROW_BAR_1 = to_int(cfg_t['CONTENT'], 'ROW_BAR_1')
 # symbols for control menu row
 default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, ' ', SYM_SHOW_MENU, ' ', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
-SYMS_CONTROL_MENU = set_list(default, config['CONTENT'], 'SYMS_CONTROL_MENU', ROW_CONTROL_MENU)
+SYMS_BAR_1 = set_list(default, cfg_t['CONTENT'], 'SYMS_BAR_1', ROW_BAR_1)
+print(f"{SYMS_BAR_1=}", file=sys.stderr)
 
 # row number where to display shortcuts buttons
-ROW_SHORTCUTS = to_int(config['CONTENT'], 'ROW_SHORTCUTS')
+ROW_BAR_2 = to_int(cfg_t['CONTENT'], 'ROW_BAR_2')
 # symbols to display in shortcuts row
 default = (s[0] for s in (SYM_SHOW_HELP, SYM_SWITCH_THEME, SYM_SHOW_EVENTS, SYM_SWITCH_EVENT, ' ', ' ', SYM_SHOW_MENU))
-SYMS_SHORTCUTS = set_list(default, config['CONTENT'], 'SYMS_SHORTCUTS', ROW_SHORTCUTS)
+SYMS_BAR_2 = set_list(default, cfg_t['CONTENT'], 'SYMS_BAR_2', ROW_BAR_2)
 
-NB_ROW = int(bool(SYMS_SHORTCUTS)) + int(bool(SYMS_CONTROL_MENU)) + int(bool(SYMS_WEEK_DAYS)) + 6
+NB_ROW = int(bool(SYMS_BAR_2)) + int(bool(SYMS_BAR_1)) + int(bool(SYMS_WEEK_DAYS)) + 6
 
 ##############
 ### Script ###
@@ -495,12 +525,17 @@ def process_event_popup(out, cdate):
     elif out in strip_list(SYM_GO_TODAY):
         cdate.now()
         cdate.write_cache()
-    elif out in strip_list(SYM_CUSTOM_1):
-        execute_external_cmd(CMD_CUSTOM_1)
-    elif out in strip_list(SYM_CUSTOM_2):
-        execute_external_cmd(CMD_CUSTOM_2)
-    elif out in strip_list(SYM_CUSTOM_3):
-        execute_external_cmd(CMD_CUSTOM_3)
+    else:
+        for sym_act, cmd_act in ((act['sym'], act['cmd']) for act in CUSTOM_ACTIONS):
+            if out in strip_list(sym_act):
+                execute_external_cmd(cmd_act)
+
+#    elif out in strip_list(SYM_CUSTOM_1):
+#        execute_external_cmd(CMD_CUSTOM_1)
+#    elif out in strip_list(SYM_CUSTOM_2):
+#        execute_external_cmd(CMD_CUSTOM_2)
+#    elif out in strip_list(SYM_CUSTOM_3):
+#        execute_external_cmd(CMD_CUSTOM_3)
 
 
 def update_rofi(date, is_first_loop):
@@ -534,12 +569,12 @@ def update_rofi(date, is_first_loop):
         week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
         print(f"\0active\x1f{week_sym_row}\n")
 
-    if not ROW_CONTROL_MENU == EMPTY:
-        control_sym_row =get_row_rofi_inds(ROW_CONTROL_MENU)
+    if not ROW_BAR_1 == EMPTY:
+        control_sym_row =get_row_rofi_inds(ROW_BAR_1)
         print(f"\0active\x1f{control_sym_row}\n")
 
-    if not ROW_SHORTCUTS == EMPTY:
-        shortcut_sym_row = get_row_rofi_inds(ROW_SHORTCUTS)
+    if not ROW_BAR_2 == EMPTY:
+        shortcut_sym_row = get_row_rofi_inds(ROW_BAR_2)
         print(f"\0active\x1f{shortcut_sym_row}\n")
 
     cal = get_calendar_from_date(date)
@@ -582,8 +617,8 @@ def get_calendar_from_date(date):
     cal[ind_first_day : ind_last_day] = SYMS_DAYS_NUM[:month_length]
 
     # join calendar parts given user order
-    index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_CONTROL_MENU, ROW_SHORTCUTS)
-    content = [SYMS_WEEK_DAYS, cal, SYMS_CONTROL_MENU, SYMS_SHORTCUTS]
+    index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_BAR_1, ROW_BAR_2)
+    content = [SYMS_WEEK_DAYS, cal, SYMS_BAR_1, SYMS_BAR_2]
     index, content = (list(x) for x in zip(*sorted(zip(index, content))))
 
     # transform
@@ -961,8 +996,10 @@ def show_menu(cdate):
 
     (list <theme>.cfg SHORTCUTS section entries)"""
 
-    menu = '\n'.join([to_list(config['SHORTCUTS'][s])[-1] for s in config['SHORTCUTS']])
-    menu += '\n' + '\n'.join([to_list(config['CUSTOM'][s])[-1] for s in config['CUSTOM'] if 'sym' in s])
+    menu = '\n'.join([to_list(cfg_t['SHORTCUTS'][s])[-1] for s in cfg_t['SHORTCUTS']])
+    print(f"{CUSTOM_ACTIONS=}", file=sys.stderr)
+    menu += '\n' + '\n'.join([act['sym'][-1] for act in CUSTOM_ACTIONS.values()])
+    print(f"{menu=}", file=sys.stderr)
     output = rofi_popup("menu", menu, nb_lines=7, width='20em')
     process_event_popup(output, cdate)
 
@@ -1009,7 +1046,7 @@ def ask_event_to_display():
 def ask_theme():
     """Search themes in paths and open a popup"""
 
-    themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS]))
+    themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS.values()]))
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
     themes = list2rofi(sorted(set(themes)))
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
@@ -1022,6 +1059,20 @@ def ask_theme():
 
 @open_n_reload_rofi
 def execute_external_cmd(cmd):
+    """Execute an external system command
+    try to find command in different directories:
+
+    - in $HOME/.config/naivecalendar/scripts/, then in
+    - in ./scripts/, then
+    - in system path
+    """
+    cmd_path = Path(cmd[0])
+
+    if (SCRIPT_PATHS['user'] / cmd_path).exists():
+        cmd = [str(SCRIPT_PATHS['user'] / cmd_path)] + cmd[1:]
+    elif (SCRIPT_PATHS['rel'] / cmd_path).exists():
+        cmd = [str(SCRIPT_PATHS['rel'] / cmd_path)] + cmd[1:]
+
     subprocess.Popen(cmd)
 
 def set_pp_date(day, date, f):
@@ -1062,8 +1113,11 @@ def first_time_init():
         print("please install rofi")
         sys.exit()
 
-    if not os.path.exists(THEME_USER_PATH):
-        os.makedirs(THEME_USER_PATH)
+    if not os.path.exists(THEME_PATHS['user']):
+        os.makedirs(THEME_PATHS['user'])
+
+    if not os.path.exists(SCRIPT_PATHS['user']):
+        os.makedirs(SCRIPT_PATHS['user'])
 
     for events_path in EVENTS_PATHS.values():
         if not os.path.exists(events_path.parent):

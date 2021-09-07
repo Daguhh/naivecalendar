@@ -24,7 +24,7 @@ DEFAULT=[default()]
 HOME = os.getenv("HOME")
 conf_path = f"{HOME}/.config/naivecalendar/caldav_user.json"
 
-event_path = f"{HOME}/.naivecalendar_events/my_cal"
+event_path = f"{HOME}/.naivecalendar_events/CalDav"
 
 if os.path.exists(conf_path):
     with open(conf_path, 'r') as f:
