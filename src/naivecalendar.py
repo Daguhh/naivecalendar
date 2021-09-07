@@ -692,23 +692,26 @@ def parse_month_events_files(date):
 
     # paths
     events_paths = get_month_events(date)
-    # first line
-    heads = [parse_event_file(n) for n in events_paths]
-    # file name
-    prompts = [Path(n).stem for n in events_paths]
-    # sort by file name (usually by date)
-    prompts, heads = (list(x) for x in zip(*sorted(zip(prompts, heads))))
 
-    prompts_pos = [0]
-    for head in heads[:-1]:
-        prompts_pos += [prompts_pos[-1] + len(head.split('\n'))]
-    prompts_pos = ','.join(str(x) for x in prompts_pos)
+    if not events_paths:
+        return "No events this month", 0
+    else:
+        # first line
+        heads = [parse_event_file(n) for n in events_paths]
+        # file name
+        prompts = [Path(n).stem for n in events_paths]
+        # sort by file name (usually by date)
+        prompts, heads = (list(x) for x in zip(*sorted(zip(prompts, heads))))
 
+        prompts_pos = [0]
+        for head in heads[:-1]:
+            prompts_pos += [prompts_pos[-1] + len(head.split('\n'))]
+        prompts_pos = ','.join(str(x) for x in prompts_pos)
 
-    # return : <file_name> : <first line> for each event
-    text = "\n".join([f"{p} : {h}" for p, h in sorted(zip(prompts, heads))])
+        # return : <file_name> : <first line> for each event
+        text = "\n".join([f"{p} : {h}" for p, h in sorted(zip(prompts, heads))])
 
-    return text, prompts_pos
+        return text, prompts_pos
 
 
 def parse_event_file(event_path):
