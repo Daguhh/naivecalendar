@@ -1,3 +1,12 @@
+naivecalendar (1.0.1) UNRELEASED; urgency=medium
+
+  * Add CalDav support
+  * Simplified theme conf
+  * Event conf in separated global file
+  *
+
+ -- Daguhh <code.daguhh@zaclys.net>  Wed, 08 Sep 2021 01:01:31 +0200
+
 naivecalendar (1.0.0) UNRELEASED; urgency=medium
 
   * New upstream release : release a first stable

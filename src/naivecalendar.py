@@ -8,7 +8,7 @@ Cycle through month and create linked event to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Dev"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 import glob, os, sys, subprocess, shutil
 from pathlib import Path
@@ -215,7 +215,7 @@ try:
     with open(EVENT_CACHE, 'r') as event_cache:
         EVENTS_DEFAULT = event_cache.read()
     try :
-        cfg_t['EVENTS'][EVENTS_DEFAULT]
+        cfg_e['EVENTS'][EVENTS_DEFAULT]
     except KeyError:
         #print(f'no event "{EVENTS_DEFAULT}" found', file=sys.stderr)
         EVENTS_DEFAULT = ''
