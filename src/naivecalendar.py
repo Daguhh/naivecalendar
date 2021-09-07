@@ -132,8 +132,8 @@ ROFI_RELOAD_TEMPO = 0.2
 ######################
 ### Path constants ###
 ######################
-HOME = Path(os.getenv("HOME"))
-DIRNAME = Path(os.path.dirname(__file__))
+HOME = Path.home()
+DIRNAME = Path(__file__).parent
 CACHE_PATH = HOME / ".cache/naivecalendar"
 DATE_CACHE = CACHE_PATH / "date_cache.ini"
 PP_CACHE = CACHE_PATH / "pretty_print_cache.txt"
@@ -310,13 +310,13 @@ SYM_GO_TODAY = to_list(config['SHORTCUTS']['SYM_GO_TODAY'])
 # Custom Functions
 ##################
 SYM_CUSTOM_1 = to_list(config['CUSTOM']['SYM_CUSTOM_1'])
-CMD_CUSTOM_1 = to_path(config['CUSTOM']['CMD_CUSTOM_1'])
+CMD_CUSTOM_1 = config['CUSTOM']['CMD_CUSTOM_1'].split(' ')
 
 SYM_CUSTOM_2 = to_list(config['CUSTOM']['SYM_CUSTOM_2'])
-CMD_CUSTOM_2 = to_path(config['CUSTOM']['CMD_CUSTOM_2'])
+CMD_CUSTOM_2 = config['CUSTOM']['CMD_CUSTOM_2'].split(' ')
 
 SYM_CUSTOM_3 = to_list(config['CUSTOM']['SYM_CUSTOM_3'])
-CMD_CUSTOM_3 = to_path(config['CUSTOM']['CMD_CUSTOM_3'])
+CMD_CUSTOM_3 = config['CUSTOM']['CMD_CUSTOM_3'].split(' ')
 
 # Today header display
 ######################
@@ -496,11 +496,11 @@ def process_event_popup(out, cdate):
         cdate.now()
         cdate.write_cache()
     elif out in strip_list(SYM_CUSTOM_1):
-        subprocess.check_output(CMD_CUSTOM_1)
+        execute_external_cmd(CMD_CUSTOM_1)
     elif out in strip_list(SYM_CUSTOM_2):
-        subprocess.check_output(CMD_CUSTOM_2)
+        execute_external_cmd(CMD_CUSTOM_2)
     elif out in strip_list(SYM_CUSTOM_3):
-        subprocess.check_output(CMD_CUSTOM_3)
+        execute_external_cmd(CMD_CUSTOM_3)
 
 
 def update_rofi(date, is_first_loop):
@@ -900,7 +900,7 @@ ROFI_RELAUNCH_COUNT = 0
 def open_n_reload_rofi(func):
     """ decorator to open and reload the rofi script at the same date"""
 
-    script_path = os.path.abspath(os.path.dirname(sys.argv[0]))
+    script_path = DIRNAME# os.path.abspath(os.path.dirname(sys.argv[0]))
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -916,9 +916,12 @@ def open_n_reload_rofi(func):
         ROFI_RELAUNCH_COUNT -= 1
         if ROFI_RELAUNCH_COUNT == 0:
             time.sleep(ROFI_RELOAD_TEMPO)
-            cmd_args = ' '.join(sys.argv[1:-1])
-            cmd = f"{script_path}/naivecalendar.sh -c {cmd_args}"
-            os.system(cmd)
+            #cmd_args = ' '.join(sys.argv[1:-1])
+            cmd_args = sys.argv[1:-1] # 1 = command name, -1 = rofi outpub
+            cmd = (str(DIRNAME / "naivecalendar.sh"), '-c', *cmd_args)
+            print(cmd, file=sys.stderr)
+            #os.system(cmd)
+            subprocess.Popen(cmd)
 
         return out
 
@@ -1017,6 +1020,9 @@ def ask_theme():
     else :
         print("this is not a valid theme", file=sys.stderr)
 
+@open_n_reload_rofi
+def execute_external_cmd(cmd):
+    subprocess.Popen(cmd)
 
 def set_pp_date(day, date, f):
     """write date to cache with command line specified format"""
