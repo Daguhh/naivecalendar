@@ -7,8 +7,8 @@ add-event
 ^^^^^^^^^
 
 .. include:: ../tools/naivecalendar-add-event
-   :start-line: 5
-   :end-line: 22
+   :start-line: 15
+   :end-line: 40
 
 ---------------------------------
 
@@ -16,6 +16,6 @@ update
 ^^^^^^
 
 .. include:: ../tools/naivecalendar-update
-   :start-line: 38
-   :end-line: 54
+   :start-line: 34
+   :end-line: 51
 

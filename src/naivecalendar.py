@@ -526,16 +526,10 @@ def process_event_popup(out, cdate):
         cdate.now()
         cdate.write_cache()
     else:
-        for sym_act, cmd_act in ((act['sym'], act['cmd']) for act in CUSTOM_ACTIONS):
+        for sym_act, cmd_act in ((act['sym'], act['cmd']) for act in CUSTOM_ACTIONS.values()):
             if out in strip_list(sym_act):
                 execute_external_cmd(cmd_act)
-
-#    elif out in strip_list(SYM_CUSTOM_1):
-#        execute_external_cmd(CMD_CUSTOM_1)
-#    elif out in strip_list(SYM_CUSTOM_2):
-#        execute_external_cmd(CMD_CUSTOM_2)
-#    elif out in strip_list(SYM_CUSTOM_3):
-#        execute_external_cmd(CMD_CUSTOM_3)
+                break
 
 
 def update_rofi(date, is_first_loop):

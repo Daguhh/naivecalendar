@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 
+####################
+#                  # 
+#   depreciated    # 
+#                  # 
+####################
+
+echo "depreciated please directly edit global/events"
+exit 0
+
 
 help_msg () {
     echo """
+
+  .. code:: ini::
+
+    ####################
+    #                  # 
+    #   depreciated    # 
+    #                  # 
+    ####################
+
 **usage:** naivecalendar *add-event* [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
 
 Add a new event entry in all themes files in ~/.config/naivecalendar/themes

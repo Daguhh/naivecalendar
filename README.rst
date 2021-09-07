@@ -16,6 +16,8 @@ A popup calendar with rofi_ and python3_
 
 |classic dark extended| |classic light extended|
 
+`see all themes <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_
+
 Features
 --------
  
@@ -54,6 +56,7 @@ Recommends
 
 * xclip (copy to clipboard option)
 * sensible-utils (choose editor in update subcommand)
+* python3-caldav (show caldav events in calendar (very light support))
 
 Suggests
 ^^^^^^^^
@@ -134,69 +137,19 @@ Sym     Keys                     Action
   ☰     menu       mm       ..   display menu 
 ====  ======  =======  ========  ========================================
 
+
 .. _Events:
 
 Events
 ^^^^^^
 
 Events are simply files (usally text files) created by the calendar when you interact with a day (click/return key)
-Events files names should contain `strftime <https://strftime.org/>`_  directives (%d, %m ...) to appear in the calendar. 
-
-.. code:: ini
-
-    note_%Y-%m-%d.txt
-
-Not giving it a year directive will make it occur every year (usefull for birthday isn't it?)
-
-.. code:: ini
-
-    birthday_on_%d-%m.txt
-
-The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in configuration files. Paths are relative to user's home.
-
-.. code:: ini
-
-    [EVENTS]
-
-    Notes = .naivecalendar_events/MyNotes/note_%Y-%m-%d.txt
-    Birthday = .naivecalendar_events/Birthdays/birthday_on_%d-%m.txt
-
-Notes support a very light format to be parsed when displaying "events of the month" :
-
-- show section : if you create sections (format : [section]) all lines containing a section will be displayed 
-  
-  .. code:: ini
-
-    [9H30 -> 10H] short description <---- will be displayed
-    Long 
-    multilines
-    description...
-    [14H30] rdv with bidulle <----- will be displayed
-    Some text again again
-
-- show header : if the event/note don't contain section, only first line will be displayed
-  
-  .. code:: ini
-
-    # Note Title  <---- only first line is displayed
-    Some text
-    Some text again...
-
-if you interact with the event file name, it will open the note again, other rows will bring you back to calendar
-
-.. code:: ini
-
-    notes_2021-01-05 : <---- reopen editor
-    [9H30 -> 10H] short description  <--- do nothing : back to calendar
-    [14H30] rdv with bidulle
-
-
 
 Options
 ^^^^^^^
 
 Some command line options are avaible and can be useful if you want to integrate the naivecalendar in a script or temporarily override parameters.
-Subcommands **update** and **add-event** could be useful to update all theme config at once instead of doing it manually (use completion).
+Subcommands **update** could be useful to update all theme config at once instead of doing it manually (use completion).
 
 
     **usage:** *naivecalendar* [-h] [-V] [-v] [-p] [-x] [-f FORMAT] [-e EDITOR] [-l LOCALE] [-c] [-t THEME] [-d DATE]
@@ -205,7 +158,7 @@ Subcommands **update** and **add-event** could be useful to update all theme con
 
     **subcommands:**
         update      Update a calendar parameter for all user themes at once
-        add-event   Add, modify, delete event in all user themes config at once
+        add-event   Depreciated
 
     **optional arguments:**
       -h, --help            show this help message and exit
@@ -229,6 +182,31 @@ Subcommands **update** and **add-event** could be useful to update all theme con
 
 Customize
 ---------
+
+You can start from a copy of installation configuration files.
+
+- themes:
+
+.. code:: bash
+
+    cp -r /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
+
+- events
+
+.. code:: bash
+
+    cp -r /usr/share/naivecalendar/global/events.cfg  ~/.config/naivecalendar/global/events.cfg
+
+- custom actions
+
+.. code:: bash
+
+    cp -r /usr/share/naivecalendar/global/custom_actions.cfg  ~/.config/naivecalendar/global/custom_actions.cfg
+    cp -r /usr/share/naivecalendar/scripts/*  ~/.config/naivecalendar/scripts/
+
+
+Themes
+^^^^^^
 
 A theme consist of two files :
 
@@ -267,6 +245,74 @@ Then modify themes one by one with your favourite editor or use naivecalendar su
 
    So you can easily mix them to customize calendar aspect.
 
+Events
+^^^^^^
+
+Events files names should contain `strftime <https://strftime.org/>`_  directives (%d, %m ...) to appear in the calendar. 
+
+.. code:: ini
+
+    note_%Y-%m-%d.txt
+
+Not giving it a year directive will make it occur every year (usefull for birthday isn't it?)
+
+.. code:: ini
+
+    birthday_on_%d-%m.txt
+
+The calendar handle multiple events types (that are simply differents folders), you can define new event type by adding an entry in [EVENTS] section in *.config/naivecalendar/global/event.cfg*. Paths are relative to user's home.
+
+.. code:: ini
+
+    [EVENTS]
+
+    Notes = .naivecalendar_events/MyNotes/note_%Y-%m-%d.txt
+    Birthday = .naivecalendar_events/Birthdays/birthday_on_%d-%m.txt
+
+Notes support a very light format to be parsed when displaying "events of the month" :
+
+- show section : if you create sections (format : [section]) all lines containing a section will be displayed 
+  
+  .. code:: ini
+
+    [9H30 -> 10H] short description <---- will be displayed
+    Long 
+    multilines
+    description...
+    [14H30] rdv with bidulle <----- will be displayed
+    Some text again again
+
+- show header : if the event/note don't contain section, only first line will be displayed
+  
+  .. code:: ini
+
+    # Note Title  <---- only first line is displayed
+    Some text
+    Some text again...
+
+if you interact with the event file name, it will open the note again, other rows will bring you back to calendar
+
+.. code:: ini
+
+    notes_2021-01-05 : <---- reopen editor
+    [9H30 -> 10H] short description  <--- do nothing : back to calendar
+    [14H30] rdv with bidulle
+
+
+Custom actions
+^^^^^^^^^^^^^^
+
+User can also create is own custom action i.e. create a button that launch user's script.
+To add a custom action please, put your script in *~/.config/naivecalendar/script/*, then,
+edit *~/.config/naivecalendar/global/custom_actions.cfg* to configure the button/shortcut:
+
+  .. code:: ini
+
+    [Shortcut Name] <--- used as id for other conf file
+    SYM = Icon, [shortcut_1, shortcut_2], long description   <--- Icon : displayed on calendar
+    CMD = path/to/script <--- script or system command            long description : displayed in menu 
+
+
 .. _files:
 
 Files
@@ -286,20 +332,26 @@ calendar content configuration     /usr/share/naivecalendar/**themes/\*.cfg**
 --------------------------------   -----------------------------------------------------------
 **Installation & optional**
 ----------------------------------------------------------------------------------------------
-system command                      /usr/bin/**naivecalendar**
-theme config editor command         /usr/share/naivecalendar/tools/**naivecalendar-update**
-theme event editor command          /usr/share/naivecalendar/tools/**naivecalendar-add-event**
+system command                     /usr/bin/**naivecalendar**
+theme config editor command        /usr/share/naivecalendar/tools/**naivecalendar-update**
+theme event editor command         /usr/share/naivecalendar/tools/**naivecalendar-add-event**
+custom actions                     /usr/share/naivecalendar/**global/custom_actions.cfg**
+events conf                        /usr/share/naivecalendar/**global/events.cfg**   
+scripts                            /usr/share/naivecalendar/**scripts/\*"**    
 --------------------------------   -----------------------------------------------------------
-**User themes : optional**
+**User themes : optional** (overide installation conf file)
 ----------------------------------------------------------------------------------------------
 user theme files                   ~/.config/naivecalendar/**themes/\*.rasi**
 user content configuration         ~/.config/naivecalendar/**themes/\*.cfg**
+user custom actions                ~/.config/naivecalendar/**global/custom_actions.cfg**
+user events conf                   ~/.config/naivecalendar/**global/events.cfg**   
+user scripts                       ~/.config/naivecalendar/**scripts/\*"**    
 --------------------------------   -----------------------------------------------------------
 **Event : editable**
 ----------------------------------------------------------------------------------------------
 day notes path (default)           ~/.naivecalendar_events/<event type>/**<date format>.txt**
 --------------------------------   -----------------------------------------------------------
-**Generated**
+**Generated : cache**
 ----------------------------------------------------------------------------------------------
 remember date throught loops       ~/.cache/naivecalendar/**date_cache.ini**
 pass date to bash when -p option   ~/.cache/naivecalendar/**pretty_print_cache.txt**
