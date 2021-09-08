@@ -385,14 +385,12 @@ CONTROL_MENU_ID = {
     'bb': SYM_GO_TODAY[0],
     **{s:v['sym'][0] for s,v in CUSTOM_ACTIONS.items()}
 }
-print(f"{CONTROL_MENU_ID=}", file=sys.stderr)
 
 # row number where to display buttons
 ROW_BAR_1 = to_int(cfg_t['CONTENT'], 'ROW_BAR_1')
 # symbols for control menu row
 default = (s[0] for s in (SYM_PREV_YEAR, SYM_PREV_MONTH, ' ', SYM_SHOW_MENU, ' ', SYM_NEXT_MONTH, SYM_NEXT_YEAR))
 SYMS_BAR_1 = set_list(default, cfg_t['CONTENT'], 'SYMS_BAR_1', ROW_BAR_1)
-print(f"{SYMS_BAR_1=}", file=sys.stderr)
 
 # row number where to display shortcuts buttons
 ROW_BAR_2 = to_int(cfg_t['CONTENT'], 'ROW_BAR_2')
@@ -948,7 +946,6 @@ def open_n_reload_rofi(func):
             #cmd_args = ' '.join(sys.argv[1:-1])
             cmd_args = sys.argv[1:-1] # 1 = command name, -1 = rofi outpub
             cmd = (str(DIRNAME / "naivecalendar.sh"), '-c', *cmd_args)
-            print(cmd, file=sys.stderr)
             #os.system(cmd)
             subprocess.Popen(cmd)
 
@@ -991,9 +988,7 @@ def show_menu(cdate):
     (list <theme>.cfg SHORTCUTS section entries)"""
 
     menu = '\n'.join([to_list(cfg_t['SHORTCUTS'][s])[-1] for s in cfg_t['SHORTCUTS']])
-    print(f"{CUSTOM_ACTIONS=}", file=sys.stderr)
     menu += '\n' + '\n'.join([act['sym'][-1] for act in CUSTOM_ACTIONS.values()])
-    print(f"{menu=}", file=sys.stderr)
     output = rofi_popup("menu", menu, nb_lines=7, width='20em')
     process_event_popup(output, cdate)
 
