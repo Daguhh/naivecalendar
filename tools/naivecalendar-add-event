@@ -2,9 +2,6 @@
 
 help_msg () {
     echo """
-
-  .. code:: ini::
-
 **usage:** naivecalendar *add-event* [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
 
 Add a new event entry in ~/.config/naivecalendar/global/events.cfg
@@ -18,8 +15,7 @@ Add a new event entry in ~/.config/naivecalendar/global/events.cfg
   -o, --override          override value if event already exist
   -d EVENT_NAME, --delete EVENT_NAME
                           delete event
-
-""" | sed '1,3d'
+"""
 }
 
 # Yes/No question with default

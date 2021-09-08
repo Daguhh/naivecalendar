@@ -32,9 +32,9 @@ submodules_options="-- update add-event"
 
 naivecalendar_options="--help --version --verbose --print --clipboard --format --editor --locale --read-cache --theme --date"
 
-update_options="--help --simulate --list-parameters --parameter --value --filter --all-parameters --editor"
-update_param_exclude="--help --all-parameters --list-parameters --editor"
-update_all_exclude="--list-parameters --parameter --value"
+update_options="--help --simulate --list-parameters --list-themes --parameter --value --filter --all-parameters --editor"
+update_param_exclude="--help --all-parameters --list-parameters --list-themes --editor"
+update_all_exclude="--list-parameters --list-themes --parameter --value"
 
 add_event_options="--help --new --value --override --delete"
 add_event_delete_exclude="--new --value --override"
@@ -91,6 +91,7 @@ _myscript_tab_complete () {
         prevs=$(echo $prevs | sed -e 's/\bh\b/-help/')
         prevs=$(echo $prevs | sed -e 's/\bs\b/-simulate/')
         prevs=$(echo $prevs | sed -e 's/\bL\b/-list-parameters/')
+        prevs=$(echo $prevs | sed -e 's/\bT\b/-list-themes/')
         prevs=$(echo $prevs | sed -e 's/\bp\b/-parameter/')
         prevs=$(echo $prevs | sed -e 's/\bv\b/-value/')
         prevs=$(echo $prevs | sed -e 's/\bf\b/-filter/')
@@ -114,6 +115,9 @@ _myscript_tab_complete () {
         elif [[ "$prev" == "-L" || $prev == "--list-parameters" ]] ; then
             options=" " 
 
+        elif [[ "$prev" == "-L" || $prev == "--list-themes" ]] ; then
+            options=" " 
+
         elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
             options=" " 
 
@@ -127,6 +131,7 @@ _myscript_tab_complete () {
             # if any other remove help and list-parameters
             options=$(echo $options | sed -e 's:--help\b *::')
             options=$(echo $options | sed -e 's:--list-parameters\b *::')
+            options=$(echo $options | sed -e 's:--list-themes\b *::')
             
 
             for element in ${prevs%%*(-)}; do

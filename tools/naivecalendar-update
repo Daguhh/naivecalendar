@@ -42,6 +42,7 @@ Give a new value to a calendar parameter for all themes in ~/.config/naivecalend
   -h, --help                    show this help message and exit
   -s, --simulate                don't change files and print to stdout
   -L, --list-parameters         show all parameters names
+  -T, --list-themes             show all user themes
   -a, --all-parameters          open an editor to giva a value to all parameters
   -e, --editor                  force editor with -a flag
   -p PARAMETER, --parameter PARAMETER
@@ -54,7 +55,13 @@ Give a new value to a calendar parameter for all themes in ~/.config/naivecalend
 
 list_param () {
     printf "naivecalendar theme parameters: \n\n"
-    printf "%-25s  %-25s  %-25s  %-25s\n"$PARAM_LIST
+    printf "%-25s  %-25s  %-25s  %-25s\n" $PARAM_LIST
+}
+
+THEME_LIST=$(ls -1 $HOME/.config/naivecalendar/themes/*.cfg | sed -r 's/.*\/(.*)\.cfg/\1/g')
+list_themes () {
+    printf "naivecalendar user themes : \n\n"
+    printf "%-25s  %-25s  %-25s  %-25s\n" $THEME_LIST
 }
 
 get_editor () {
@@ -78,6 +85,10 @@ while [ $# -gt 0 ] ; do
             ;;
         -L|--list-parameters)
             list_param
+            exit 0
+            ;;
+        -T|--list-themes)
+            list_themes
             exit 0
             ;;
         -p|--parameter)
@@ -130,13 +141,13 @@ if [ -n "$IS_ALL_PARAM" ]; then
     printf "# Just quit to cancel\n#\n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "# Following themes files will be modified: \n" >> "$HOME/.cache/naivecalendar/updateall.cfg"
     printf "#%30s  %30s  %30s  %30s\n" $FILES >> "$HOME/.cache/naivecalendar/updateall.cfg"
-    printf "%s \n $PARAM_LIST" | sed -r 's/^([A-Z_]+)/\1 = /g' >> "$HOME/.cache/naivecalendar/updateall.cfg"
+    printf "%s \n $PARAM_LIST" | sed -r 's/^([A-Z_0-9]+)/\1 = /g' >> "$HOME/.cache/naivecalendar/updateall.cfg"
     $USER_EDITOR "$HOME/.cache/naivecalendar/updateall.cfg"
 
     sleep 1
     printf "Start updating files"
 
-    datas="$(cat "$HOME/.cache/naivecalendar/updateall.cfg" | grep -P '^[A-Z_]+.*=.*[\w\d]+' | sed -e 's/ /ooo/g' )"
+    datas="$(cat "$HOME/.cache/naivecalendar/updateall.cfg" | grep -P '^[A-Z_0-9]+.*=.*[\w\d]+' | sed -e 's/ /ooo/g' )"
     for f in $FILES; do
         tmp_file="$HOME/.cache/naivecalendar/temp_file"
         cat "$HOME/.config/naivecalendar/themes/$f" > $tmp_file
@@ -166,7 +177,9 @@ if [ -n "$IS_ALL_PARAM" ]; then
             printf "...."
         fi
     done
-    rm $tmp_file
+    if [ -n "$tmp_file" ]; then
+        rm $tmp_file
+    fi
     if [[ "$UPDATED_PARAMS" == "" ]] ;then
         printf "\nNo modifications made\n"
     else
