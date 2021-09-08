@@ -1,0 +1,26 @@
+/************************************************
+ * ROFI Color theme
+ * User: Daguhh
+ * Copyright: 2020 Daguhh
+ ***********************************************/
+
+
+* {
+    bg-color            : #212121;
+    bg-light-color      : #404040;
+    fg-color            : #eeffff;
+    accent-color        : #f07178;
+    urgent-color        : #BE88E5;
+
+    foreground:                  @fg-color;
+    background:                  @bg-color;
+    foreground-normal:           @foreground;
+    background-normal:           @background;
+    foreground-urgent:           @urgent-color;
+    background-urgent:           @bg-color;
+    foreground-active:           @accent-color;
+    background-active:           @bg-color;
+    foreground-select:           @foreground;
+    background-select:           @bg-light-color;
+    border:                      @bg-color;
+}
