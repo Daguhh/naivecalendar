@@ -61,9 +61,9 @@ if os.path.exists(conf_path):
 else:
     default_conf = {"url": "", "user": "", "password": "", "calendar_name": ""}
     with open(conf_path, "w") as f:
-        conf = f.write(json.dumps(default_conf), indent=4)
+        conf = f.write(json.dumps(default_conf, indent=4))
 
-    err_msg("please fill {conf_path} to connect your caldav account")
+    err_msg(f"please fill {conf_path} to connect your caldav account")
     exit(0)
 
 
