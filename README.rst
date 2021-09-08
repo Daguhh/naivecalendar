@@ -329,6 +329,7 @@ rofi command                       /usr/share/naivecalendar/**naivecalendar.sh**
 script called by rofi              /usr/share/naivecalendar/**naivecalendar.py**
 rofi theme files                   /usr/share/naivecalendar/**themes/\*.rasi**
 calendar content configuration     /usr/share/naivecalendar/**themes/\*.cfg**
+events conf                        /usr/share/naivecalendar/**global/events.cfg**   
 --------------------------------   -----------------------------------------------------------
 **Installation & optional**
 ----------------------------------------------------------------------------------------------
@@ -336,7 +337,6 @@ system command                     /usr/bin/**naivecalendar**
 theme config editor command        /usr/share/naivecalendar/tools/**naivecalendar-update**
 theme event editor command         /usr/share/naivecalendar/tools/**naivecalendar-add-event**
 custom actions                     /usr/share/naivecalendar/**global/custom_actions.cfg**
-events conf                        /usr/share/naivecalendar/**global/events.cfg**   
 scripts                            /usr/share/naivecalendar/**scripts/\*"**    
 --------------------------------   -----------------------------------------------------------
 **User themes : optional** (overide installation conf file)

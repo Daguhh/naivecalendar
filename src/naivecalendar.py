@@ -133,7 +133,7 @@ ROFI_RELOAD_TEMPO = 0.2
 ### Path constants ###
 ######################
 HOME = Path.home()
-DIRNAME = Path(__file__).parent
+DIRNAME = Path(__file__).parent.absolute()
 
 # cache files
 CACHE_PATH = HOME / ".cache/naivecalendar"
