@@ -28,7 +28,7 @@ SYM_BACK_TO_CALENDAR
 SYM_GO_TODAY
 """
 
-submodules_options="update add-event"
+submodules_options="-- update add-event"
 
 naivecalendar_options="--help --version --verbose --print --clipboard --format --editor --locale --read-cache --theme --date"
 

@@ -88,25 +88,111 @@ set calendar theme, default=classic_dark (theme file name without extention)
 .BI -d|--date " "DATE  
 display calendar at the given month, format='%m-%Y'
 
+
+
 .SH FILES
-.I /usr/share/naivecalendar/themes/<theme>.rasi
-.RS 
-a rofi configuration file for shape and theme
+.SS System commands and scripts files
 
-.RE
-.I /usr/share/naivecalendar/themes/<theme>.cfg
-.RS 
-an ini file to configure calendar content
-
-.RE
-.I ~/.naivecalendar_notes/
+.TP
+.I /usr/bin/naivecalendar
 .RS
-day notes path                     
+system command                     
 
 .RE
-.I ~/.config/naivecalendar/themes
+.I /usr/share/naivecalendar/naivecalendar.sh
 .RS
-user themes folder (copy or create both a .rasi and a .cfg file to add a theme)
+rofi command                       
+
+.RE
+.I /usr/share/naivecalendar/naivecalendar.py
+.RS
+script called by rofi              
+
+.RE
+.I /usr/share/naivecalendar/tools/naivecalendar-update
+.RS
+theme config editor system command        
+
+.RE
+.I /usr/share/naivecalendar/tools/naivecalendar-add-event
+.RS
+theme event editor system command         
+
+.RE
+.SS Configuration Files
+
+.TP
+.I /usr/share/naivecalendar/themes/*.rasi
+.RS
+rofi configuration theme files                   
+
+.RE
+.I /usr/share/naivecalendar/themes/common/
+.RS
+common ressources for themes (rofi configuration files)
+
+.RE
+.I /usr/share/naivecalendar/themes/*.cfg
+.RS
+ini file for calendar content configuration     
+
+.RE
+.I /usr/share/naivecalendar/global/events.cfg   
+.RS
+ini file to configure events                        
+
+.RE
+.I /usr/share/naivecalendar/global/custom_actions.cfg
+.RS
+ini file to configure custom buttons and actions                     
+
+.RE
+.I /usr/share/naivecalendar/scripts/"    
+.RS
+default folder to store custom actions scripts
+
+.RE
+
+.SS User configurations files
+
+.TP
+.I ~/.config/naivecalendar/themes/*.rasi
+.RS
+user theme files                   
+
+.RE
+.I ~/.config/naivecalendar/themes/*.cfg
+.RS
+user content configuration         
+
+.RE
+.I ~/.config/naivecalendar/themes/common/
+.RS
+common ressources for user themes
+
+.RE
+.I ~/.config/naivecalendar/global/custom_actions.cfg
+.RS
+user custom actions                
+
+.RE
+.I ~/.config/naivecalendar/global/events.cfg   
+.RS
+user events configuration
+
+.RE
+.I ~/.config/naivecalendar/scripts/"    
+.RS
+user scripts                       
+
+.RE
+
+.SS Generated and cache files
+
+.TP
+.I ~/.naivecalendar_events/<event type>/<date format>.txt
+.RS
+day notes path (default)           
 
 .RE
 .I ~/.cache/naivecalendar/date_cache.ini
@@ -126,10 +212,9 @@ remember theme after quitting
 .RE
 .I ~/.cache/naivecalendar/event_cache.txt
 .RS
-remember event type after quitting      
+remember event type                
 
 .RE
 .I ~/.cache/naivecalendar/rofi_log.txt
 .RS
-rofi command log of previous session 
-
+last rofi command log file         

@@ -2,7 +2,7 @@
 
 .SH NAME
 naivecalendar-add-event
-- Add, modify, delete an event entry in all user themes
+- Add, modify, delete an event entry
 
 
 .SH SYNOPSIS
@@ -14,11 +14,7 @@ naivecalendar-add-event
 
 .SH DESCRIPTION
 .B naivecalendar-add-event
-is a bash script to create, override, delete an event definition for all naivecalendar themes in ~/.config/naivecalendar.themes at once
-
-/!\\ If one file already get this event, nothing will be set, to force for all use -o|--override flag
-
-/!\\ Save your themes before use!
+is a bash script to create, override, delete events definition in ~/.config/naivecalendar/global/events.cfg
 
 .SH OPTIONS
 
@@ -40,5 +36,5 @@ override value if event already exist
 
 .TP
 .B -d|--delete             
-delete event from all themes files
+delete event
 
