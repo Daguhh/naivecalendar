@@ -359,9 +359,9 @@ TODAY_HEAD_MSG_TXT = cfg_t['HEADER']['TODAY_HEAD_MSG_TXT']
 # Calendar content and organisation
 ###################################
 # row number where to display day symbols
-ROW_WEEK_SYM = to_int(cfg_t['CONTENT'], 'ROW_WEEK_SYM')
+ROW_DAY_NAMES = to_int(cfg_t['CONTENT'], 'ROW_DAY_NAMES')
 # symbols for week day names
-#_syms_week_days = to_list(cfg_t['CONTENT']["SYMS_WEEK_DAYS"]) if not ROW_WEEK_SYM == EMPTY else []
+#_syms_week_days = to_list(cfg_t['CONTENT']["SYMS_WEEK_DAYS"]) if not ROW_DAY_NAMES == EMPTY else []
 SYMS_WEEK_DAYS = set_locale_n_week_day_names(ARGS.locale, USER_LOCALE, DAY_FORMAT, FIRST_DAY_WEEK, DAY_ABBR_LENGHT)
 
 # row number where to display calendar first line
@@ -557,8 +557,8 @@ def update_rofi(date, is_first_loop):
             msg = date.strftime(TODAY_HEAD_MSG_TXT)
             print(f"\0message\x1f{msg}\n")
 
-    if not ROW_WEEK_SYM == EMPTY:
-        week_sym_row = get_row_rofi_inds(ROW_WEEK_SYM)
+    if not ROW_DAY_NAMES == EMPTY:
+        week_sym_row = get_row_rofi_inds(ROW_DAY_NAMES)
         print(f"\0active\x1f{week_sym_row}\n")
 
     if not ROW_BAR_1 == EMPTY:
@@ -609,7 +609,7 @@ def get_calendar_from_date(date):
     cal[ind_first_day : ind_last_day] = SYMS_DAYS_NUM[:month_length]
 
     # join calendar parts given user order
-    index = (ROW_WEEK_SYM, ROW_CAL_START, ROW_BAR_1, ROW_BAR_2)
+    index = (ROW_DAY_NAMES, ROW_CAL_START, ROW_BAR_1, ROW_BAR_2)
     content = [SYMS_WEEK_DAYS, cal, SYMS_BAR_1, SYMS_BAR_2]
     index, content = (list(x) for x in zip(*sorted(zip(index, content))))
 
