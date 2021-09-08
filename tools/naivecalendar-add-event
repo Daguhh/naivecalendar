@@ -19,8 +19,30 @@ Add a new event entry in ~/.config/naivecalendar/global/events.cfg
   -d EVENT_NAME, --delete EVENT_NAME
                           delete event
 
-"""
+""" | sed '1,3d'
 }
+
+# Yes/No question with default
+askYesNo () {
+        QUESTION=$1
+        DEFAULT=$2
+        if [ "$DEFAULT" = true ]; then                    # Valeur par défaut définie en paramètre
+                OPTIONS="[Y/n]"
+                DEFAULT="o"
+            else
+                OPTIONS="[y/N]"
+                DEFAULT="n"
+        fi
+        read -p "$QUESTION $OPTIONS " -n 1 -s -r INPUT    # Execute au premier caractère (-n 1)
+        INPUT=${INPUT:-${DEFAULT}}                        # Si $INPUT vide => remplace par $DEFAULT
+        echo ${INPUT}
+        if [[ "$INPUT" =~ ^[yYoO]$ ]]; then               # True si y,Y,O ou o
+            ANSWER=true
+        else                                              # Faux pour le reste
+            ANSWER=false
+        fi
+}
+
 
 option="$@"
 
@@ -62,7 +84,21 @@ while [ $# -gt 0 ] ; do
     shift # past value
 done
 
+
+
 EVENT_FILE="$HOME/.config/naivecalendar/global/events.cfg"
+
+if ! [ -e "$EVENT_FILE" ]; then
+    askYesNo "No event file found! Do you want to create one?" true
+    if [ "$ANSWER" = true ]; then
+        mkdir -p ${EVENT_FILE%/*}
+        cp "/usr/share/naivecalendar/global/events.cfg" "$EVENT_FILE"
+        echo "$EVENT_FILE created!"
+    else
+        echo "Bye!"
+        exit 0
+    fi
+fi
 
 # delete line that contain NEW_EVENT
 if  [[ " ${option[@]} " =~ " -d " ]] || [[ " ${option[@]} " =~ " --delete " ]]  ; then

@@ -159,10 +159,12 @@ _myscript_tab_complete () {
         prevs=$(echo $prevs | sed -e 's/\bo\b/-override/')
         prevs=$(echo $prevs | sed -e 's/\bd\b/-delete/')
 
+        EVENT_FILE="$HOME/.config/naivecalendar/global/events.cfg"
+
         # show all
+
         if [[ "$prev" == "add-event" ]] ; then
             options=$add_event_options #_get_update_opt
-        
         elif [[ "$prev" == "-v" || $prev == "--value" ]] ; then
             options="<path/to/event/my-event_%d-%m-%Y>" #_get_update_opt
 
@@ -174,9 +176,12 @@ _myscript_tab_complete () {
 
         elif [[ "$prev" == "-d" || $prev == "--delete" ]] ; then
             options=""
-            f="$HOME/.config/naivecalendar/global/events.cfg"
-            event_names=$(cat $f | sed -e '1,/\[EVENTS\]/d' -e '/^\[/,$d' | grep ^[a-zA-Z] | sed -e 's:=.*$::')
-            options="$options $event_names"
+            if ! [ -e "$EVENT_FILE" ]; then
+                options=" "
+            else 
+                event_names=$(cat $EVENT_FILE | sed -e '1,/\[EVENTS\]/d' -e '/^\[/,$d' | grep ^[a-zA-Z] | sed -e 's:=.*$::')
+                options="$options $event_names"
+            fi
 
         # show all but remove already listed options
         else
