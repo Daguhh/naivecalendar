@@ -174,10 +174,9 @@ _myscript_tab_complete () {
 
         elif [[ "$prev" == "-d" || $prev == "--delete" ]] ; then
             options=""
-            for f in "$HOME/.config/naivecalendar/themes/*.cfg"; do
-                event_names=$(cat $f | sed -e '1,/\[EVENTS\]/d' -e '/^\[/,$d' | grep ^[a-zA-Z] | sed -e 's:=.*$::')
-                options="$options $event_names"
-            done
+            f="$HOME/.config/naivecalendar/global/events.cfg"
+            event_names=$(cat $f | sed -e '1,/\[EVENTS\]/d' -e '/^\[/,$d' | grep ^[a-zA-Z] | sed -e 's:=.*$::')
+            options="$options $event_names"
 
         # show all but remove already listed options
         else

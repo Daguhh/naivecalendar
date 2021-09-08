@@ -1,25 +1,9 @@
 #!/usr/bin/env bash
 
-####################
-#                  # 
-#   depreciated    # 
-#                  # 
-####################
-
-echo "depreciated please directly edit global/events"
-exit 0
-
-
 help_msg () {
     echo """
 
   .. code:: ini::
-
-    ####################
-    #                  # 
-    #   depreciated    # 
-    #                  # 
-    ####################
 
 **usage:** naivecalendar *add-event* [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
 
@@ -37,7 +21,7 @@ to force for all, use -o|--override flag
                           value of the new event (see any config file for format)
   -o, --override          override value if event already exist
   -d EVENT_NAME, --delete EVENT_NAME
-                          delete event from all themes files
+                          delete event
 """
 }
 
@@ -81,18 +65,16 @@ while [ $# -gt 0 ] ; do
     shift # past value
 done
 
+EVENT_FILE="$HOME/.config/naivecalendar/global/events.cfg"
+
 # delete line that contain NEW_EVENT
 if  [[ " ${option[@]} " =~ " -d " ]] || [[ " ${option[@]} " =~ " --delete " ]]  ; then
 
     i=0
-    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
-        if cat  $f | grep -w ^$NEW_EVENT > /dev/null ; then
-            i=$(($i+1))
-            sed -i '/^'$NEW_EVENT' /d' $f
-        fi
-    done
+    if cat  $EVENT_FILE | grep -w ^$NEW_EVENT > /dev/null ; then
+        sed -i '/^'$NEW_EVENT' /d' $EVENT_FILE
+    fi
 
-    printf " $NEW_EVENT was deleted in $i files\n"
     exit 0
 
 fi
@@ -100,33 +82,29 @@ fi
 # Quit if value already exist (without overirde option)
 if ! ( [[ " ${option[@]} " =~ " -o " ]] || [[ " ${option[@]} " =~ " --override " ]] ) ; then
 
-    for f in $HOME/.config/naivecalendar/themes/*.cfg; do
-        if cat $f | grep -w ^$NEW_EVENT > /dev/null ; then
-            printf "*************************************************************\n"
-            printf "$NEW_EVENT already exist in $f file\n"
-            printf "quitting, please use -o|--override to force the new value\n"
-            printf "*************************************************************\n"
-            exit 0
-        fi 
-    done
+    if cat $EVENT_FILE | grep -w ^$NEW_EVENT > /dev/null ; then
+        printf "*************************************************************\n"
+        printf "$NEW_EVENT already exist\n"
+        printf "quitting, please use -o|--override to force the new value\n"
+        printf "*************************************************************\n"
+        exit 0
+    fi 
 
 fi
 
 
 # Add or overide new event and its value
-for f in $HOME/.config/naivecalendar/themes/*.cfg; do
 
-    # If already exist, override value
-    if cat  $f | grep -w ^$NEW_EVENT > /dev/null ; then
-        expr="s/("$NEW_EVENT" =).*/\1 "${NEW_VALUE//\//\\/}"/g" # escape slash
-        sed -i -r "$expr" $f
-    # else create new entry after first paragraph of [EVENTS] section 
-    else 
-        #awk '/\[EVENTS\]/{print;print "$NEW_EVENT = $NEW_VALUE";next}1' RS="\n\n" ORS="\n\n" $f
-        awk '/^\[EVENTS\]/{print;print "'$NEW_EVENT' = '$NEW_VALUE'";next}1' RS="\n\n" ORS="\n\n" $f > tmp && mv tmp $f
+# If already exist, override value
+if cat  $EVENT_FILE | grep -w ^$NEW_EVENT > /dev/null ; then
+    expr="s/("$NEW_EVENT" =).*/\1 "${NEW_VALUE//\//\\/}"/g" # escape slash
+    sed -i -r "$expr" $EVENT_FILE
+# else create new entry after first paragraph of [EVENTS] section 
+else 
+    #awk '/\[EVENTS\]/{print;print "$NEW_EVENT = $NEW_VALUE";next}1' RS="\n\n" ORS="\n\n" $EVENT_FILE
+    awk '/^\[EVENTS\]/{print;print "'$NEW_EVENT' = '$NEW_VALUE'";next}1' RS="\n\n" ORS="\n\n" $EVENT_FILE > tmp && mv tmp $EVENT_FILE
 
-    fi
-done
+fi
 
 echo "done, Bye!"
 
