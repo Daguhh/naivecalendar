@@ -1,14 +1,15 @@
 v2.0.0
 	Major:
-	  /!\ Break conig files compatibility (rename variable,
-	  see xxx to upgrade your files
-	  Add Custom event support
-	  Add CalDav support (as custom event)
-	  Simplified theme conf : remove hardly ever used variable, now hardcoded
-	  Move event config in separated file and common to all themes
+		/!\ Break conig files compatibility (rename variable,
+		see xxx to upgrade your files
+		Add Custom event support
+		Add CalDav support (as custom event)
+		Simplified theme conf : remove hardly ever used variable, now hardcoded
+		Move event config in separated file and common to all themes
 
 	Minor:
-	  Improve conf files doc
+	    Improve conf files doc
+	    New color theme : material red
 
 v1.0.0
 
