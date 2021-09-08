@@ -1,5 +1,3 @@
-Customize
-=========
 
 .. include:: ../README.rst
    :start-after: .. _customize:

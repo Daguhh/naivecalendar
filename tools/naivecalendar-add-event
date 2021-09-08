@@ -7,11 +7,7 @@ help_msg () {
 
 **usage:** naivecalendar *add-event* [-h] [-o] [-n|-d EVENT_NAME] [-v NEW_VALUE] 
 
-Add a new event entry in all themes files in ~/.config/naivecalendar/themes
-/!\\ If one file already get this event, nothing will be set, 
-to force for all, use -o|--override flag
-
-/i\\ Saving your themes files before using this is a good practice!
+Add a new event entry in ~/.config/naivecalendar/global/events.cfg
 
 **optional arguments:**
   -h, --help              show this help message and exit
@@ -22,6 +18,7 @@ to force for all, use -o|--override flag
   -o, --override          override value if event already exist
   -d EVENT_NAME, --delete EVENT_NAME
                           delete event
+
 """
 }
 

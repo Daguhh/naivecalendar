@@ -8,7 +8,7 @@ add-event
 
 .. include:: ../tools/naivecalendar-add-event
    :start-line: 7
-   :end-line: 24
+   :end-line: 21
 
 ---------------------------------
 
