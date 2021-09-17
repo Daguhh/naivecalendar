@@ -121,8 +121,9 @@ if ! ( [[ " ${option[@]} " =~ " -o " ]] || [[ " ${option[@]} " =~ " --override "
 
 fi
 
-
 # Add or overide new event and its value
+
+TEMP_FILE=naivecalendar_tmp
 
 # If already exist, override value
 if cat  $EVENT_FILE | grep -w ^$NEW_EVENT > /dev/null ; then
@@ -131,7 +132,7 @@ if cat  $EVENT_FILE | grep -w ^$NEW_EVENT > /dev/null ; then
 # else create new entry after first paragraph of [EVENTS] section 
 else 
     #awk '/\[EVENTS\]/{print;print "$NEW_EVENT = $NEW_VALUE";next}1' RS="\n\n" ORS="\n\n" $EVENT_FILE
-    awk '/^\[EVENTS\]/{print;print "'$NEW_EVENT' = '$NEW_VALUE'";next}1' RS="\n\n" ORS="\n\n" $EVENT_FILE > tmp && mv tmp $EVENT_FILE
+    awk '/^\[EVENTS\]/{print;print "'$NEW_EVENT' = '$NEW_VALUE'";next}1' RS="\n\n" ORS="\n\n" $EVENT_FILE > $TEMP_FILE && mv $TEMP_FILE $EVENT_FILE
 
 fi
 
