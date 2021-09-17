@@ -29,4 +29,5 @@
     background-select:           @nord0;
     border:                      @nord15;
     lightbg:                     #434c5e;
+    font:                       "FontAwesome 12";
 }

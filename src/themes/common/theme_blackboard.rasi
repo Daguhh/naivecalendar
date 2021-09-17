@@ -19,4 +19,5 @@
     lightbg2:                     #636c8e;
     font : "Noto Sans Mono Ultra-Bold 12";
     text-color:                 @white1;
+    font:                       "FontAwesome 12";
 }

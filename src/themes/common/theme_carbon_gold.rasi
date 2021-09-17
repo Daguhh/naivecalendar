@@ -16,5 +16,6 @@
     background-urgent:           @background;
     foreground-select:           #19498b;
     background-select:           #d1aa69;
+    font:                       "FontAwesome 12";
 }
 

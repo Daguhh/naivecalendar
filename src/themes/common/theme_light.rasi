@@ -22,4 +22,5 @@
     foreground-select:           @white1;
     background-select:           @red;
     border:                      @red;
+    font:                       "FontAwesome 12";
 }

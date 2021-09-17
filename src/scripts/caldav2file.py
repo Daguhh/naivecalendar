@@ -51,19 +51,18 @@ def tab(s):
 #######################
 
 HOME = os.getenv("HOME")
-conf_path = f"{HOME}/.config/naivecalendar/caldav_user.json"
+CONF_PATH = f"{HOME}/.config/naivecalendar/caldav_user.json"
+EVENT_PATH = f"{HOME}/.naivecalendar_events/CalDav"
 
-event_path = f"{HOME}/.naivecalendar_events/CalDav"
-
-if os.path.exists(conf_path):
-    with open(conf_path, "r") as f:
+if os.path.exists(CONF_PATH):
+    with open(CONF_PATH, "r") as f:
         conf = json.load(f)
 else:
     default_conf = {"url": "", "user": "", "password": "", "calendar_name": ""}
-    with open(conf_path, "w") as f:
+    with open(CONF_PATH, "w") as f:
         conf = f.write(json.dumps(default_conf, indent=4))
 
-    err_msg(f"please fill {conf_path} to connect your caldav account")
+    err_msg(f"please fill {CONF_PATH} to connect your caldav account")
     exit(0)
 
 
@@ -75,16 +74,12 @@ try:
     client = caldav.DAVClient(
         url=conf["url"], username=conf["user"], password=conf["password"]
     )
-    my_principal = client.principal()
-    my_cals = my_principal.calendars()
-    ind_cal = 0
-    if conf["calendar_name"]:
-        ind_cal = [c.name for c in my_cals].index(conf["calendar_name"])
-    my_cal = my_cals[ind_cal]
-    my_events = my_cal.events()
+    principal = client.principal()
+    cal = principal.calendar(name=conf['calendar_name'])
+    events = cal.events()
 
 except Exception as e:
-    err_msg(f"Please check your caldav account informations at:\n{conf_path}")
+    err_msg(f"Please check your caldav account informations at:\n{CONF_PATH}")
     raise e
 
 
@@ -94,39 +89,37 @@ except Exception as e:
 
 events_by_day = dict()
 
-for event in my_events:
-    my_vobj = event.vobject_instance
-    my_contents = my_vobj.contents["vevent"][0].contents
+for event in events:
+    vobj = event.vobject_instance
+    contents = vobj.contents["vevent"][0].contents
 
-    event_dct = dict()
+    day_event = dict()
 
-    event_dct["summary"] = my_contents.setdefault("summary", DEFAULT)[0].value
-    event_dct["description"] = my_contents.setdefault("description", DEFAULT)[0].value
-    event_dct["location"] = my_contents.setdefault("location", DEFAULT)[0].value
+    day_event["summary"] = contents.setdefault("summary", DEFAULT)[0].value
+    day_event["description"] = contents.setdefault("description", DEFAULT)[0].value
+    day_event["location"] = contents.setdefault("location", DEFAULT)[0].value
 
-    dtstart = my_contents["dtstart"][0].value
-    event_dct["day_start"] = dtstart.strftime("%y-%m-%d")
-    event_dct["time_start"] = dtstart.strftime("%Hh%M")
+    dtstart = contents["dtstart"][0].value
+    day = dtstart.strftime("%y-%m-%d")
+    day_event["time_start"] = dtstart.strftime("%Hh%M")
 
-    # dtend = my_contents['dtend'][0].value
-    # event_dct['day_end'] = dtend.strftime('%y-%m-%d')
-    # event_dct['time_end'] = dtend.strftime('%Hh%M')
+    # dtend = contents['dtend'][0].value
+    # day_event['day_end'] = dtend.strftime('%y-%m-%d')
+    # day_event['time_end'] = dtend.strftime('%Hh%M')
 
-    events_by_day[event_dct["day_start"]] = events_by_day.setdefault(
-        event_dct["day_start"], []
-    ) + [event_dct]
+    events_by_day[day] = events_by_day.setdefault(day, []) + [day_event]
 
 ######################
 ### write to files ###
 ######################
 
 
-for day, event_list in events_by_day.items():
+for day, day_events in events_by_day.items():
 
-    event_list_sorted = sorted(event_list, key=lambda k: k["time_start"])
+    day_events_sorted = sorted(day_events, key=lambda k: k["time_start"])
 
     text = ""
-    for event in event_list_sorted:
+    for event in day_events_sorted:
         text += f"[{event['time_start']}] {event['summary']}\n"
         if event["location"]:
             text += f"location :\n{tab(event['location'])}\n"
@@ -134,5 +127,5 @@ for day, event_list in events_by_day.items():
             text += f"description :\n{tab(event['description'])}\n"
         text += "\n"
 
-    with open(f"{event_path}/{event['day_start']}.txt", "w") as f:
+    with open(f"{EVENT_PATH}/{day}.txt", "w") as f:
         f.write(text)

@@ -26,4 +26,5 @@
     foreground-select:           @foreground;
     background-select:           @blue3;
     border:                      @blue;
+    font:                       "FontAwesome 12";
 }

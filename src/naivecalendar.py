@@ -1012,10 +1012,9 @@ def edit_event_file(event_path, editor=ARGS.editor):
     event_folder = Path(event_path).parent
     if not os.path.isdir(event_folder):
         os.makedirs(event_folder)
-    cmd = f"touch {event_path} & {editor} {event_path}"
-    p = subprocess.Popen(
-        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
+    Path(event_path).touch()
+    cmd = (editor, event_path)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     sdtout, sdterr = p.communicate()
 
 
@@ -1298,7 +1297,7 @@ def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, width='40%', highlight
         Rofi selected cell content
     """
 
-    cmd = subprocess.Popen(f'echo "{txt_body}"', shell=True, stdout=subprocess.PIPE)
+    cmd = subprocess.Popen(('echo', txt_body), stdout=subprocess.PIPE)
 
     theme_str = f'''
         @import "{THEME_RASI_FILE}"
@@ -1313,9 +1312,10 @@ def rofi_popup(txt_head, txt_body, nb_lines=15, nb_col=1, width='40%', highlight
         }}
     '''
 
-    rofi_cmd = f'''rofi -dmenu -theme-str '{theme_str}' -p "{txt_head}" -u {highlights}'''
+    #rofi_cmd = f'''rofi -dmenu -theme-str '{theme_str}' -p "{txt_head}" -u {highlights}'''
+    rofi_cmd = ('rofi', '-dmenu', '-theme-str',  theme_str, '-p', txt_head, '-u', str(highlights))
     selection = (
-        subprocess.check_output(rofi_cmd, stdin=cmd.stdout, shell=True)
+        subprocess.check_output(rofi_cmd, stdin=cmd.stdout)
         .decode("utf-8")
         .replace("\n", "")
     )
