@@ -7,3 +7,8 @@
 @import "common/theme_dark.rasi"
 @import "common/position.rasi"
 @import "common/shape_extended.rasi"
+
+element-text, element-icon {
+    background-color: inherit;
+    text-color:       inherit;
+}
