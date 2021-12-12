@@ -81,6 +81,7 @@ case-indicator {
 
 mode-switcher, message {
 	border: 1px 0;
+    padding : 0px 0px 18px;
 	border-color: @base0D;
 }
 

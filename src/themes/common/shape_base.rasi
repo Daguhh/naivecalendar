@@ -16,7 +16,7 @@
 }
 #message {
     border-color: @background;
-    padding:      1px ;
+    padding:   0px   1px 10px ;
     background-color:   @background;
 }
 #textbox {

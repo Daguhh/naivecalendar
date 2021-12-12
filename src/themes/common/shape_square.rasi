@@ -5,7 +5,7 @@
     lines:                  8;
     line-padding:           10;
     padding:                6px;
-    width:                  335px;
+    width:                  370px;
     columns:                7;
     border-color:           @blue;
     background-color:       @background;
@@ -20,7 +20,7 @@
 #message {
     border:       2px 0px 0px ;
     border-color: @background;
-    padding:      1px ;
+    padding:      1px 0px 10px;
     background-color:   @background;
 }
 #textbox {
@@ -39,9 +39,9 @@
     lines:        8;
 }
 #element {
-    border:  0;
-    padding: 5px;
-    margin: 0px;
+    border:  -1px;
+    padding: 6px 3px;
+    margin: 1px;
     background-color:   @background;
 }
 #element.normal.normal {

@@ -21,7 +21,7 @@
 #message {
     border:       2px 0px 0px ;
     border-color: @background;
-    padding:      1px ;
+    padding:      1px 0px 10px;
     background-color:   @background;
 }
 #textbox {
