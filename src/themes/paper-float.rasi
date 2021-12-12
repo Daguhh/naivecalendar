@@ -131,8 +131,3 @@
     text-color: @normal-foreground;
 }
 
-
-element-text, element-icon {
-    background-color: inherit;
-    text-color:       inherit;
-}

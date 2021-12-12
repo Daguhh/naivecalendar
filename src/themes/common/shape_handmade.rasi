@@ -120,3 +120,8 @@
     margin:     0px 0.3em 0em 0em ;
     background-color:   @background;
 }
+
+element-text, element-icon {
+    background-color: inherit;
+    text-color:       inherit;
+}

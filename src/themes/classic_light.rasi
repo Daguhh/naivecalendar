@@ -7,8 +7,3 @@
 @import "common/theme_light.rasi"
 @import "common/position.rasi"
 @import "common/shape_classic.rasi"
-
-element-text, element-icon {
-    background-color: inherit;
-    text-color:       inherit;
-}

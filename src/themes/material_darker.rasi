@@ -145,9 +145,3 @@ element normal urgent, element selected urgent, element alternate urgent {
 element normal active, element selected active, element alternate active {
 	text-color: @base0B;
 }
-
-
-element-text, element-icon {
-    background-color: inherit;
-    text-color:       inherit;
-}
