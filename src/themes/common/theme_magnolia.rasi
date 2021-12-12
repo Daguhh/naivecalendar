@@ -5,6 +5,8 @@
  * Creator : ZB652 <https://www.deviantart.com/zb652>
  ***********************************************/
 
+@import "theme_base.rasi"
+
 
 * {
     foreground:                  #bc988a;

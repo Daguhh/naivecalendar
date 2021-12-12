@@ -1,4 +1,6 @@
 
+@import "theme_base.rasi"
+
 * {
     blue:           #56769E;
     dark1:                       #1F1F1F;

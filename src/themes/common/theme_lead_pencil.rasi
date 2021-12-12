@@ -1,4 +1,6 @@
 
+@import "theme_base.rasi"
+
 * {
     nord13: 	    #ebcb8b;	
     blue:           #56769E;

@@ -4,6 +4,8 @@
  * Copyright: 2020 Daguhh
  ***********************************************/
 
+@import "theme_base.rasi"
+
 
 * {
     nord8: 	        #88c0d0;	
