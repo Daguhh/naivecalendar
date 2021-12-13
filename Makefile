@@ -88,15 +88,15 @@ install-subcommands:
 
 install-events:
 	@echo "copy \e[1;36mevents config files\e[0;32m  -->  $(DESTDIR)$(datadir)/themes/"
-	@cp -r src/global $(DESTDIR)$(datadir)/global
+	@cp -r src/global $(DESTDIR)$(datadir)
 
 install-addons:
 	@echo "copy \e[1;36maddons scripts\e[0;32m  -->  $(DESTDIR)$(datadir)/themes/"
-	@cp -r src/scripts $(DESTDIR)$(datadir)/scripts
+	@cp -r src/scripts $(DESTDIR)$(datadir)
 
 install-themes:
 	@echo "copy \e[1;36mall themes files\e[0;32m  -->  $(DESTDIR)$(datadir)/themes/"
-	@cp -r src/themes $(DESTDIR)$(datadir)/themes
+	@cp -r src/themes $(DESTDIR)$(datadir)
 
 install-theme-default:
 	@echo "copy \e[1;36mdefault theme\e[0;32m  -->  $(DESTDIR)$(datadir)/themes/"
@@ -125,10 +125,10 @@ install: install-exec install-scripts install-events $(install_list)
 #install-minimal: install-exec install-scripts install-theme-default install-events
 
 uninstall:
-	rm $(DESTDIR)$(bindir)/naivecalendar
-	rm -r $(DESTDIR)$(datadir)/
-	rm -r $(DESTDIR)$(man1dir)/naivecalendar*
-	rm -r $(DESTDIR)$(completiondir)/naivecalendar
+	rm -f $(DESTDIR)$(bindir)/naivecalendar
+	rm -rf $(DESTDIR)$(datadir)/
+	rm -rf $(DESTDIR)$(man1dir)/naivecalendar*
+	rm -rf $(DESTDIR)$(completiondir)/naivecalendar
 
 doc-html:
 	$(MAKE) -C docs/ html

@@ -32,8 +32,8 @@ submodules_options="-- update add-event"
 
 naivecalendar_options="--help --version --verbose --print --clipboard --format --editor --locale --read-cache --theme --date"
 
-update_options="--help --simulate --list-parameters --list-themes --parameter --value --filter --all-parameters --editor"
-update_param_exclude="--help --all-parameters --list-parameters --list-themes --editor"
+update_options="--help --simulate --list-parameters --list-themes --parameter --value --filter --all-parameters --editor --clone"
+update_param_exclude="--help --all-parameters --list-parameters --list-themes --editor --clone"
 update_all_exclude="--list-parameters --list-themes --parameter --value"
 
 add_event_options="--help --new --value --override --delete"
@@ -97,6 +97,7 @@ _myscript_tab_complete () {
         prevs=$(echo $prevs | sed -e 's/\bf\b/-filter/')
         prevs=$(echo $prevs | sed -e 's/\ba\b/-all-parameters/')
         prevs=$(echo $prevs | sed -e 's/\be\b/-editor/')
+        prevs=$(echo $prevs | sed -e 's/\bc\b/-clone/')
 
         # show all
         if [[ $prev == "update" ]] ; then
@@ -121,6 +122,12 @@ _myscript_tab_complete () {
         elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
             options=" " 
 
+        elif [[ "$prev" == "-c" || $prev == "--clone" ]] ; then
+            options="themes scripts events" 
+
+        elif [[ "$prev" == "themes" || $prev == "scripts" || $prev == "events" ]] ; then
+            options=" "
+
         elif [[ "$prev" == "-e" || $prev == "--editor" ]] ; then
             options="xdg-open" 
 
@@ -130,6 +137,7 @@ _myscript_tab_complete () {
 
             # if any other remove help and list-parameters
             options=$(echo $options | sed -e 's:--help\b *::')
+            options=$(echo $options | sed -e 's:--clone\b *::')
             options=$(echo $options | sed -e 's:--list-parameters\b *::')
             options=$(echo $options | sed -e 's:--list-themes\b *::')
             

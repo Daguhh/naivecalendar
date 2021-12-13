@@ -98,6 +98,22 @@ Launch with:
 
     naivecalendar
 
+Makefile
+^^^^^^^^
+
+Edit **Makefile.config** to configure installation prefix and customize your installation,
+then run :
+
+.. code:: bash
+
+    make install
+
+Launch with:
+
+.. code:: bash
+
+    naivecalendar
+
 ---------------------------------------------------------------------------------
 
 .. _usage:

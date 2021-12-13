@@ -50,7 +50,30 @@ Give a new value to a calendar parameter for all themes in ~/.config/naivecalend
   -v NEW_VALUE, --value  NEW_VALUE
                                 new value to set
   -f REGEX, --filter REGEX      if set, only edit themes with names that match the extended-regexp (grep -E)
+  -c FILE, --clone FILE         clone installation configuration file into user folder (scripts, themes or events)
+
 """
+}
+
+# Yes/No question with default
+askYesNo () {
+        QUESTION=$1
+        DEFAULT=$2
+        if [ "$DEFAULT" = true ]; then                    # Valeur par défaut définie en paramètre
+                OPTIONS="[Y/n]"
+                DEFAULT="o"
+            else
+                OPTIONS="[y/N]"
+                DEFAULT="n"
+        fi
+        read -p "$QUESTION $OPTIONS " -n 1 -s -r INPUT    # Execute au premier caractère (-n 1)
+        INPUT=${INPUT:-${DEFAULT}}                        # Si $INPUT vide => remplace par $DEFAULT
+        echo ${INPUT}
+        if [[ "$INPUT" =~ ^[yYoO]$ ]]; then               # True si y,Y,O ou o
+            ANSWER=true
+        else                                              # Faux pour le reste
+            ANSWER=false
+        fi
 }
 
 list_param () {
@@ -58,7 +81,17 @@ list_param () {
     printf "%-25s  %-25s  %-25s  %-25s\n" $PARAM_LIST
 }
 
-THEME_LIST=$(ls -1 $HOME/.config/naivecalendar/themes/*.cfg | sed -r 's/.*\/(.*)\.cfg/\1/g')
+THEME_LIST=$(ls -1 $HOME/.config/naivecalendar/themes/*.cfg | sed -r 's/.*\/(.*)\.cfg/\1/g') 
+#if [ -z "$THEME_LIST" ]; then
+#    printf "No themes in user folder ($HOME/.config/naivecalendar/themes/)\n"
+#    askYesNo "Do you want to start with a copy of installation themes?" true
+#    if [ "$ANSWER" = true ]; then
+#        cp -r "$(dirname $0)/../themes" "$HOME/.config/naivecalendar/"
+#        printf "done\n"
+#        exit 0
+#    fi  
+#fi
+
 list_themes () {
     printf "naivecalendar user themes : \n\n"
     printf "%-25s  %-25s  %-25s  %-25s\n" $THEME_LIST
@@ -113,6 +146,10 @@ while [ $# -gt 0 ] ; do
         -a|--all-parameters)
             IS_ALL_PARAM="true"
             ;;
+        -c|--clone)
+            CLONE_CONF="$2"
+            shift
+            ;;
         *)
           printf "**************************\n"
           printf " Wrong argument : $1\n"
@@ -125,6 +162,35 @@ done
 if [ -z "$USER_EDITOR" ]; then
     get_editor
 fi
+
+if [ -n "$CLONE_CONF" ]; then
+
+    if [ "$CLONE_CONF" = "themes" ]; then
+        cp -r "$(dirname $0)/../themes" "$HOME/.config/naivecalendar/"
+
+    elif [ "$CLONE_CONF" = "scripts" ]; then
+        cp -r "$(dirname $0)/../scripts" "$HOME/.config/naivecalendar/"
+        mkdir "$HOME/.config/naivecalendar/global" 2> /dev/null
+        cp -r "$(dirname $0)/../global/custom_actions.cfg" "$HOME/.config/naivecalendar/global/"
+    
+    elif [ "$CLONE_CONF" = "events" ]; then
+        mkdir "$HOME/.config/naivecalendar/global" 2> /dev/null
+        cp -r "$(dirname $0)/../global/events.cfg" "$HOME/.config/naivecalendar/global/"
+    
+    else
+        echo ""
+        echo "No such conf file to clone, please give one a the following values:"
+        echo " - themes : clone all installed themes in user conf folder"
+        echo " - scripts : additional script to create shortcuts in calendar"
+        echo " - events : day notes event configuration "
+        echo ""
+    fi
+    
+    echo "$CLONE_CONF" cloned into "~/.config/naivecalendar/"
+    echo "Bye"
+    exit 0
+fi
+
 
 if [ -z "$FILTER" ]; then
     FILES=$(ls "$HOME/.config/naivecalendar/themes/" | grep -E "cfg")
