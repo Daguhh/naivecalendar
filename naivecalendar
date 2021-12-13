@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PREFIX=/usr
+DATA_DIR="$PREFIX/share/naivecalendar"
 
 if [[ $1 =~ ^(update|add-event)$ ]]; then
 
@@ -7,17 +9,14 @@ if [[ $1 =~ ^(update|add-event)$ ]]; then
     shift # skip subcommand
 
     if [[ $action == "update" ]]; then
-        #/usr/share/naivecalendar/naivecalendar-update-all-themes "$@"
-
-        /usr/share/naivecalendar/tools/naivecalendar-update "$@"
+        $DATA_DIR/tools/naivecalendar-update "$@"
 
     elif [[ $action == "add-event" ]]; then
-        /usr/share/naivecalendar/tools/naivecalendar-add-event "$@"
+        $DATA_DIR/tools/naivecalendar-add-event "$@"
 
     fi
-
 else 
 
-    /usr/share/naivecalendar/naivecalendar.sh "$@"
+    $DATA_DIR/naivecalendar.sh "$@"
 
 fi

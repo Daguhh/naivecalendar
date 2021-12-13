@@ -73,6 +73,8 @@ fi
 ##############################################################################
 
 ROFI_LOG_FILE="$HOME/.cache/naivecalendar/rofi_log.txt"
+mkdir -p $(dirname $ROFI_LOG_FILE)
+touch $ROFI_LOG_FILE
 
 # Determine if is it a "first" call or a recursion
 if [ -z $NAIVECALENDAR_FIRST_CALL ]; then
