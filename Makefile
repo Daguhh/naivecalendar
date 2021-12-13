@@ -20,7 +20,7 @@ $(error $(CONFIG_FILE) not found.)
 endif
 include $(CONFIG_FILE)
 
-install_list := 
+install_list :=
 ifeq ($(INSTALL_SUBCOMMANDS),True)
 install_list += install-subcommands
 endif
@@ -67,7 +67,7 @@ endif
 
 #
 test:
-	echo "installation: $(install_list)"
+	@echo "installation: $(install_list)"
 
 install-exec:
 	@echo "set installation path to $(DESTDIR)${prefix}"
@@ -109,7 +109,7 @@ install-theme-default:
 	@install -D --mode=644 src/themes/common/theme_base.rasi $(DESTDIR)$(datadir)/themes/common/theme_base.rasi
 
 install-manpage:
-	@echo "copy \e[1;36mmanpages\e[0;32m  -->  $(DESTDIR)$(man1dir))/"
+	@echo "copy \e[1;36mmanpages\e[0;32m  -->  $(DESTDIR)$(man1dir)/"
 	@install -D --mode=644 "debian/naivecalendar.1" "$(DESTDIR)$(man1dir)/naivecalendar.1"
 	@install -D --mode=644 "debian/naivecalendar-update.1" "$(DESTDIR)$(man1dir)/naivecalendar-update.1"
 	@install -D --mode=644 "debian/naivecalendar-add-event.1" "$(DESTDIR)$(man1dir)/naivecalendar-add-event.1"
