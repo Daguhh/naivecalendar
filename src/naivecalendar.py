@@ -103,7 +103,7 @@ subcommands:
     parser.add_argument(
         "-t",
         "--theme",
-        help="""set calendar theme, default=classic_dark (theme file name without extention)""",
+        help="""set calendar theme, default=classic_dark_extended (theme file name without extention)""",
         dest="theme",
         default=False
     )

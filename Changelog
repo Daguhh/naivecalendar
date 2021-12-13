@@ -3,6 +3,8 @@ v2.0.1
 		Update themes file for rofi 1.7 compatibility
 	Minor:
 		Add themes that follow user's ones
+	Other:
+		Add Makefile 
 
 v2.0.0
 	Major:
