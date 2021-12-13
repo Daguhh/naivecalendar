@@ -88,7 +88,7 @@ if ! [ -e "$EVENT_FILE" ]; then
     askYesNo "No event file found! Do you want to create one?" true
     if [ "$ANSWER" = true ]; then
         mkdir -p ${EVENT_FILE%/*}
-        cp "/usr/share/naivecalendar/global/events.cfg" "$EVENT_FILE"
+        cp "$(dirname $0)/../global/events.cfg" "$EVENT_FILE"
         echo "$EVENT_FILE created!"
     else
         echo "Bye!"
