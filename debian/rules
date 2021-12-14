@@ -4,4 +4,4 @@
 	dh $@ --with bash-completion
 
 override_dh_auto_install:
-	dh_auto_install -- prefix=/usr bindir=/usr/bin datadir=/usr/share man1dir=/usr/share/man/man1
+	dh_auto_install -- DEB_BUILD=True prefix=/usr bindir=/usr/bin datadir=/usr/share man1dir=/usr/share/man/man1

@@ -8,19 +8,29 @@ help:
 	@echo "Usage:"
 	@echo "		install : perfom install following user conf (Makefile.config)" 
 	@echo "		uninstall : delete all installed files"
-	@echo "		doc-html : Build doc html"
+	@echo "		html : Build doc html"
+	@echo "		deb : Build debian package"
 
 # Get user install configuration
 #################################
 
-CONFIG_FILE := Makefile.config
-
-ifeq ($(wildcard $(CONFIG_FILE)),)
-$(error $(CONFIG_FILE) not found.)
-endif
-include $(CONFIG_FILE)
-
+# List of modules to install
 install_list :=
+
+# Install all when creating deb package or get user config
+ifeq ($(DEB_BUILD),True)
+install_list = install-subcommands install-addons install-themes install-manpage install-bashcompletion
+$(info **********  Select all modules for debian package build  **********)
+else
+$(info **********  Manual build : get configuration file  **********)
+CONFIG_FILE := Makefile.config
+	ifeq ($(wildcard $(CONFIG_FILE)),)
+$(error $(CONFIG_FILE) not found.)
+	endif
+include $(CONFIG_FILE)
+endif
+
+# Apply user config
 ifeq ($(INSTALL_SUBCOMMANDS),True)
 install_list += install-subcommands
 endif
@@ -42,6 +52,8 @@ endif
 ifeq ($(INSTALL_BASH_COMPLETION),True)
 install_list += install-bashcompletion
 endif
+
+$(info **********  installing modules : install-exec install-scripts install-events $(install_list)  **********)
 
 
 # Make recip
@@ -66,29 +78,13 @@ else
     man1dir = $(prefix)/share/man/man1
 endif
 
-#ifeq ($(PREFIX),)
-#prefix:=/usr/local
-#else
-#prefix:=$(PREFIX)
-#endif
-#
-#bindir := $(prefix)/bin
-#datadir := $(prefix)/share/naivecalendar
-#man1dir := $(prefix)/share/man/man1
-#
-#ifeq ($(COMPLETION_PATH),)
-#completiondir := $(prefix)/share/bash-completion/completions
-#else
-#completiondir := $(COMPLETION)
-#endif
 
-#
 test:
 	@echo "installation: $(install_list)"
 
 install-exec:
 	@echo "set installation path to $(DESTDIR)${prefix}"
-	@sed -e "s:\(PREFIX=\).*:\1$(DESTDIR)${prefix}:g" naivecalendar > naivecalendar.tmp
+	@sed -e "s:\(PREFIX=\).*:\1${prefix}:g" naivecalendar > naivecalendar.tmp
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "exec file" "-->"  "$(DESTDIR)$(bindir)"
 	@install -D --mode=755 naivecalendar.tmp $(DESTDIR)$(bindir)/naivecalendar
 	@rm naivecalendar.tmp
@@ -147,6 +143,9 @@ uninstall:
 	rm -rf $(DESTDIR)$(man1dir)/naivecalendar*
 	rm -f $(DESTDIR)$(datadir)/bash-completion/completions/naivecalendar
 
-doc-html:
+html:
 	$(MAKE) -C docs/ html
+
+deb:
+	debuild -us -uc
 
