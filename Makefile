@@ -6,10 +6,15 @@ help:
 	@echo "Please configure your installation by editing Makefile.config"
 	@echo ""
 	@echo "Usage:"
-	@echo "		install : perfom install following user conf (Makefile.config)" 
+	@echo "		install : install following user conf (Makefile.config)" 
 	@echo "		uninstall : delete all installed files"
 	@echo "		html : Build doc html"
 	@echo "		deb : Build debian package"
+	@echo ""
+	@echo "Installation prefix:"
+	@echo "  - /usr/local : run as root"
+	@echo "  - ~/.local : run as user"
+	@echo "  - custom : override prefix run \"make prefix=my_path install\""
 
 # Get user install configuration
 #################################
@@ -19,7 +24,7 @@ install_list :=
 
 # Install all when creating deb package or get user config
 ifeq ($(DEB_BUILD),True)
-install_list = install-subcommands install-addons install-themes install-manpage install-bashcompletion
+install_list = install-subcommands install-addons install-events install-themes install-manpage install-bashcompletion
 $(info **********  Select all modules for debian package build  **********)
 else
 CONFIG_FILE := Makefile.config
@@ -32,6 +37,10 @@ endif
 # Apply user config
 ifeq ($(INSTALL_SUBCOMMANDS),True)
 install_list += install-subcommands
+endif
+
+ifeq ($(INSTALL_EVENTS),True)
+install_list += install-events
 endif
 
 ifeq ($(INSTALL_ADDONS),True)
@@ -99,11 +108,13 @@ install-subcommands:
 
 install-events: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "events config files" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
-	@cp -r src/global $(DESTDIR)$(datadir)/naivecalendar
+	@install -D --mode=644 src/global/events.cfg $(DESTDIR)$(datadir)/naivecalendar/global/events.cfg
 
 install-addons: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "addons scripts" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
 	@cp -r src/scripts $(DESTDIR)$(datadir)/naivecalendar
+	@install -D --mode=644 src/global/custom_actions.cfg $(DESTDIR)$(datadir)/naivecalendar/global/custom_actions.cfg
+	@install -D --mode=644 src/scripts/* $(DESTDIR)$(datadir)/naivecalendar/scripts/
 
 install-themes: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "all themes" "-->" "$(DESTDIR)$(datadir)/naivecalendar"
@@ -131,7 +142,7 @@ install-bashcompletion:
 	@install -D --mode=755 "completion.tmp" "$(DESTDIR)$(datadir)/bash-completion/completions/naivecalendar"
 	@rm completion.tmp
 
-install: install-exec install-scripts install-events $(install_list)
+install: install-exec install-scripts $(install_list)
 
 uninstall:
 	rm -f $(DESTDIR)$(bindir)/naivecalendar

@@ -197,8 +197,10 @@ cfg_t.read(THEME_CONFIG_FILE)
 cfg_e = configparser.ConfigParser(interpolation=None)
 if EVENT_FILES['user'].exists():
     cfg_e.read(EVENT_FILES['user'])
-else:
+elif EVENT_FILES['rel'].exists():
     cfg_e.read(EVENT_FILES['rel'])
+else:
+    cfg_e['EVENTS'] = {'Notes' : '.naivecalendar_events/MyNotes/note_%Y-%m-%d.txt'}
 
 # custom -A-ction config
 cfg_a = configparser.ConfigParser(interpolation=None)

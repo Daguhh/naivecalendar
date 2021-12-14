@@ -76,10 +76,27 @@ The naivecalendar use two files:
 
 Plus, a couple of theme files:
 
-- /themes/**<theme>.rasi** : a rofi configration file (shape and colors)
+- **<theme>.rasi** : rofi configuration file (shape and colors)
+- **common/<element>.rasi** : rasi theme file dependancies (combine shape, colors position...)  
 - /themes/**<theme>.cfg** : an ini file that define calendar content
 
 Simply copy those files (src folder content) in the same place (.ie : keep the tree as it is), remove as many theme as you want, but please keep at least *classic_dark_extended* default theme. 
+
+Here is the simplest doable installation tree ::
+
+    .
+    ├── naivecalendar.py
+    ├── naivecalendar.sh
+    └── themes
+        ├── classic_dark_extended.cfg
+        ├── classic_dark_extended.rasi
+        └── common
+            ├── position.rasi
+            ├── shape_base.rasi
+            ├── shape_extended.rasi
+            ├── theme_base.rasi
+            └── theme_dark.rasi
+
 
 Then, Launch with:: 
 
@@ -101,12 +118,17 @@ Launch with:
 Makefile
 ^^^^^^^^
 
-Edit **Makefile.config** to configure installation prefix and customize your installation,
-then run :
+Edit **Makefile.config** to customize your installation, then run:
 
 .. code:: bash
 
     make install
+
+Get more info :
+
+.. code:: bash
+
+    make help
 
 Launch with:
 
@@ -205,26 +227,29 @@ Subcommands **update** could be useful to update all theme config at once instea
 Customize
 ---------
 
-You can start from a copy of installation configuration files.
+To customize the calendar (without altering installation files), you can start with a copy of them in the user config folder:
 
-- themes:
+Manually:
 
 .. code:: bash
 
+    # Themes
     cp -r /usr/share/naivecalendar/themes/* ~/.config/naivecalendar/themes/
 
-- events
-
-.. code:: bash
-
+    # Events
     cp -r /usr/share/naivecalendar/global/events.cfg  ~/.config/naivecalendar/global/events.cfg
 
-- custom actions
+    # Scripts
+    cp -r /usr/share/naivecalendar/global/custom_actions.cfg  ~/.config/naivecalendar/global/custom_actions.cfg
+    cp -r /usr/share/naivecalendar/scripts/*  ~/.config/naivecalendar/scripts/
+
+With subcommand:
 
 .. code:: bash
 
-    cp -r /usr/share/naivecalendar/global/custom_actions.cfg  ~/.config/naivecalendar/global/custom_actions.cfg
-    cp -r /usr/share/naivecalendar/scripts/*  ~/.config/naivecalendar/scripts/
+    naivecalendar update --clone <config file>
+
+
 
 
 Themes
