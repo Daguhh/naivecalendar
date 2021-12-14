@@ -114,7 +114,7 @@ install-addons: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "addons scripts" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
 	@cp -r src/scripts $(DESTDIR)$(datadir)/naivecalendar
 	@install -D --mode=644 src/global/custom_actions.cfg $(DESTDIR)$(datadir)/naivecalendar/global/custom_actions.cfg
-	@install -D --mode=644 src/scripts/* $(DESTDIR)$(datadir)/naivecalendar/scripts/
+	@install -D --mode=755 src/scripts/* $(DESTDIR)$(datadir)/naivecalendar/scripts/
 
 install-themes: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "all themes" "-->" "$(DESTDIR)$(datadir)/naivecalendar"
