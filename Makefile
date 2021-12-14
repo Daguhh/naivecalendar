@@ -49,21 +49,38 @@ endif
 
 # Define PATHs
 
-ifeq ($(PREFIX),)
-prefix:=/usr/local
+UID := $(shell id --user)
+
+ifeq ($(UID),0)
+    prefix = /usr/local
+    bindir = $(prefix)/bin
+    datadir = $(prefix)/share
+    man1dir = $(prefix)/share/man/man1
 else
-prefix:=$(PREFIX)
+    ifeq ($(XDG_DATA_HOME),)
+        XDG_DATA_HOME := $(HOME)/.local
+    endif
+    prefix = $(XDG_DATA_HOME)
+    bindir = $(prefix)/bin
+    datadir = $(prefix)/share
+    man1dir = $(prefix)/share/man/man1
 endif
 
-bindir := $(prefix)/bin
-datadir := $(prefix)/share/naivecalendar
-man1dir := $(prefix)/share/man/man1
-
-ifeq ($(COMPLETION_PATH),)
-completiondir := $(prefix)/share/bash-completion/completions
-else
-completiondir := $(COMPLETION)
-endif
+#ifeq ($(PREFIX),)
+#prefix:=/usr/local
+#else
+#prefix:=$(PREFIX)
+#endif
+#
+#bindir := $(prefix)/bin
+#datadir := $(prefix)/share/naivecalendar
+#man1dir := $(prefix)/share/man/man1
+#
+#ifeq ($(COMPLETION_PATH),)
+#completiondir := $(prefix)/share/bash-completion/completions
+#else
+#completiondir := $(COMPLETION)
+#endif
 
 #
 test:
@@ -77,36 +94,36 @@ install-exec:
 	@rm naivecalendar.tmp
 
 install-scripts:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "script files" "-->"  "$(DESTDIR)$(datadir)"
-	@install -D --mode=755 src/naivecalendar.sh $(DESTDIR)$(datadir)/naivecalendar.sh
-	@install -D --mode=755 src/naivecalendar.py $(DESTDIR)$(datadir)/naivecalendar.py
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "script files" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
+	@install -D --mode=755 src/naivecalendar.sh $(DESTDIR)$(datadir)/naivecalendar/naivecalendar.sh
+	@install -D --mode=755 src/naivecalendar.py $(DESTDIR)$(datadir)/naivecalendar/naivecalendar.py
 
 install-subcommands:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "subcommands" "-->"  "$(DESTDIR)$(datadir)"
-	@install -D --mode=755 tools/naivecalendar-update $(DESTDIR)$(datadir)/tools/naivecalendar-update
-	@install -D --mode=755 tools/naivecalendar-add-event $(DESTDIR)$(datadir)/tools/naivecalendar-add-event
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "subcommands" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
+	@install -D --mode=755 tools/naivecalendar-update $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-update
+	@install -D --mode=755 tools/naivecalendar-add-event $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-add-event
 
-install-events:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "events config files" "-->"  "$(DESTDIR)$(datadir)"
-	@cp -r src/global $(DESTDIR)$(datadir)
+install-events: install-scripts
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "events config files" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
+	@cp -r src/global $(DESTDIR)$(datadir)/naivecalendar
 
-install-addons:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "addons scripts" "-->"  "$(DESTDIR)$(datadir)"
-	@cp -r src/scripts $(DESTDIR)$(datadir)
+install-addons: install-scripts
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "addons scripts" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
+	@cp -r src/scripts $(DESTDIR)$(datadir)/naivecalendar
 
-install-themes:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "all themes" "-->" "$(DESTDIR)$(datadir)"
-	@cp -r src/themes $(DESTDIR)$(datadir)
+install-themes: install-scripts
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "all themes" "-->" "$(DESTDIR)$(datadir)/naivecalendar"
+	@cp -r src/themes $(DESTDIR)$(datadir)/naivecalendar
 
 install-theme-default:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "default theme" "-->" "$(DESTDIR)$(datadir)/themes/"
-	@install -D --mode=644 src/themes/classic_dark_extended.rasi $(DESTDIR)$(datadir)/themes/classic_dark_extended.rasi
-	@install -D --mode=644 src/themes/classic_dark_extended.cfg $(DESTDIR)$(datadir)/themes/classic_dark_extended.cfg
-	@install -D --mode=644 src/themes/common/theme_dark.rasi $(DESTDIR)$(datadir)/themes/common/theme_dark.rasi
-	@install -D --mode=644 src/themes/common/position.rasi $(DESTDIR)$(datadir)/themes/common/position.rasi
-	@install -D --mode=644 src/themes/common/shape_extended.rasi $(DESTDIR)$(datadir)/themes/common/shape_extended.rasi
-	@install -D --mode=644 src/themes/common/shape_base.rasi $(DESTDIR)$(datadir)/themes/common/shape_base.rasi
-	@install -D --mode=644 src/themes/common/theme_base.rasi $(DESTDIR)$(datadir)/themes/common/theme_base.rasi
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "default theme" "-->" "$(DESTDIR)$(datadir)/naivecalendar/themes/"
+	@install -D --mode=644 src/themes/classic_dark_extended.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/classic_dark_extended.rasi
+	@install -D --mode=644 src/themes/classic_dark_extended.cfg $(DESTDIR)$(datadir)/naivecalendar/themes/classic_dark_extended.cfg
+	@install -D --mode=644 src/themes/common/theme_dark.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/theme_dark.rasi
+	@install -D --mode=644 src/themes/common/position.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/position.rasi
+	@install -D --mode=644 src/themes/common/shape_extended.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/shape_extended.rasi
+	@install -D --mode=644 src/themes/common/shape_base.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/shape_base.rasi
+	@install -D --mode=644 src/themes/common/theme_base.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/theme_base.rasi
 
 install-manpage:
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "mmanpages"  "-->"  "$(DESTDIR)$(man1dir)/"
@@ -115,9 +132,9 @@ install-manpage:
 	@install -D --mode=644 "debian/naivecalendar-add-event.1" "$(DESTDIR)$(man1dir)/naivecalendar-add-event.1"
 
 install-bashcompletion:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "bash-completion"  "-->"  "$(DESTDIR)$(completiondir)/"
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "bash-completion"  "-->"  "$(DESTDIR)$(datadir)/bash-completion/completions/"
 	@sed -e "s:/usr:$(DESTDIR)$(prefix):g" debian/naivecalendar.bash-completion > completion.tmp
-	@install -D --mode=755 "completion.tmp" "$(DESTDIR)$(completiondir)/naivecalendar"
+	@install -D --mode=755 "completion.tmp" "$(DESTDIR)$(datadir)/bash-completion/completions/naivecalendar"
 	@rm completion.tmp
 
 install: install-exec install-scripts install-events $(install_list)
@@ -126,9 +143,9 @@ install: install-exec install-scripts install-events $(install_list)
 
 uninstall:
 	rm -f $(DESTDIR)$(bindir)/naivecalendar
-	rm -rf $(DESTDIR)$(datadir)/
+	rm -rf $(DESTDIR)$(datadir)/naivecalendar/
 	rm -rf $(DESTDIR)$(man1dir)/naivecalendar*
-	rm -f $(DESTDIR)$(completiondir)/naivecalendar
+	rm -f $(DESTDIR)$(datadir)/bash-completion/completions/naivecalendar
 
 doc-html:
 	$(MAKE) -C docs/ html
