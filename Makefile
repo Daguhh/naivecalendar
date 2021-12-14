@@ -22,7 +22,6 @@ ifeq ($(DEB_BUILD),True)
 install_list = install-subcommands install-addons install-themes install-manpage install-bashcompletion
 $(info **********  Select all modules for debian package build  **********)
 else
-$(info **********  Manual build : get configuration file  **********)
 CONFIG_FILE := Makefile.config
 	ifeq ($(wildcard $(CONFIG_FILE)),)
 $(error $(CONFIG_FILE) not found.)
@@ -53,7 +52,6 @@ ifeq ($(INSTALL_BASH_COMPLETION),True)
 install_list += install-bashcompletion
 endif
 
-$(info **********  installing modules : install-exec install-scripts install-events $(install_list)  **********)
 
 
 # Make recip
@@ -134,8 +132,6 @@ install-bashcompletion:
 	@rm completion.tmp
 
 install: install-exec install-scripts install-events $(install_list)
-#install-full: install-exec install-scripts install-subcommands install-events install-addons install-themes install-manpage install-bashcompletion
-#install-minimal: install-exec install-scripts install-theme-default install-events
 
 uninstall:
 	rm -f $(DESTDIR)$(bindir)/naivecalendar
