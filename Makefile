@@ -128,7 +128,7 @@ uninstall:
 	rm -f $(DESTDIR)$(bindir)/naivecalendar
 	rm -rf $(DESTDIR)$(datadir)/
 	rm -rf $(DESTDIR)$(man1dir)/naivecalendar*
-	rm -rf $(DESTDIR)$(completiondir)/naivecalendar
+	rm -f $(DESTDIR)$(completiondir)/naivecalendar
 
 doc-html:
 	$(MAKE) -C docs/ html
