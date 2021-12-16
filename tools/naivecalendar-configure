@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+
+help_msg () {
+    echo """
+**usage:** naivecalendar *configure* [-h] [-c|-e EVENT_NAME]
+
+Asset to easily clone or open configuration files
+Configuration files in questions are SCRIPTS (custom actions), THEMES (copy all/edit actual), EVENTS 
+
+**arguments:**
+  -h, --help                show this help message and exit
+  -c TYPE, --clone TYPE     clone installation configuration file into user folder (SCRIPTS, THEMES, EVENTS)
+  -e TYPE, --edit TYPE      edit user conf file (SCRIPTS, THEMES, EVENTS)
+"""
+}
+
+get_editor () {
+    if ! [[ -f "$HOME/.selected_editor" ]]; then
+        select-editor
+    fi
+source "$HOME/.selected_editor"
+USER_EDITOR=$SELECTED_EDITOR
+}
+
+if [ -z "$USER_EDITOR" ]; then
+    get_editor
+fi
+
+# Yes/No question with default
+askYesNo () {
+        QUESTION=$1
+        DEFAULT=$2
+        if [ "$DEFAULT" = true ]; then                    # Valeur par défaut définie en paramètre
+                OPTIONS="[Y/n]"
+                DEFAULT="o"
+            else
+                OPTIONS="[y/N]"
+                DEFAULT="n"
+        fi
+        read -p "$QUESTION $OPTIONS " -n 1 -s -r INPUT    # Execute au premier caractère (-n 1)
+        INPUT=${INPUT:-${DEFAULT}}                        # Si $INPUT vide => remplace par $DEFAULT
+        echo ${INPUT}
+        if [[ "$INPUT" =~ ^[yYoO]$ ]]; then               # True si y,Y,O ou o
+            ANSWER=true
+        else                                              # Faux pour le reste
+            ANSWER=false
+        fi
+}
+
+
+option="$@"
+
+# prevent ambiguous usage
+if [[ " ${option[@]} " =~ " -c " ]] || [[ " ${option[@]} " =~ " --clone " ]] ; then
+    if [[ " ${option[@]} " =~ " -e " ]] || [[ " ${option[@]} " =~ " --edit " ]] ; then
+        printf "You can't set -c|--clone and -e|--edit at the same time\n"
+        exit 1
+    fi
+fi
+
+# get named parameters
+while [ $# -gt 0 ] ; do
+    key="$1"
+    case $key in
+        -h|--help)
+            help_msg 
+            exit 0
+            ;;
+        -c|--clone)
+            CLONE_CONF="$2"
+            shift # past argument
+            ;;
+        -e|--edit)
+            EDIT_CONF="$2"
+            shift # past argument
+            ;;
+        *)
+          printf "**************************\n"
+          printf " Wrong argument : $1\n"
+          printf "**************************\n"
+          exit 1
+    esac
+    shift # past value
+done
+
+INSTALL_PREFIX="$(dirname $0)/.."
+USER_PREFIX="$HOME/.config/naivecalendar"
+
+
+
+edit_conf_fct () {
+
+    EDIT_CONF=$1
+
+    if [ "$EDIT_CONF" = "THEMES" ]; then
+    #    $USER_EDITOR "$USER_PREFIX/"
+        if [ -e "$HOME/.cache/naivecalendar/theme_cache.txt" ]; then
+            ACTUAL_THEME=$(cat "$HOME/.cache/naivecalendar/theme_cache.txt")
+        else
+            ACTUAL_THEME="classic_dark_extended"
+        fi
+        if ! [ -e "$USER_PREFIX/themes/$ACTUAL_THEME.cfg" ]; then
+            clone_conf_ask $EDIT_CONF
+        fi
+        $USER_EDITOR "$USER_PREFIX/themes/$ACTUAL_THEME.cfg"
+
+    elif [ "$EDIT_CONF" = "SCRIPTS" ]; then
+        if ! [ -e "$USER_PREFIX/global/custom_actions.cfg" ]; then
+            clone_conf_ask $EDIT_CONF
+        fi
+        $USER_EDITOR "$USER_PREFIX/global/custom_actions.cfg"
+    
+    elif [ "$EDIT_CONF" = "EVENTS" ]; then
+        if ! [ -e "$USER_PREFIX/global/events.cfg" ]; then
+            clone_conf_ask $EDIT_CONF
+        fi
+        $USER_EDITOR "$USER_PREFIX/global/events.cfg" 
+
+    fi
+}
+
+
+clone_conf_fct () {
+
+    CLONE_CONF=$1
+
+    if [ "$CLONE_CONF" = "THEMES" ]; then
+        cp -r "$INSTALL_PREFIX/themes" "$USER_PREFIX/"
+
+    elif [ "$CLONE_CONF" = "SCRIPTS" ]; then
+        mkdir -p "$USER_PREFIX/scripts" 2> /dev/null
+        cp -r "$INSTALL_PREFIX/scripts" "$USER_PREFIX/scripts"
+        mkdir -p "$USER_PREFIX/global" 2> /dev/null
+        cp "$INSTALL_PREFIX/global/custom_actions.cfg" "$USER_PREFIX/global/custom_actions.cfg"
+    
+    elif [ "$CLONE_CONF" = "EVENTS" ]; then
+        mkdir -p "$USER_PREFIX/global" 2> /dev/null
+        cp "$INSTALL_PREFIX/global/events.cfg" "$USER_PREFIX/global/events.cfg"
+    
+    else
+        echo ""
+        echo "No such conf file to clone, please give one a the following values:"
+        echo " - THEMES : clone all installed themes in user conf folder"
+        echo " - SCRIPTS : additional script to create shortcuts in calendar"
+        echo " - EVENTS : day notes event configuration "
+        echo " - all : clone all configuration files"
+        echo ""
+    fi
+    
+    echo "$CLONE_CONF" cloned into "~/.config/naivecalendar/"
+    echo "Bye"
+
+}
+
+clone_conf_ask () {
+    CLONE_CONF=$1
+
+    echo "No $CLONE_CONF configuration found in user space"
+    askYesNo "Do you want to clone it?" true
+
+    if [ "$ANSWER" = true ]; then
+        clone_conf_fct $CLONE_CONF
+    else
+        echo "No changes made. Quiting."
+        exit 0
+    fi
+
+}
+
+if [ -n "$EDIT_CONF" ]; then
+    edit_conf_fct $EDIT_CONF
+elif [ -n "$CLONE_CONF" ]; then
+    clone_conf_fct $CLONE_CONF
+fi
+
+

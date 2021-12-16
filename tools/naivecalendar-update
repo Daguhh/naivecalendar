@@ -50,7 +50,6 @@ Give a new value to a calendar parameter for all themes in ~/.config/naivecalend
   -v NEW_VALUE, --value  NEW_VALUE
                                 new value to set
   -f REGEX, --filter REGEX      if set, only edit themes with names that match the extended-regexp (grep -E)
-  -c FILE, --clone FILE         clone installation configuration file into user folder (scripts, themes or events)
 
 """
 }
@@ -146,10 +145,6 @@ while [ $# -gt 0 ] ; do
         -a|--all-parameters)
             IS_ALL_PARAM="true"
             ;;
-        -c|--clone)
-            CLONE_CONF="$2"
-            shift
-            ;;
         *)
           printf "**************************\n"
           printf " Wrong argument : $1\n"
@@ -163,33 +158,6 @@ if [ -z "$USER_EDITOR" ]; then
     get_editor
 fi
 
-if [ -n "$CLONE_CONF" ]; then
-
-    if [ "$CLONE_CONF" = "themes" ]; then
-        cp -r "$(dirname $0)/../themes" "$HOME/.config/naivecalendar/"
-
-    elif [ "$CLONE_CONF" = "scripts" ]; then
-        cp -r "$(dirname $0)/../scripts" "$HOME/.config/naivecalendar/"
-        mkdir "$HOME/.config/naivecalendar/global" 2> /dev/null
-        cp -r "$(dirname $0)/../global/custom_actions.cfg" "$HOME/.config/naivecalendar/global/"
-    
-    elif [ "$CLONE_CONF" = "events" ]; then
-        mkdir "$HOME/.config/naivecalendar/global" 2> /dev/null
-        cp -r "$(dirname $0)/../global/events.cfg" "$HOME/.config/naivecalendar/global/"
-    
-    else
-        echo ""
-        echo "No such conf file to clone, please give one a the following values:"
-        echo " - themes : clone all installed themes in user conf folder"
-        echo " - scripts : additional script to create shortcuts in calendar"
-        echo " - events : day notes event configuration "
-        echo ""
-    fi
-    
-    echo "$CLONE_CONF" cloned into "~/.config/naivecalendar/"
-    echo "Bye"
-    exit 0
-fi
 
 
 if [ -z "$FILTER" ]; then

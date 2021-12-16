@@ -105,6 +105,7 @@ install-subcommands:
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "subcommands" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
 	@install -D --mode=755 tools/naivecalendar-update $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-update
 	@install -D --mode=755 tools/naivecalendar-add-event $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-add-event
+	@install -D --mode=755 tools/naivecalendar-configure $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-configure
 
 install-events: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "events config files" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"

@@ -28,17 +28,19 @@ SYM_BACK_TO_CALENDAR
 SYM_GO_TODAY
 """
 
-submodules_options="-- update add-event"
+submodules_options="-- update add-event configure"
 
 naivecalendar_options="--help --version --verbose --print --clipboard --format --editor --locale --read-cache --theme --date"
 
-update_options="--help --simulate --list-parameters --list-themes --parameter --value --filter --all-parameters --editor --clone"
-update_param_exclude="--help --all-parameters --list-parameters --list-themes --editor --clone"
+update_options="--help --simulate --list-parameters --list-themes --parameter --value --filter --all-parameters --editor"
+update_param_exclude="--help --all-parameters --list-parameters --list-themes --editor"
 update_all_exclude="--list-parameters --list-themes --parameter --value"
 
 add_event_options="--help --new --value --override --delete"
 add_event_delete_exclude="--new --value --override"
 add_event_other_exclude="--delete"
+
+configure_options="--help --clone --edit"
 
 
 theme_list="$(ls /usr/share/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
@@ -70,6 +72,12 @@ _myscript_tab_complete () {
         fi
     done
 
+    is_configure=false
+    for element in ${prevs[@]}; do
+        if [[ "$element" == "configure" ]]; then
+            is_configure=true
+        fi
+    done
 
     # show subcommand or calendar command if '--' manually typed
     if [[ $prev == "naivecalendar" ]] ; then
@@ -97,7 +105,6 @@ _myscript_tab_complete () {
         prevs=$(echo $prevs | sed -e 's/\bf\b/-filter/')
         prevs=$(echo $prevs | sed -e 's/\ba\b/-all-parameters/')
         prevs=$(echo $prevs | sed -e 's/\be\b/-editor/')
-        prevs=$(echo $prevs | sed -e 's/\bc\b/-clone/')
 
         # show all
         if [[ $prev == "update" ]] ; then
@@ -122,9 +129,6 @@ _myscript_tab_complete () {
         elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
             options=" " 
 
-        elif [[ "$prev" == "-c" || $prev == "--clone" ]] ; then
-            options="themes scripts events" 
-
         elif [[ "$prev" == "themes" || $prev == "scripts" || $prev == "events" ]] ; then
             options=" "
 
@@ -137,7 +141,6 @@ _myscript_tab_complete () {
 
             # if any other remove help and list-parameters
             options=$(echo $options | sed -e 's:--help\b *::')
-            options=$(echo $options | sed -e 's:--clone\b *::')
             options=$(echo $options | sed -e 's:--list-parameters\b *::')
             options=$(echo $options | sed -e 's:--list-themes\b *::')
             
@@ -219,6 +222,33 @@ _myscript_tab_complete () {
                     done
                 fi
             done
+        fi
+
+    # configure subcommand
+    elif [[ "$is_configure" == "true" ]] ; then
+
+        prevs=$(echo $prevs | sed -e 's/\bh\b/-help/')
+        prevs=$(echo $prevs | sed -e 's/\bc\b/-clone/')
+        prevs=$(echo $prevs | sed -e 's/\be\b/-edit/')
+
+        EVENT_FILE="$HOME/.config/naivecalendar/global/events.cfg"
+
+        # show all
+
+        if [[ "$prev" == "configure" ]] ; then
+            options=$configure_options #_get_update_opt
+        elif [[ "$prev" == "-c" || $prev == "--clone" ]] ; then
+            options="EVENTS THEMES SCRIPTS" #_get_update_opt
+
+        elif [[ "$prev" == "-e" || $prev == "--edit" ]] ; then
+            options="EVENTS THEMES SCRIPTS" #_get_update_opt
+
+        elif [[ "$prev" == "-h" || $prev == "--help" ]] ; then
+            options=" "
+
+        # show all but remove already listed options
+        else
+            options=" "
         fi
 
     # list naivecalendar main options
