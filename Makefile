@@ -103,7 +103,7 @@ install-scripts:
 
 install-subcommands:
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "subcommands" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
-	@install -D --mode=755 tools/naivecalendar-update $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-update
+	@install -D --mode=755 tools/naivecalendar-update-themes $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-update-themes
 	@install -D --mode=755 tools/naivecalendar-add-event $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-add-event
 	@install -D --mode=755 tools/naivecalendar-configure $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-configure
 
@@ -134,8 +134,9 @@ install-theme-default:
 install-manpage:
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "mmanpages"  "-->"  "$(DESTDIR)$(man1dir)/"
 	@install -D --mode=644 "debian/naivecalendar.1" "$(DESTDIR)$(man1dir)/naivecalendar.1"
-	@install -D --mode=644 "debian/naivecalendar-update.1" "$(DESTDIR)$(man1dir)/naivecalendar-update.1"
+	@install -D --mode=644 "debian/naivecalendar-update-themes.1" "$(DESTDIR)$(man1dir)/naivecalendar-update-themes.1"
 	@install -D --mode=644 "debian/naivecalendar-add-event.1" "$(DESTDIR)$(man1dir)/naivecalendar-add-event.1"
+	@install -D --mode=644 "debian/naivecalendar-configure.1" "$(DESTDIR)$(man1dir)/naivecalendar-configure.1"
 
 install-bashcompletion:
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "bash-completion"  "-->"  "$(DESTDIR)$(datadir)/bash-completion/completions/"
@@ -157,3 +158,5 @@ html:
 deb:
 	debuild -us -uc
 
+clean:
+	rm -rf ./docs/_build

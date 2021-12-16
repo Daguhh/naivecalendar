@@ -2,7 +2,7 @@
 
 help_msg () {
     echo """
-**usage:** naivecalendar *configure* [-h] [-c|-e EVENT_NAME]
+**usage:** naivecalendar *configure* [-h] [-c|-e TYPE]
 
 Asset to easily clone or open configuration files
 Configuration files in questions are SCRIPTS (custom actions), THEMES (copy all/edit actual), EVENTS 
@@ -51,12 +51,12 @@ askYesNo () {
 option="$@"
 
 # prevent ambiguous usage
-if [[ " ${option[@]} " =~ " -c " ]] || [[ " ${option[@]} " =~ " --clone " ]] ; then
-    if [[ " ${option[@]} " =~ " -e " ]] || [[ " ${option[@]} " =~ " --edit " ]] ; then
-        printf "You can't set -c|--clone and -e|--edit at the same time\n"
-        exit 1
-    fi
-fi
+#if [[ " ${option[@]} " =~ " -c " ]] || [[ " ${option[@]} " =~ " --clone " ]] ; then
+#    if [[ " ${option[@]} " =~ " -e " ]] || [[ " ${option[@]} " =~ " --edit " ]] ; then
+#        printf "You can't set -c|--clone and -e|--edit at the same time\n"
+#        exit 1
+#    fi
+#fi
 
 # get named parameters
 while [ $# -gt 0 ] ; do

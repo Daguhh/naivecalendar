@@ -37,8 +37,9 @@ def get_arguments():
         description='''A simple popup calendar
 
 subcommands:
-    update      Update a calendar parameter for all user themes at once
-    add-event   Add, modify, delete event in all user themes config at once'''
+    update-themes   Update a calendar parameter for all user themes at once
+    add-event       Add, modify, delete event in all user themes config at once
+    configure       Clone or open configuration files'''
     )
 
     parser.add_argument(
@@ -1355,8 +1356,9 @@ Shortcuts (type it in rofi prompt) :"""
 Command line option:
 
 subcommands:
-    update      Update a calendar parameter for all user themes at once
-    add-event   Add, modify, delete event in all user themes config at once
+    update-themes  Update a calendar parameter for all user themes at once
+    add-event      Add, modify, delete event in all user themes config at once
+    configure      Clone or open configuration files
 
 optional arguments:
       -h, --help

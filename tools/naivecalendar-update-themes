@@ -32,7 +32,7 @@ SYM_GO_TODAY
 
 help_msg () {
     echo """
-**usage:** naivecalendar *update* [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE] [-f REGEX] [-e USER_EDITOR]
+**usage:** naivecalendar *update-themes* [-h] [-s] [-L] [-p PARAMETER] [-v NEW_VALUE] [-f REGEX] [-e USER_EDITOR]
 
 Give a new value to a calendar parameter for all themes in ~/.config/naivecalendar/themes/
 
@@ -93,7 +93,15 @@ THEME_LIST=$(ls -1 $HOME/.config/naivecalendar/themes/*.cfg | sed -r 's/.*\/(.*)
 
 list_themes () {
     printf "naivecalendar user themes : \n\n"
-    printf "%-25s  %-25s  %-25s  %-25s\n" $THEME_LIST
+    if [ -z $THEME_LIST ]; then
+        echo "No themes in user configuration folder"
+        echo "Create your own themes or start with installation themes running"
+        echo ""
+        echo "      naivecalendar configure --clone THEMES"
+        echo ""
+    else
+        printf "%-25s  %-25s  %-25s  %-25s\n" $THEME_LIST
+    fi
 }
 
 get_editor () {
