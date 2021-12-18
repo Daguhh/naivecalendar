@@ -1016,7 +1016,7 @@ def edit_event_file(event_path, editor=ARGS.editor):
     if not os.path.isdir(event_folder):
         os.makedirs(event_folder)
     Path(event_path).touch()
-    cmd = (editor, event_path)
+    cmd = (*editor.split(' '), event_path)
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     sdtout, sdterr = p.communicate()
 

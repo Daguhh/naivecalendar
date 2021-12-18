@@ -1,41 +1,77 @@
 #!/bin/bash
 
-param="$@"
-cmd="${BASH_SOURCE%/*}/naivecalendar.py $param"
+param="$(printf ' %q' "$@")"
+cmd="${BASH_SOURCE%/*}/naivecalendar.py $(printf ' %q' "$@")"
 
 ##############################################################################
 ####################  Process command line arguments #########################
 ##############################################################################
 
-# display help msg
-if [[ " ${param[@]} " =~ " -h " ]] || [[ " ${param[@]} " =~ " --help " ]] ; then
-    $cmd
-    exit 0
-fi
 
-# display version msg
-if [[ " ${param[@]} " =~ " -V " ]] || [[ " ${param[@]} " =~ " --version " ]] ; then
-    $cmd
-    exit 0
-fi
+while [ $# -gt 0 ]; do
+    key="$1"
+    case $key in
+      -h|--help)
+        $cmd
+        exit 0
+        ;;
+      -V|--version)
+        $cmd
+        exit 0
+        ;;
+      -t|--theme)
+        OPT_THEME="$2"
+        shift
+        shift
+        ;;
+      -v|--verbose)
+        IS_VERBOSE='true'
+        shift
+        ;;
+      -x|--clipboard)
+        IS_CLIPBOARD='true'
+        shift
+        ;;
+      -p|--print)
+        IS_PRINT='true'
+        shift
+        ;;
+      -f|--format)
+        shift
+        shift
+        ;;
+      -e|--editor)
+        shift
+        shift
+        ;;
+      -l|--locale)
+        shift
+        shift
+        ;;
+      -d|--date)
+        shift
+        shift
+        ;;
+      -c|--read-cache)
+        shift
+        ;;
+      *)
+        echo "Argument non défini : '$key'" 
+        shift
+        ;;
+    esac
+done
+
 
 # load theme file
 THEME_CACHE_FILE="$HOME/.cache/naivecalendar/theme_cache.txt"
 THEME_USER_PATH="$HOME/.config/naivecalendar/themes"
 THEME_SOURCE_PATH="${BASH_SOURCE%/*}/themes"
 
+
+
 # forced with cmd line argument
-if [[ " ${param[@]} " =~ " -t " ]] || [[ " ${param[@]} " =~ " --theme " ]] ; then
-    while [[ $# -gt 0 ]] ; do
-        key="$1"
-        case $key in
-            -t|--theme)
-            OPT_THEME="$2"
-            shift # past argument
-            ;;
-        esac
-        shift # past value
-    done
+if ! [ -z "$OPT_THEME" ]; then
     # search in user path before
     THEME="$THEME_USER_PATH/$OPT_THEME.rasi"
     if ! test -f "$THEME"; then
@@ -55,9 +91,9 @@ elif test -f "$THEME_CACHE_FILE"; then
     fi
     if ! test -f "$THEME"; then
         echo "*************************************************************************"
-        echo "* '$(cat $THEME_CACHE_FILE)' theme doesn't exist anymore, "     
+        echo "* '$(cat $THEME_CACHE_FILE)' theme doesn't exist anymore, "
         echo "*    - please remove $THEME_CACHE_FILE    "
-        echo "* or                                                                    *" 
+        echo "* or                                                                    *"
         echo "*    - force a theme with -t|--theme argument,                          *"
         echo "*      then switch again to an existing theme to override cache file    *"
         echo "*************************************************************************"
@@ -130,18 +166,18 @@ fi
 if [ "$loop_nb" -eq 0 ]; then
 
     # print log
-    if [[ " ${param[@]} " =~ " -v " ]] || [[ " ${param[@]} " =~ " --verbose " ]]; then
+    if [ "$IS_VERBOSE" = "true" ]; then
         cat "$ROFI_LOG_FILE"
     fi
 
     # print date to stdout
-    if [[ " ${param[@]} " =~ " -x " ]] || [[ " ${param[@]} " =~ " --clipboard " ]]; then
+    if [ "$IS_CLIPBOARD" = "true" ]; then
         FILE="$HOME/.cache/naivecalendar/pretty_print_cache.txt"
         cat $FILE | xclip -selection clipboard &
     fi
 
     # print date to stdout
-    if [[ " ${param[@]} " =~ " -p " ]] || [[ " ${param[@]} " =~ " --print " ]]; then
+    if [ "$IS_PRINT" = "true" ]; then
         FILE="$HOME/.cache/naivecalendar/pretty_print_cache.txt"
         cat $FILE > "$HOME/temp.txt"
         printf "%s" "$(cat $FILE)"
