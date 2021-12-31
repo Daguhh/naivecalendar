@@ -231,7 +231,7 @@ Customize
 
 To customize the calendar (without altering installation files), you can start with a copy of them in the user config folder:
 
-Manually:
+Manually :
 
 .. code:: bash
 
@@ -249,7 +249,7 @@ With subcommand:
 
 .. code:: bash
 
-    naivecalendar update-themes --clone <config file>
+    naivecalendar configure --clone <config file>
 
 
 
@@ -259,16 +259,16 @@ Themes
 
 A theme consist of two files :
 
-- **<theme>.cfg** : an ini file, configure calendar content
-- **<theme>.rasi** : a rofi theme file, configure apperance (color, sise, layout...)
+- `theme.cfg`_ : an ini file, configure calendar content
+- `theme.rasi`_ : a rofi theme file, configure apperance (color, size, layout...)
 
 .. warning::
 
-   Shape (.rasi) should match content (.cfg), i.e.  adjusting content that change row number require editing calendar shape too. See more details in .cfg files.
+   Number of rows in rofi (*.rasi*) should match content configuration (*.cfg*)! See more details in .cfg files.
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, you can set them by typing *theme* in rofi prompt or temporarily load them with :code:`--theme` argument. To create your own theme, create a `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file, then just place it in *~/.config/naivecalendar/themes*. 
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, set them by typing *theme* in rofi prompt or temporarily load them with :code:`--theme` argument. To create your own theme, create a `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file in *~/.config/naivecalendar/themes*. 
 
-You can start from a copy of "officials" themes
+You can start from a copy of "officials" themes, with :code:`configure` subcommand or manually:
 
 .. code:: bash
 
@@ -276,23 +276,24 @@ You can start from a copy of "officials" themes
 
 .. note::
 
-    If it exist two themes with the same name, the one in *$HOME/.config/...* will be prevalent over the others
+    If it exist two themes with the same name in differents folders, the one in *$HOME/.config/...* will be prevalent over the others
 
 Then modify themes one by one with your favourite editor or use naivecalendar subcommand to update multiples themes at once (cfg files only)
 
 .. code:: bash
 
-    naivecalendar <subcommand> -h
+    naivecalendar update-themes -h
 
-.. note::
+.. admonition:: Author
 
+   Proposed themes are more examples than official. I intented this calendar to easily match all user configurations and to be easily configurable.
    There is no specific tool to update .rasi files, but they (almost all) share some ressources in *themes/common/*, commonly:
 
    - a color theme : **theme_<color_name>.rasi**
    - a position on the screen : **position.rasi**
    - a shape (contain number of row) : **shape_<kind>.rasi**
 
-   So you can easily mix them to customize calendar aspect.
+   So you can easily mix them to customize calendar aspect or modify independently colors and shapes.
 
 Events
 ^^^^^^
@@ -378,7 +379,6 @@ rofi command                       /usr/share/naivecalendar/**naivecalendar.sh**
 script called by rofi              /usr/share/naivecalendar/**naivecalendar.py**
 rofi theme files                   /usr/share/naivecalendar/**themes/\*.rasi**
 calendar content configuration     /usr/share/naivecalendar/**themes/\*.cfg**
-events conf                        /usr/share/naivecalendar/**global/events.cfg**   
 --------------------------------   ----------------------------------------------------------------
 **Installation & optional**
 ---------------------------------------------------------------------------------------------------
@@ -387,6 +387,7 @@ theme config editor command        /usr/share/naivecalendar/tools/**naivecalenda
 theme event editor command         /usr/share/naivecalendar/tools/**naivecalendar-add-event**
 custom actions                     /usr/share/naivecalendar/**global/custom_actions.cfg**
 scripts                            /usr/share/naivecalendar/**scripts/\*"**    
+events conf                        /usr/share/naivecalendar/**global/events.cfg**   
 --------------------------------   ----------------------------------------------------------------
 **User themes : optional** (overide installation conf file)
 ---------------------------------------------------------------------------------------------------
@@ -413,6 +414,10 @@ Build
 -----
 
 .. _dev:
+
+.. note::
+
+    You can use the makefile with **make** command to build package and documentation.
 
 Build debian package
 ^^^^^^^^^^^^^^^^^^^^

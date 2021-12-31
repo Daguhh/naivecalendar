@@ -1,4 +1,4 @@
-.PHONY: doc-html install install-bin install-manpage install-subcommands  help install-bashcompletion install-conf install-scripts uninstall
+.PHONY: html install install-bin install-manpage install-subcommands  help install-bashcompletion install-conf install-scripts uninstall
 
 PROJECT := naivecalendar
 

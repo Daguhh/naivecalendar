@@ -1,7 +1,7 @@
 Themes
 ======
 
-Those are official/example themes
+Those are official/example themes.
 
 To apply a theme :
 
@@ -14,6 +14,12 @@ Sources & Inspirations:
 - `polybar-themes <https://github.com/adi1090x/polybar-themes>`_
 - `themes by ZB652 <https://www.deviantart.com/zb652>`_
 
+
+User : classic, extended, compact, sparse
+-----------------------------------------
+
+Naivecalendar can follow user global rofi color theme (:code:`~/.config/rofi/config.rasi`)
+This must work well with almost all rofi official themes (:code:`rofi-theme-selector`) and propably yours.
 
 Dark & Light : classic, extended, variant
 -----------------------------------------
