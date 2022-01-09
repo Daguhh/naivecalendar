@@ -201,9 +201,9 @@ Subcommands **update-themes** could be useful to update all theme config at once
     A simple popup calendar
 
     **subcommands:**
-        update-themes   Update a calendar parameter for all user themes at once
-        add-event       Add or delete event
-        configure       Clone or open configuration files
+      | update-themes       Update a calendar parameter for all user themes at once
+      | add-event           Add or delete event
+      | configure           Clone or open configuration files
 
 
     **optional arguments:**
@@ -385,6 +385,7 @@ calendar content configuration     /usr/share/naivecalendar/**themes/\*.cfg**
 system command                     /usr/bin/**naivecalendar**
 theme config editor command        /usr/share/naivecalendar/tools/**naivecalendar-update-themes**
 theme event editor command         /usr/share/naivecalendar/tools/**naivecalendar-add-event**
+manage config files command        /usr/share/naivecalendar/tools/**naivecalendar-configure**
 custom actions                     /usr/share/naivecalendar/**global/custom_actions.cfg**
 scripts                            /usr/share/naivecalendar/**scripts/\*"**    
 events conf                        /usr/share/naivecalendar/**global/events.cfg**   
