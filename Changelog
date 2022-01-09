@@ -4,6 +4,7 @@ v2.0.1
 	Minor:
 		Add themes that follow user's ones
 		New update option : clone => populate user config folder
+		Update readme
 	Other:
 		Add Makefile 
 
