@@ -1,7 +1,11 @@
 #!/bin/bash
 
 param="$(printf ' %q' "$@")"
-cmd="${BASH_SOURCE%/*}/naivecalendar.py $(printf ' %q' "$@")"
+if [ -z "$@" ]; then
+    cmd="${BASH_SOURCE%/*}/naivecalendar.py"
+else
+    cmd="${BASH_SOURCE%/*}/naivecalendar.py $(printf ' %q' "$@")"
+fi
 
 ##############################################################################
 ####################  Process command line arguments #########################
