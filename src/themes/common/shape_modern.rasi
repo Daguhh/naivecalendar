@@ -1,5 +1,10 @@
 
-@import "shape_base.rasi"
+@import "base_shape.rasi"
+
+*{
+    background-alt:         @foreground-active;
+    foreground-alt:         @background-active;
+}
 
 #window {
     fullscreen:             false;
@@ -21,6 +26,7 @@
 vertbox {
     padding: 10;
     children: [ listview ];
+    background-color:       @background;
 }
 
 #listview {
@@ -40,18 +46,19 @@ vertbox {
 
 #entry {
     spacing:    0;
-    text-color: @foreground;
-    background-color:   @background1;
+    text-color: @foreground-alt;
+    background-color:   @background-alt;
 }
 #prompt {
     spacing:    0;
-    text-color: @white3;
-    background-color:   @background1;
+    text-color: @foreground-alt;
+    background-color:   @background-alt;
     font : "Bitstream Vera Sans Mono Bold 18";
 }
 #inputbar {
     children:   [prompt, entry];
-    background-color:   @background1;
+    background-color:   @background-alt;
+    text-color: @foreground-alt;
     padding : 10 0 10 80;
     border-radius: 0 0 10 10;
 }
@@ -59,13 +66,13 @@ vertbox {
     expand:     false;
     str:        ":";
     margin:     0px 0.3em 0em 0em ;
-    text-color: @foreground;
-    background-color:   @background1;
+    text-color: @foreground-alt;
+    background-color:   @background-alt;
 }
 
 #case-indicator {
-    foreground-color: @background1;
-    background-color:   @background1;
+    foreground-color: @background-alt;
+    background-color:   @background-alt;
     enabled: false;
 }
     

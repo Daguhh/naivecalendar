@@ -1,5 +1,5 @@
 
-@import "shape_base.rasi"
+@import "base_shape.rasi"
 #listview {
     columns:      7;
     lines:        9;

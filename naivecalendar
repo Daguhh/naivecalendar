@@ -3,7 +3,7 @@
 PREFIX=/usr
 DATA_DIR="$PREFIX/share/naivecalendar"
 
-if [[ $1 =~ ^(update-themes|add-event|configure)$ ]]; then
+if [[ $1 =~ ^(update-themes|add-event|configure|theme-generator)$ ]]; then
 
     action=$1
     shift # skip subcommand
@@ -17,6 +17,8 @@ if [[ $1 =~ ^(update-themes|add-event|configure)$ ]]; then
     elif [[ $action == "configure" ]]; then
         $DATA_DIR/tools/naivecalendar-configure "$@"
 
+    elif [[ $action == "theme-generator" ]]; then
+        $DATA_DIR/tools/naivecalendar-theme-generator "$@"
     fi
 else 
 

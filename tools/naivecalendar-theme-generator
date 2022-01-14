@@ -1,0 +1,89 @@
+#!/bin/bash
+
+DATA_DIR=".."
+
+ABS_DATA_DIR=$(realpath $DATA_DIR)
+THEMES_PATH="$ABS_DATA_DIR/src/themes"
+COMMON_FILES_PATH="$THEMES_PATH/common"
+USER_THEME_CONFIG="$HOME/.config/naivecalendar/themes/_generated_config"
+
+
+show_help () {
+
+    echo """
+**usage** :  naivecalendar *theme-generator* [all|help]
+
+Generate config for naivecalendar by setting shape and theme
+Create _generated_config in ~/.config/naivecalendar/themes/
+
+Positional argument:
+
+     no parameter : ask for a shape and a theme, generate config, then show naivecalendar
+     help : show this help and exit
+     all : display all combination possible one by one with name
+"
+
+}
+
+gen_conf () {
+
+    # Create rasi conf
+    rasi_str="
+@import \"$COMMON_FILES_PATH/theme_$theme.rasi\"\n
+@import \"$COMMON_FILES_PATH/$position\"\n
+@import \"$COMMON_FILES_PATH/shape_$shape.rasi\"\n
+    "
+
+    # Write to config file
+    echo -e $rasi_str > $USER_THEME_CONFIG.rasi
+    ln -fs $COMMON_FILES_PATH/shape_$shape.cfg $USER_THEME_CONFIG.cfg
+
+}
+
+run_conf () {
+
+    echo "$shape-$theme"
+    naivecalendar -t _generated_config
+
+}
+
+
+# Get theme components
+position="position.rasi"
+
+if [ "$1" = "help" ]; then
+
+    show_help
+
+    exit 0
+
+
+elif [ "$1" = "all" ]; then
+
+    shapes=$(ls $COMMON_FILES_PATH/ | grep "^shape.*\.rasi" | sed 's/shape_\(.*\)\.rasi/\1/g') 
+    themes=$(ls $COMMON_FILES_PATH/ | grep "^theme.*\.rasi" | sed 's/theme_\(.*\)\.rasi/\1/g') 
+    
+    for shape in $shapes; do
+        for theme in $themes; do
+            gen_conf
+            run_conf
+        done
+    done
+
+else
+
+    # Get shape and theme from user
+    shape=$(
+        echo -e $(ls $COMMON_FILES_PATH/ | grep "^shape.*\.rasi" | sed 's/shape_\(.*\)\.rasi/\1/g') |
+        rofi -dmenu -sep " " -p "Shape"
+    )
+
+    theme=$(
+        echo -e $(ls $COMMON_FILES_PATH/ | grep "^theme.*\.rasi" | sed 's/theme_\(.*\)\.rasi/\1/g') |
+        rofi -dmenu -sep " " -p "Theme"
+    )
+
+    gen_conf
+    run_conf
+
+fi

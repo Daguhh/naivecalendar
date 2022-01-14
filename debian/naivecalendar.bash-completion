@@ -28,7 +28,7 @@ SYM_BACK_TO_CALENDAR
 SYM_GO_TODAY
 """
 
-submodules_options="-- update-themes add-event configure"
+submodules_options="-- update-themes add-event configure theme-generator"
 
 naivecalendar_options="--help --version --verbose --print --clipboard --format --editor --locale --read-cache --theme --date"
 
@@ -41,6 +41,8 @@ add_event_delete_exclude="--new --value --override"
 add_event_other_exclude="--delete"
 
 configure_options="--help --clone --edit"
+
+generator_options="all help"
 
 
 theme_list="$(ls /usr/share/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
@@ -76,6 +78,13 @@ _myscript_tab_complete () {
     for element in ${prevs[@]}; do
         if [[ "$element" == "configure" ]]; then
             is_configure=true
+        fi
+    done
+
+    is_generator=false
+    for element in ${prevs[@]}; do
+        if [[ "$element" == "theme-generator" ]]; then
+            is_generator=true
         fi
     done
 
@@ -247,6 +256,15 @@ _myscript_tab_complete () {
             options=" "
 
         # show all but remove already listed options
+        else
+            options=" "
+        fi
+
+    # generator subcommand
+    elif [[ "$is_generator" == "true" ]] ; then
+        
+        if [[ "$prev" == "theme-generator" ]] ; then
+            options=$generator_options
         else
             options=" "
         fi

@@ -4,7 +4,7 @@
  * Copyright: 2020 Daguhh
  ***********************************************/
 
-@import "theme_base.rasi"
+@import "base_theme.rasi"
 
 
 * {
