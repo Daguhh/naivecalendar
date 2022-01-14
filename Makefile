@@ -2,20 +2,6 @@
 
 PROJECT := naivecalendar
 
-help:
-	@echo "Please configure your installation by editing Makefile.config"
-	@echo ""
-	@echo "Usage:"
-	@echo "		install : install following user conf (Makefile.config)" 
-	@echo "		uninstall : delete all installed files"
-	@echo "		html : Build doc html"
-	@echo "		deb : Build debian package"
-	@echo ""
-	@echo "Installation prefix:"
-	@echo "  - /usr/local : run as root"
-	@echo "  - ~/.local : run as user"
-	@echo "  - custom : override prefix run \"make prefix=my_path install\""
-
 # Get user install configuration
 #################################
 
@@ -45,12 +31,6 @@ endif
 
 ifeq ($(INSTALL_ADDONS),True)
 install_list += install-addons
-endif
-
-ifeq ($(INSTALL_ALL_THEMES),True)
-install_list += install-themes
-else
-install_list += install-theme-default
 endif
 
 ifeq ($(INSTALL_MANPAGE),True)
@@ -86,8 +66,22 @@ else
 endif
 
 
-test:
+_:
 	@echo "installation: $(install_list)"
+
+help:
+	@echo "Please configure your installation by editing Makefile.config"
+	@echo ""
+	@echo "Usage:"
+	@echo "		install : install following user conf (Makefile.config)" 
+	@echo "		uninstall : delete all installed files"
+	@echo "		html : Build doc html"
+	@echo "		deb : Build debian package"
+	@echo ""
+	@echo "Installation prefix:"
+	@echo "  - /usr/local : run as root"
+	@echo "  - ~/.local : run as user"
+	@echo "  - custom : override prefix run \"make prefix=my_path install\""
 
 install-exec:
 	@echo "set installation path to $(DESTDIR)${prefix}"
@@ -106,6 +100,9 @@ install-subcommands:
 	@install -D --mode=755 tools/naivecalendar-update-themes $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-update-themes
 	@install -D --mode=755 tools/naivecalendar-add-event $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-add-event
 	@install -D --mode=755 tools/naivecalendar-configure $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-configure
+	@sed -e "s:\(DATA_DIR=\).*:\1${datadir}/naivecalendar:g" tools/naivecalendar-theme-generator > generator.tmp
+	@install -D --mode=755 generator.tmp $(DESTDIR)$(datadir)/naivecalendar/tools/naivecalendar-theme-generator
+	@rm generator.tmp
 
 install-events: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "events config files" "-->"  "$(DESTDIR)$(datadir)/naivecalendar"
@@ -121,16 +118,6 @@ install-themes: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "all themes" "-->" "$(DESTDIR)$(datadir)/naivecalendar"
 	@cp -r src/themes $(DESTDIR)$(datadir)/naivecalendar
 
-install-theme-default:
-	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "default theme" "-->" "$(DESTDIR)$(datadir)/naivecalendar/themes/"
-	@install -D --mode=644 src/themes/classic_dark_extended.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/classic_dark_extended.rasi
-	@install -D --mode=644 src/themes/classic_dark_extended.cfg $(DESTDIR)$(datadir)/naivecalendar/themes/classic_dark_extended.cfg
-	@install -D --mode=644 src/themes/common/theme_dark.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/theme_dark.rasi
-	@install -D --mode=644 src/themes/common/position.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/position.rasi
-	@install -D --mode=644 src/themes/common/shape_extended.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/shape_extended.rasi
-	@install -D --mode=644 src/themes/common/shape_base.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/shape_base.rasi
-	@install -D --mode=644 src/themes/common/theme_base.rasi $(DESTDIR)$(datadir)/naivecalendar/themes/common/theme_base.rasi
-
 install-manpage:
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "mmanpages"  "-->"  "$(DESTDIR)$(man1dir)/"
 	@install -D --mode=644 "debian/naivecalendar.1" "$(DESTDIR)$(man1dir)/naivecalendar.1"
@@ -144,7 +131,7 @@ install-bashcompletion:
 	@install -D --mode=755 "completion.tmp" "$(DESTDIR)$(datadir)/bash-completion/completions/naivecalendar"
 	@rm completion.tmp
 
-install: install-exec install-scripts $(install_list)
+install: install-exec install-scripts install-themes $(install_list)
 
 uninstall:
 	rm -f $(DESTDIR)$(bindir)/naivecalendar
@@ -158,5 +145,12 @@ html:
 deb:
 	debuild -us -uc
 
-clean:
+clean-all:
 	rm -rf ./docs/_build
+	debclean
+
+clean-conf_n_cache:
+	rm -rf ${HOME}/.config/naivecalendar
+	rm -rf ${HOME}/.cache/naivecalendar
+
+

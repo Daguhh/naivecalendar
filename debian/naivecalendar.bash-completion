@@ -42,8 +42,7 @@ add_event_other_exclude="--delete"
 
 configure_options="--help --clone --edit"
 
-generator_options="all help"
-
+generator_options="--help --new_file --all --folder"
 
 theme_list="$(ls /usr/share/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
 theme_list_user="$(ls $HOME/.config/naivecalendar/themes | grep .cfg | sed -e 's/\.cfg//g')"
@@ -263,8 +262,15 @@ _myscript_tab_complete () {
     # generator subcommand
     elif [[ "$is_generator" == "true" ]] ; then
         
+        prevs=$(echo $prevs | sed -e 's/\bh\b/-help/')
+        prevs=$(echo $prevs | sed -e 's/\bn\b/-new_file/')
+        prevs=$(echo $prevs | sed -e 's/\ba\b/-all/')
+        prevs=$(echo $prevs | sed -e 's/\bf\b/-folder/')
+
         if [[ "$prev" == "theme-generator" ]] ; then
             options=$generator_options
+        elif [[ "$prev" == "-f" || $prev == "--folder" ]] ; then
+            options=""
         else
             options=" "
         fi
@@ -328,7 +334,7 @@ _myscript_tab_complete () {
     COMPREPLY=( $(compgen -W "${options}" -- ${cur}) )
     return 0
 }
-complete -F _myscript_tab_complete naivecalendar
+complete -o filenames -F _myscript_tab_complete naivecalendar
 
 
 

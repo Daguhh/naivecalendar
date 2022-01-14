@@ -1,7 +1,9 @@
 #!/bin/bash
 
+DEFAULT_THEME="config"
+
 param="$(printf ' %q' "$@")"
-if [ -z "$@" ]; then
+if [[ -z "$@" ]]; then
     cmd="${BASH_SOURCE%/*}/naivecalendar.py"
 else
     cmd="${BASH_SOURCE%/*}/naivecalendar.py $(printf ' %q' "$@")"
@@ -56,9 +58,6 @@ while [ $# -gt 0 ]; do
         shift
         shift
         ;;
-      -c|--read-cache)
-        shift
-        ;;
       *)
         echo "Argument non défini : '$key'" 
         shift
@@ -66,9 +65,12 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+      #-c|--read-cache)
+      #  shift
+      #  ;;
 
 # load theme file
-THEME_CACHE_FILE="$HOME/.cache/naivecalendar/theme_cache.txt"
+#THEME_CACHE_FILE="$HOME/.cache/naivecalendar/theme_cache.txt"
 THEME_USER_PATH="$HOME/.config/naivecalendar/themes"
 THEME_SOURCE_PATH="${BASH_SOURCE%/*}/themes"
 
@@ -86,26 +88,29 @@ if ! [ -z "$OPT_THEME" ]; then
         exit 0
     fi
 
-# otherwise, look in cache
-elif test -f "$THEME_CACHE_FILE"; then
-    # look in user path, then in source path
-    THEME="$THEME_USER_PATH/$(cat $THEME_CACHE_FILE).rasi"
-    if ! test -f "$THEME"; then
-        THEME="$THEME_SOURCE_PATH/$(cat $THEME_CACHE_FILE).rasi"
-    fi
-    if ! test -f "$THEME"; then
-        echo "*************************************************************************"
-        echo "* '$(cat $THEME_CACHE_FILE)' theme doesn't exist anymore, "
-        echo "*    - please remove $THEME_CACHE_FILE    "
-        echo "* or                                                                    *"
-        echo "*    - force a theme with -t|--theme argument,                          *"
-        echo "*      then switch again to an existing theme to override cache file    *"
-        echo "*************************************************************************"
-        exit 0
-    fi
-
+## otherwise, look in cache
+#elif test -f "$THEME_CACHE_FILE"; then
+#    # look in user path, then in source path
+#    THEME="$THEME_USER_PATH/$(cat $THEME_CACHE_FILE).rasi"
+#    if ! test -f "$THEME"; then
+#        THEME="$THEME_SOURCE_PATH/$(cat $THEME_CACHE_FILE).rasi"
+#    fi
+#    if ! test -f "$THEME"; then
+#        echo "*************************************************************************"
+#        echo "* '$(cat $THEME_CACHE_FILE)' theme doesn't exist anymore, "
+#        echo "*    - please remove $THEME_CACHE_FILE    "
+#        echo "* or                                                                    *"
+#        echo "*    - force a theme with -t|--theme argument,                          *"
+#        echo "*      then switch again to an existing theme to override cache file    *"
+#        echo "*************************************************************************"
+#        exit 0
+#    fi
+#
 else
-    THEME="$THEME_SOURCE_PATH/classic_dark_extended.rasi"
+    THEME="$THEME_USER_PATH/$DEFAULT_THEME.rasi"
+    if ! test -f "$THEME"; then
+        THEME="$THEME_SOURCE_PATH/$DEFAULT_THEME.rasi"
+    fi
 fi
 
 ##############################################################################

@@ -19,6 +19,7 @@ from functools import wraps
 import time
 
 #START = time.time()
+DEFAULT_THEME="config"
 
 def get_arguments():
     """Parse command line arguments
@@ -104,7 +105,7 @@ subcommands:
     parser.add_argument(
         "-t",
         "--theme",
-        help="""set calendar theme, default=classic_dark_extended (theme file name without extention)""",
+        help="""set calendar theme, default to config file content (give theme file name without extention)""",
         dest="theme",
         default=False
     )
@@ -140,7 +141,7 @@ DIRNAME = Path(__file__).parent.absolute()
 CACHE_PATH = HOME / ".cache/naivecalendar"
 DATE_CACHE = CACHE_PATH / "date_cache.ini"
 PP_CACHE = CACHE_PATH / "pretty_print_cache.txt"
-THEME_CACHE = CACHE_PATH / "theme_cache.txt"
+#THEME_CACHE = CACHE_PATH / "theme_cache.txt"
 EVENT_CACHE = CACHE_PATH / "event_cache.txt"
 
 # config files
@@ -169,13 +170,13 @@ CUSTOM_ACTION_FILES = {
 #######################################
 
 # get wanted theme
-theme = "classic_dark_extended"
+theme = DEFAULT_THEME  #"classic_dark_extended"
 if ARGS.theme:
     theme = ARGS.theme
-else:
-    if THEME_CACHE.exists():
-        with open(THEME_CACHE, 'r') as theme_cache:
-            theme = theme_cache.read()
+#else:
+#    if THEME_CACHE.exists():
+#        with open(THEME_CACHE, 'r') as theme_cache:
+#            theme = theme_cache.read()
 
 # look for theme in config paths
 if (THEME_PATHS['user'] / f"{theme}.cfg").exists():
@@ -1032,6 +1033,22 @@ def ask_event_to_display():
 
     set_event_cache(event)
 
+MSG_NO_THEME_HELP = """
+No themes found,
+generate officials themes with the subcommand:
+
+    naivecalendar theme-generator
+
+Or modify configuration files manually at:
+
+    - ~/.config/naivecalendar/themes/config.cfg
+    - ~/.config/naivecalendar/themes/config.rasi
+
+To start with a copy of installation ressources:
+
+    naivecalendar configure --clone THEMES
+
+"""
 
 @open_n_reload_rofi
 def ask_theme():
@@ -1039,14 +1056,37 @@ def ask_theme():
 
     themes = list(chain(*[glob.glob(f'{path}/*.rasi') for path in THEME_PATHS.values()]))
     themes = (t.split('/')[-1].split('.')[0]for t in themes)
-    themes = list2rofi(sorted(set(themes)))
+    themes = list2rofi(t for t in sorted(set(themes)) if t!="config")
     #themes = '\n'.join((t.split('/')[-1] for t in themes))
 
-    theme = rofi_popup("select theme", themes, nb_col=3, nb_lines=9, width='45em')
-    if theme in themes:
-        set_theme_cache(theme)
-    else :
-        print("this is not a valid theme", file=sys.stderr)
+    if not themes:
+        rofi_popup('No user themes found', MSG_NO_THEME_HELP, highlights='4,8,9,13')
+        return
+
+    theme = rofi_popup("Overwrite 'config' with following theme", themes, nb_col=3, nb_lines=9, width='45em')
+
+    if not theme:
+        return
+
+    if (THEME_PATHS['user'] / f"{theme}.cfg").exists():
+        file_path = THEME_PATHS['user'] / theme
+    else:
+        file_path = THEME_PATHS['rel'] / theme
+
+    shutil.copyfile(
+        f"{file_path}.cfg",
+        THEME_PATHS['user'] / "config.cfg",
+        follow_symlinks=False
+    )
+    shutil.copyfile(
+        f"{file_path}.rasi",
+        THEME_PATHS['user'] / "config.rasi",
+        follow_symlinks=False
+    )
+    #if theme in themes:
+    #    set_theme_cache(theme)
+    #else :
+    #    print("this is not a valid theme", file=sys.stderr)
 
 @open_n_reload_rofi
 def execute_external_cmd(cmd):
@@ -1270,11 +1310,11 @@ def joke(sym):
         print("Ceci n'est pas un jour! R.Magritte.", file=sys.stderr)
 
 
-def set_theme_cache(selected):
-    """Write theme name to cache file"""
-
-    with open(THEME_CACHE, 'w') as f:
-        f.write(selected)
+#def set_theme_cache(selected):
+#    """Write theme name to cache file"""
+#
+#    with open(THEME_CACHE, 'w') as f:
+#        f.write(selected)
 
 
 def set_event_cache(selected):
