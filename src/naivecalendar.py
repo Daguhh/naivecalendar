@@ -950,7 +950,7 @@ def open_n_reload_rofi(func):
             time.sleep(ROFI_RELOAD_TEMPO)
             #cmd_args = ' '.join(sys.argv[1:-1])
             cmd_args = sys.argv[1:-1] # 1 = command name, -1 = rofi outpub
-            cmd = (str(DIRNAME / "naivecalendar.sh"), '-c', *cmd_args)
+            cmd = (str(DIRNAME / "naivecalendar.sh"), *cmd_args)
             #os.system(cmd)
             subprocess.Popen(cmd)
 
@@ -1074,12 +1074,18 @@ def ask_theme():
     else:
         file_path = THEME_PATHS['rel'] / theme
 
-    shutil.copyfile(
+
+    if ( THEME_PATHS['user'] / "config.cfg" ).exists():
+        os.remove(THEME_PATHS['user'] / "config.cfg")
+    shutil.copy(
         f"{file_path}.cfg",
         THEME_PATHS['user'] / "config.cfg",
         follow_symlinks=False
     )
-    shutil.copyfile(
+
+    if ( THEME_PATHS['user'] / "config.rasi" ).exists():
+        os.remove(THEME_PATHS['user'] / "config.rasi")
+    shutil.copy(
         f"{file_path}.rasi",
         THEME_PATHS['user'] / "config.rasi",
         follow_symlinks=False
