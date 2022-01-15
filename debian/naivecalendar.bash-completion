@@ -270,7 +270,7 @@ _myscript_tab_complete () {
         if [[ "$prev" == "theme-generator" ]] ; then
             options=$generator_options
         elif [[ "$prev" == "-f" || $prev == "--folder" ]] ; then
-            options=""
+            options="<path>"
         else
             options=" "
         fi

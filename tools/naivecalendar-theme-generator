@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 DATA_DIR="$(dirname $0)/../src"
 
@@ -20,7 +20,7 @@ Create config in ~/.config/naivecalendar/themes/
   -h, --help                    show this help message and exit
   -n, --new_file                save config in a new file instead of default(=config)
   -a, --all                     generate and show one by one all themes
-  -f, --folder                  output files in given folder, else in default user folder
+  -f PATH, --folder PATH        output files in given folder, else in default user folder 
 "
 
 }
@@ -96,7 +96,7 @@ EOF
 
 run_conf () {
 
-    echo "$shape-$theme"
+    echo -e  "\e[1m$shape-$theme\e[0m"
     naivecalendar -t "$CONFIG_NAME"
 
 }
@@ -110,11 +110,24 @@ if ( "$IS_ALL" ); then
     themes=$(ls $COMMON_FILES_PATH/ | grep "^theme.*\.rasi" | sed 's/theme_\(.*\)\.rasi/\1/g') 
     shapes=$(ls $COMMON_FILES_PATH/ | grep "^shape.*\.rasi" | sed 's/shape_\(.*\)\.rasi/\1/g') 
     
+    printf "===========================================\n"
+    printf "Press escape or loose focus to see next    \n"
+    printf "do it while holding hold 'Ctrl + C' to quit\n" 
+    printf "===========================================\n"
+
     for shape in $shapes; do
         for theme in $themes; do
+            read -p "type q to quit" -n1  -t0.4 MY_VAR
+            if [ "$MY_VAR" = "q" ]; then
+                break
+            fi
+            echo ""
             gen_conf
             run_conf
         done
+        if [ "$MY_VAR" = "q" ]; then
+            break
+        fi
     done
 
 else

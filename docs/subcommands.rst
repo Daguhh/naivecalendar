@@ -26,8 +26,22 @@ configure
    :start-line: 4
    :end-line: 13
 
+theme-generator
+^^^^^^^^^^^^^^^
+
+.. include:: ../tools/naivecalendar-theme-generator
+   :start-line: 14
+   :end-line: 24
+
 Examples
 ^^^^^^^^
+
+**See all possible official themes**
+
+.. code:: bash
+
+    naivecalendar theme-generator --all
+
 
 **Start with a copy of installation's themes:**
 

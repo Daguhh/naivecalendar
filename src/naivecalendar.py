@@ -8,7 +8,7 @@ Cycle through month and create linked event to days.
 __author__ = "Daguhh"
 __license__ = "MIT-0"
 __status__ = "Released"
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 
 import glob, os, sys, subprocess, shutil
 from pathlib import Path
@@ -38,9 +38,10 @@ def get_arguments():
         description='''A simple popup calendar
 
 subcommands:
-    update-themes   Update a calendar parameter for all user themes at once
-    add-event       Add, modify, delete event in all user themes config at once
-    configure       Clone or open configuration files'''
+    update-themes     Update a calendar parameter for all user themes at once
+    add-event         Add, modify, delete event in all user themes config at once
+    configure         Clone or open configuration files
+    theme-generator   Generate theme from shape and colors'''
     )
 
     parser.add_argument(

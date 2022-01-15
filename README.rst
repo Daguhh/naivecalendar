@@ -204,6 +204,7 @@ Subcommands **update-themes** could be useful to update all theme config at once
       | update-themes       Update a calendar parameter for all user themes at once
       | add-event           Add or delete event
       | configure           Clone or open configuration files
+      | theme-generator     Generate theme from shape and colors
 
 
     **optional arguments:**
