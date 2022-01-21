@@ -33,6 +33,12 @@ ifeq ($(INSTALL_ADDONS),True)
 install_list += install-addons
 endif
 
+ifeq ($(INSTALL_ALL_THEMES),True)
+install_list += install-themes
+else
+install_list += install-theme-default
+endif
+
 ifeq ($(INSTALL_MANPAGE),True)
 install_list += install-manpage
 endif
@@ -40,6 +46,7 @@ endif
 ifeq ($(INSTALL_BASH_COMPLETION),True)
 install_list += install-bashcompletion
 endif
+
 
 
 
@@ -118,6 +125,11 @@ install-themes: install-scripts
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "all themes" "-->" "$(DESTDIR)$(datadir)/naivecalendar"
 	@cp -r src/themes $(DESTDIR)$(datadir)/naivecalendar
 
+install-theme-default: 
+	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "default theme" "-->" "$(DESTDIR)$(datadir)/naivecalendar"
+	@mkdir -p $(DESTDIR)$(datadir)/naivecalendar/themes
+	@cp -r src/theme_default/* $(DESTDIR)$(datadir)/naivecalendar/themes/
+
 install-manpage:
 	@printf "%s \e[1;36m%-20s\e[0;32m %s %s\n" "copy" "mmanpages"  "-->"  "$(DESTDIR)$(man1dir)/"
 	@install -D --mode=644 "debian/naivecalendar.1" "$(DESTDIR)$(man1dir)/naivecalendar.1"
@@ -131,7 +143,7 @@ install-bashcompletion:
 	@install -D --mode=755 "completion.tmp" "$(DESTDIR)$(datadir)/bash-completion/completions/naivecalendar"
 	@rm completion.tmp
 
-install: install-exec install-scripts install-themes $(install_list)
+install: install-exec install-scripts $(install_list)
 
 uninstall:
 	rm -f $(DESTDIR)$(bindir)/naivecalendar

@@ -74,13 +74,14 @@ The naivecalendar use two files:
 - **naivecalendar.py** : that print a list-formatted calendar entries to sdtout
 - **naivecalendar.sh** : that run rofi in script mode with the previous file
 
-Plus, a couple of theme files:
+The calendar needs two configuration files :
 
-- **<theme>.rasi** : rofi configuration file (shape and colors)
-- **common/<element>.rasi** : rasi theme file dependancies (combine shape, colors position...)  
-- /themes/**<theme>.cfg** : an ini file that define calendar content
+- ./themes/**config.rasi** : rofi configuration file (shape and colors)
+- ./themes/**config.cfg** : an ini file that define calendar content
 
-Simply copy those files (src folder content) in the same place (.ie : keep the tree as it is), remove as many theme as you want, but please keep at least *classic_dark_extended* default theme. 
+You can also install files in **themes/common/** to get more ressources to create themes. (see *customize > themes* for more details) 
+
+Simply copy those files (src folder content) to your install directory (.ie : keep the tree as it is). 
 
 Here is the simplest doable installation tree ::
 
@@ -88,14 +89,8 @@ Here is the simplest doable installation tree ::
     ├── naivecalendar.py
     ├── naivecalendar.sh
     └── themes
-        ├── classic_dark_extended.cfg
-        ├── classic_dark_extended.rasi
-        └── common
-            ├── position.rasi
-            ├── shape_base.rasi
-            ├── shape_extended.rasi
-            ├── theme_base.rasi
-            └── theme_dark.rasi
+        ├── config.cfg
+        └── config.rasi
 
 
 Then, Launch with:: 
@@ -267,7 +262,9 @@ A theme consist of two files :
 
    Number of rows in rofi (*.rasi*) should match content configuration (*.cfg*)! See more details in .cfg files.
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, set them by typing *theme* in rofi prompt or temporarily load them with :code:`--theme` argument. To create your own theme, create a `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file in *~/.config/naivecalendar/themes*. 
+Default configuration files (and fallback) are **config.rasi** and **config.cfg**. To create your own theme, create a `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file in *~/.config/naivecalendar/themes*. 
+
+Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, set them by typing *theme* in rofi prompt or temporarily load them with :code:`--theme` argument. 
 
 You can start from a copy of "officials" themes, with :code:`configure` subcommand or manually:
 
