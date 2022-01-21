@@ -262,11 +262,20 @@ A theme consist of two files :
 
    Number of rows in rofi (*.rasi*) should match content configuration (*.cfg*)! See more details in .cfg files.
 
-Default configuration files (and fallback) are **config.rasi** and **config.cfg**. To create your own theme, create a `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file in *~/.config/naivecalendar/themes*. 
+The default configuration files (and fallback) are **config.rasi** and **config.cfg**. 
+To create your own theme, create a `rasi <https://github.com/davatorium/rofi/blob/next/doc/rofi-theme.5.markdown>`_ file and a cfg file in *~/.config/naivecalendar/themes*. Overwrite **config\*** files to automaticly load it or give it a custom name and load it with :code:`--theme` argument.
 
-Some `themes are avaibles <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_, set them by typing *theme* in rofi prompt or temporarily load them with :code:`--theme` argument. 
+Naivecalendar is shipped with some ressources to `generate some themes <https://framagit.org/Daguhh/naivecalendar/-/blob/master/docs/themes.rst>`_:
 
-You can start from a copy of "officials" themes, with :code:`configure` subcommand or manually:
+- common/**shape_\*.cfg** : calendar content for specific shape
+- common/**shape_\*.rasi** : a calendar shape : compact, classic, extended...
+- common/**theme\*.rasi** : a color theme
+- common/**position.rasi** : calendar position
+
+You can easily mix them to customize calendar aspect or modify independently colors and shapes.
+Type ``theme`` in rofi prompt or use :code:`theme-generator` subcommand to generate new themes.
+
+You can also start from a copy of "officials" ressources, with :code:`configure` subcommand or manually:
 
 .. code:: bash
 
@@ -285,13 +294,7 @@ Then modify themes one by one with your favourite editor or use naivecalendar su
 .. admonition:: Author
 
    Proposed themes are more examples than official. I intented this calendar to easily match all user configurations and to be easily configurable.
-   There is no specific tool to update .rasi files, but they (almost all) share some ressources in *themes/common/*, commonly:
 
-   - a color theme : **theme_<color_name>.rasi**
-   - a position on the screen : **position.rasi**
-   - a shape (contain number of row) : **shape_<kind>.rasi**
-
-   So you can easily mix them to customize calendar aspect or modify independently colors and shapes.
 
 Events
 ^^^^^^
