@@ -11,6 +11,7 @@
 * {
     foreground:                  #bdb09d;
     background:                  rgb(50,61,63);
+    border:                      @background;
     foreground-normal:           @foreground;
     background-normal:           @background;
     foreground-active:           #d5c57a;
