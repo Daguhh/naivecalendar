@@ -788,7 +788,7 @@ def parse_event_file(event_path):
         note_txt = f.read()
 
     # get lines with [section]
-    head = list(re.findall('\[.*\].*', note_txt))
+    head = list(re.findall(r'\[.*\].*', note_txt))
 
     if head: # if sections
         return '\n' + '\n'.join(head) # join them into multilines
